@@ -34,12 +34,18 @@ def configured() -> bool:
 
 
 _http: Optional[httpx.AsyncClient] = None
+_http_loop = None
 
 
 def _client() -> httpx.AsyncClient:
-    global _http
-    if _http is None or _http.is_closed:
+    """One pooled client per event loop (bots/tests may run their own loops)."""
+    global _http, _http_loop
+    import asyncio
+
+    loop = asyncio.get_running_loop()
+    if _http is None or _http.is_closed or _http_loop is not loop:
         _http = httpx.AsyncClient(timeout=httpx.Timeout(10.0, connect=5.0))
+        _http_loop = loop
     return _http
 
 

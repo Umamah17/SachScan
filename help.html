@@ -240,6 +240,23 @@
             </div>
           </div>
           <div class="flex items-center gap-2">
+            <!-- History: past conversations from GET /conversations (filled by sachscan-api.js) -->
+            <div class="relative">
+              <button id="btn-history" type="button" class="p-2 rounded-lg text-neutral-500 hover:text-black hover:bg-black/5 transition-colors text-xs flex items-center gap-1" title="Past conversations" aria-haspopup="true" aria-expanded="false">
+                <span class="material-symbols-outlined text-[18px]">history</span>
+                <span class="hidden sm:inline text-xs">History</span>
+              </button>
+              <div id="history-panel" class="hidden absolute right-0 mt-2 w-80 max-w-[85vw] rounded-2xl bg-white border border-black/10 shadow-xl z-30 overflow-hidden">
+                <div class="px-4 py-3 border-b border-black/5 flex items-center justify-between">
+                  <span class="text-xs font-bold text-black uppercase tracking-wider">History</span>
+                  <button id="btn-link-app" type="button" class="text-[11px] font-semibold text-neutral-500 hover:text-black flex items-center gap-1" title="Link your WhatsApp, Telegram or Discord chats to this account">
+                    <span class="material-symbols-outlined text-[15px]">link</span>Link a chat app
+                  </button>
+                </div>
+                <div id="history-link-code" class="hidden px-4 py-3 bg-surface-container-low border-b border-black/5 text-[11px] text-neutral-700"></div>
+                <ul id="history-list" class="max-h-80 overflow-y-auto custom-scrollbar divide-y divide-black/5 text-xs"></ul>
+              </div>
+            </div>
             <button id="btn-clear-chat" type="button" class="p-2 rounded-lg text-neutral-500 hover:text-black hover:bg-black/5 transition-colors text-xs flex items-center gap-1" title="Clear chat session">
               <span class="material-symbols-outlined text-[18px]">refresh</span>
               <span class="hidden sm:inline text-xs">Clear</span>

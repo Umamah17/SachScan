@@ -381,6 +381,91 @@
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // History dropdown (GET /conversations) + "Link a chat app" code
+  // ---------------------------------------------------------------------------
+  const PLATFORM_ICON = { web: 'language', whatsapp: 'chat', telegram: 'send', discord: 'forum', gmail: 'mail', extension: 'extension' };
+
+  function relTime(iso) {
+    const s = (Date.now() - new Date(iso).getTime()) / 1000;
+    if (s < 60) return 'just now';
+    if (s < 3600) return Math.floor(s / 60) + ' min ago';
+    if (s < 86400) return Math.floor(s / 3600) + ' h ago';
+    if (s < 7 * 86400) return Math.floor(s / 86400) + ' d ago';
+    return new Date(iso).toLocaleDateString();
+  }
+
+  async function renderHistory() {
+    const list = $('history-list');
+    if (!list) return;
+    list.innerHTML = '<li class="px-4 py-3 text-neutral-500">Loading…</li>';
+    try {
+      const { conversations } = await api('/conversations?limit=50');
+      if (!conversations.length) {
+        list.innerHTML = '<li class="px-4 py-4 text-neutral-500">No saved checks yet. Your checks from the web, WhatsApp, Telegram, Discord and Gmail appear here.</li>';
+        return;
+      }
+      list.innerHTML = conversations.map((c) => `
+        <li class="group flex items-center gap-2 px-3 py-2.5 hover:bg-black/5 cursor-pointer ${c.id === currentConversation ? 'bg-black/5' : ''}" data-conv="${esc(c.id)}">
+          <span class="material-symbols-outlined text-[16px] text-neutral-500" title="${esc(c.platform)}">${PLATFORM_ICON[c.platform] || 'chat'}</span>
+          <span class="flex-1 min-w-0">
+            <span class="block truncate font-medium text-black">${esc(c.title || 'Untitled check')}</span>
+            <span class="block text-[10px] text-neutral-500 font-code-mono">${esc(c.platform)} • ${esc(relTime(c.updated_at))}</span>
+          </span>
+          <button type="button" class="opacity-0 group-hover:opacity-100 focus:opacity-100 p-1 rounded text-neutral-400 hover:text-red-600" data-delete="${esc(c.id)}" title="Delete conversation">
+            <span class="material-symbols-outlined text-[16px]">delete</span>
+          </button>
+        </li>`).join('');
+    } catch (err) {
+      list.innerHTML = `<li class="px-4 py-3 text-red-700">${esc(err.message)}</li>`;
+    }
+  }
+
+  function initHistory() {
+    const btn = $('btn-history'), panel = $('history-panel'), list = $('history-list');
+    if (!btn || !panel) return;
+    const close = () => { panel.classList.add('hidden'); btn.setAttribute('aria-expanded', 'false'); };
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const opening = panel.classList.contains('hidden');
+      panel.classList.toggle('hidden');
+      btn.setAttribute('aria-expanded', String(opening));
+      if (opening) renderHistory();
+    });
+    document.addEventListener('click', (e) => { if (!panel.contains(e.target) && e.target !== btn) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+
+    list.addEventListener('click', async (e) => {
+      const del = e.target.closest('[data-delete]');
+      if (del) {
+        e.stopPropagation();
+        if (!confirm('Delete this conversation from your history?')) return;
+        try {
+          await api('/conversations/' + encodeURIComponent(del.dataset.delete), { method: 'DELETE' });
+          if (del.dataset.delete === currentConversation) { $('btn-clear-chat') && $('btn-clear-chat').click(); }
+          renderHistory();
+        } catch (err) { alert(err.message); }
+        return;
+      }
+      const row = e.target.closest('[data-conv]');
+      if (row) { close(); loadConversation(row.dataset.conv); }
+    });
+
+    const linkBtn = $('btn-link-app'), codeBox = $('history-link-code');
+    if (linkBtn && codeBox) linkBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      codeBox.classList.remove('hidden');
+      codeBox.textContent = 'Creating a code…';
+      try {
+        const r = await api('/link/start', { method: 'POST' });
+        codeBox.innerHTML = `Send <strong class="font-code-mono text-black text-sm">link ${esc(r.code)}</strong> to the SachScan WhatsApp, Telegram or Discord bot within 10 minutes. Your chats there will then show up in this History.`;
+      } catch (err) { codeBox.textContent = err.message; }
+    });
+
+    // keep the list fresh after each saved check
+    document.addEventListener('sachscan:saved', () => { if (!panel.classList.contains('hidden')) renderHistory(); });
+  }
+
   function setPendingFile(file) {
     const el = chatEls();
     pendingFile = file;
@@ -420,6 +505,7 @@
       if (clear) clear.addEventListener('click', () => setCurrentConversation(null));
       const openId = new URLSearchParams(location.search).get('c');
       if (openId) loadConversation(openId);
+      initHistory();
 
       // Enter sends, Shift+Enter adds a newline (as the hint under the box says)
       el.input.addEventListener('keydown', (e) => {
