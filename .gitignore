@@ -2,3 +2,9 @@ node_modules/
 .env
 .DS_Store
 Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
