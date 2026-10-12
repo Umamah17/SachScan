@@ -1,0 +1,108 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "",
+  "installCommand": "",
+  "outputDirectory": ".",
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://driveway-class-pureness.ngrok-free.dev/api/:path*"
+    },
+    {
+      "source": "/check",
+      "destination": "https://driveway-class-pureness.ngrok-free.dev/check"
+    },
+    {
+      "source": "/chat",
+      "destination": "https://driveway-class-pureness.ngrok-free.dev/chat"
+    },
+    {
+      "source": "/conversations",
+      "destination": "https://driveway-class-pureness.ngrok-free.dev/conversations"
+    },
+    {
+      "source": "/conversations/:path*",
+      "destination": "https://driveway-class-pureness.ngrok-free.dev/conversations/:path*"
+    },
+    {
+      "source": "/link/:path*",
+      "destination": "https://driveway-class-pureness.ngrok-free.dev/link/:path*"
+    },
+    {
+      "source": "/me",
+      "destination": "https://driveway-class-pureness.ngrok-free.dev/me"
+    },
+    {
+      "source": "/health",
+      "destination": "https://driveway-class-pureness.ngrok-free.dev/health"
+    },
+    {
+      "source": "/share-target",
+      "destination": "https://driveway-class-pureness.ngrok-free.dev/share-target"
+    },
+    {
+      "source": "/webhooks/:path*",
+      "destination": "https://driveway-class-pureness.ngrok-free.dev/webhooks/:path*"
+    },
+    {
+      "source": "/legal/:path*",
+      "destination": "https://driveway-class-pureness.ngrok-free.dev/legal/:path*"
+    },
+    {
+      "source": "/integrations/gmail/:path*",
+      "destination": "https://driveway-class-pureness.ngrok-free.dev/integrations/gmail/:path*"
+    },
+    {
+      "source": "/extension",
+      "destination": "https://driveway-class-pureness.ngrok-free.dev/extension"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/manifest.json",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/manifest+json"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(js|css|html)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(png|jpg|jpeg|webp|woff2)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}

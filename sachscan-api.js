@@ -11,6 +11,8 @@
   'use strict';
 
   const API = (window.SACHSCAN_API_BASE || '').replace(/\/$/, '');
+  // Skips ngrok's free-plan browser warning page when the API is reached through an ngrok tunnel
+  const PROXY_HEADERS = { 'ngrok-skip-browser-warning': '1' };
 
   // ---------------------------------------------------------------------------
   // Helpers
@@ -36,7 +38,7 @@
   // ---------------------------------------------------------------------------
   let configPromise = null;
   function getConfig() {
-    if (!configPromise) configPromise = fetch(API + '/api/config').then((r) => r.json()).catch(() => ({}));
+    if (!configPromise) configPromise = fetch(API + '/api/config', { headers: PROXY_HEADERS }).then((r) => r.json()).catch(() => ({}));
     return configPromise;
   }
 
@@ -80,7 +82,7 @@
   }
 
   async function api(path, opts = {}) {
-    const headers = Object.assign({}, await authHeaders(), opts.headers || {});
+    const headers = Object.assign({}, PROXY_HEADERS, await authHeaders(), opts.headers || {});
     let body = opts.body;
     if (body && !(body instanceof FormData) && typeof body !== 'string') {
       headers['Content-Type'] = 'application/json';
@@ -304,7 +306,7 @@
     if (el.status) el.status.textContent = 'Connecting to SachScan verification engine…';
     scrollChat();
     try {
-      const res = await fetch(API + path, { method: 'POST', headers: await authHeaders(), body: formData });
+      const res = await fetch(API + path, { method: 'POST', headers: Object.assign({}, PROXY_HEADERS, await authHeaders()), body: formData });
       if (!res.ok) {
         let msg = 'Request failed (' + res.status + ')';
         try { msg = (await res.json()).detail || msg; } catch (e) { /* not JSON */ }

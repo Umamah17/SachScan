@@ -132,6 +132,28 @@ Using it
   `/sachscan disable [#channel]`, `/sachscan status`. Settings are stored in `integration_settings`.
 - `/link <code>` connects a Discord account to the website history; DMs to the bot work like the WhatsApp bot.
 
+## 6. Deploy: website on Vercel, API through ngrok (for now)
+
+The website is static and goes to Vercel. `vercel.json` forwards every API path (`/check`, `/chat`, `/conversations`,
+`/api/*`, `/webhooks/*`, `/legal/*`, …) to the backend, currently your laptop through the static ngrok domain, so the
+browser only ever talks to one origin (no CORS, same code as local). `.vercelignore` keeps backend code, bots,
+migrations and tests off the website.
+
+1. Push this repo to GitHub (`.env` files are git-ignored and never uploaded).
+2. [vercel.com](https://vercel.com) → **Add New → Project** → import the repo → Framework preset **Other**, leave build
+   and output settings empty (vercel.json sets them) → **Deploy**.
+3. Note your Vercel URL (e.g. `https://sachscan.vercel.app`), then:
+   - Supabase → Authentication → URL Configuration → **Redirect URLs** → add `https://<your-vercel-domain>/**`
+     (optionally make it the **Site URL**).
+   - `backend/.env`: `PUBLIC_WEB_URL=https://<your-vercel-domain>` (links in bot replies point to the website), restart.
+4. Keep the backend and ngrok running on the laptop while the Vercel site is in use
+   (`backend\start-server.bat`, `backend\start-ngrok.bat`).
+
+Later, to stop depending on the laptop: deploy `backend/` to an always-on host (e.g. Render or Railway: start command
+`python -m uvicorn backend.main:app --host 0.0.0.0 --port $PORT` from the repo root, same env vars as `backend/.env`,
+plus a worker running `python -m bots.discord_bot`), then replace the ngrok URL in `vercel.json` with the new backend URL.
+The WhatsApp webhook URL in Meta should point to the backend (or to the Vercel domain, which forwards `/webhooks/*`).
+
 ---
 
 Sections for Telegram, Gmail/Pub-Sub, the Chrome extension and the demo script are added as those

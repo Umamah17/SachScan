@@ -1,0 +1,14 @@
+# Only the static website goes to Vercel. The API runs separately (laptop + ngrok, or Render later).
+backend/
+bots/
+supabase/
+tests/
+pytest.ini
+server.js
+build_index.js
+code.html
+package.json
+CARD EFFECT.txt
+scratch_fonts/
+SETUP.md
+*.bat
