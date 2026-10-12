@@ -5,5 +5,5 @@ echo.
 echo  Public URL: https://driveway-class-pureness.ngrok-free.dev
 echo  WhatsApp webhook: https://driveway-class-pureness.ngrok-free.dev/webhooks/whatsapp
 echo.
-ngrok http --url=driveway-class-pureness.ngrok-free.dev 3001
+ngrok http --domain=driveway-class-pureness.ngrok-free.dev 3001
 pause

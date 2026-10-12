@@ -63,7 +63,7 @@ Meta, Telegram and Google push messages to your server, so it needs a public HTT
    only configure webhooks once.
 4. With the backend running on port 3001:
    ```powershell
-   ngrok http --url=<your-static-domain>.ngrok-free.app 3001
+   ngrok http --domain=<your-static-domain> 3001
    ```
 5. Put `PUBLIC_BASE_URL=https://<your-static-domain>.ngrok-free.app` in `backend/.env` and restart the backend.
    Also add `https://<your-static-domain>.ngrok-free.app/**` to Supabase → Authentication → URL Configuration →
