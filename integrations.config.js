@@ -12,7 +12,7 @@
   'use strict';
 
   // ---- Public values (keep in sync with backend/.env where noted) -----------------------
-  const WHATSAPP_BOT_NUMBER = '';     // international format, digits only, e.g. '15551234567' (= WHATSAPP_BOT_NUMBER in .env)
+  const WHATSAPP_BOT_NUMBER = '15556435520';     // international format, digits only, e.g. '15551234567' (= WHATSAPP_BOT_NUMBER in .env)
   const TELEGRAM_BOT_USERNAME = '';   // e.g. 'SachScanCheckBot'                        (= TELEGRAM_BOT_USERNAME in .env)
   const DISCORD_APP_ID = '';          // Developer Portal -> General Information -> Application ID (= DISCORD_APP_ID in .env)
   const X_HANDLE = '';                // without @

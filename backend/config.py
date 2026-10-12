@@ -78,7 +78,7 @@ WHATSAPP_PHONE_NUMBER_ID = os.getenv("WHATSAPP_PHONE_NUMBER_ID", "").strip()
 WHATSAPP_VERIFY_TOKEN = os.getenv("WHATSAPP_VERIFY_TOKEN", "").strip()      # any random string you also enter in Meta
 WHATSAPP_APP_SECRET = os.getenv("WHATSAPP_APP_SECRET", "").strip()          # SECRET: App settings -> Basic -> App secret
 WHATSAPP_BOT_NUMBER = "".join(c for c in os.getenv("WHATSAPP_BOT_NUMBER", "") if c.isdigit())
-WHATSAPP_GRAPH_VERSION = os.getenv("WHATSAPP_GRAPH_VERSION", "v23.0").strip()
+WHATSAPP_GRAPH_VERSION = os.getenv("WHATSAPP_GRAPH_VERSION", "v26.0").strip()
 
 # --- Telegram -------------------------------------------------------------------
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
