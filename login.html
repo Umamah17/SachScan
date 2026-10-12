@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>SachScan — Sign In &amp; Register | Sovereign Verification Intelligence</title>
+  <meta name="theme-color" content="#eaeaea"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="SachScan"/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="apple-touch-icon" href="icons/icon-192.png"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png"/>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-surface-variant": "#47464b",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f3f4f6",
+            "surface-container": "#edeef0",
+            "surface-container-high": "#e7e8ea",
+            "surface-container-highest": "#e1e2e4",
+            "primary": "#000000",
+            "on-surface": "#191c1e",
+            "background": "#f8f9fb"
+          },
+          fontFamily: {
+            "headline": ["Geist", "sans-serif"],
+            "body": ["Inter", "sans-serif"],
+            "mono": ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="style.css?v=1.0.7" />
+
+  <style>
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+    }
+    
+    /* Frosted glassy styling matching SachScan design system */
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(0, 0, 0, 0.09);
+      box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
+    }
+    
+    .ambient-glow-1 {
+      position: absolute;
+      top: 15%;
+      left: 15%;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(0, 0, 0, 0.04) 0%, rgba(248, 249, 251, 0) 70%);
+      filter: blur(50px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ambient-glow-2 {
+      position: absolute;
+      bottom: 10%;
+      right: 15%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(70, 72, 212, 0.05) 0%, rgba(248, 249, 251, 0) 70%);
+      filter: blur(60px);
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body class="bg-background font-body text-on-surface antialiased min-h-screen flex flex-col relative overflow-x-hidden selection:bg-black selection:text-white">
+
+  <!-- Ambient Glow Effects -->
+  <div class="ambient-glow-1"></div>
+  <div class="ambient-glow-2"></div>
+
+  <!-- Glassmorphic Top Navigation Bar -->
+  <header id="main-navbar" class="glass-nav fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 sm:px-10 h-16 sm:h-20 flex items-center justify-between">
+      
+      <!-- Logo & Brand -->
+      <a href="index.html" class="flex items-center gap-3 group focus:outline-none" aria-label="SachScan Home">
+        <img src="download__4_-removebg-preview.png" alt="SachScan Logo" class="h-9 sm:h-10 w-auto object-contain transition-transform duration-200 group-hover:scale-105" />
+        <span class="font-headline text-black font-bold tracking-tight text-xl">SachScan</span>
+      </a>
+
+      <!-- Quick Back to Home Button -->
+      <a href="index.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-black/20 bg-white/60 hover:bg-black hover:text-white text-black text-xs font-semibold tracking-wide transition-all duration-200 shadow-sm">
+        <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+        <span>Back to Home</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Auth Section -->
+  <main class="flex-grow flex items-center justify-center px-4 sm:px-6 pt-28 pb-16 relative z-10">
+    <div class="w-full max-w-md sm:max-w-lg">
+      
+      <!-- Auth Container Box -->
+      <div class="glass-card rounded-3xl p-6 sm:p-10 transition-all duration-300" id="auth-card">
+        
+        <!-- Header Info -->
+        <div class="text-center mb-6">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/5 border border-black/10 text-[11px] font-mono font-medium text-black/70 uppercase tracking-widest mb-3">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            Zero-Trust Sovereign Auth
+          </div>
+          <h1 class="font-headline text-2xl sm:text-3xl font-bold text-black tracking-tight" id="auth-title">
+            Welcome to SachScan
+          </h1>
+          <p class="text-sm text-on-surface-variant mt-1.5" id="auth-subtitle">
+            Sign in to your account or register to activate your 500 free monthly scans.
+          </p>
+        </div>
+
+        <!-- Segmented Tab Switcher (Sign In vs Register) -->
+        <div class="grid grid-cols-2 p-1 bg-surface-container rounded-2xl mb-6 border border-black/5" role="tablist">
+          <button id="tab-login" type="button" class="py-2.5 rounded-xl font-headline text-xs font-semibold tracking-wide transition-all duration-200 bg-black text-white shadow-sm flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">login</span>
+            <span>Sign In</span>
+          </button>
+          <button id="tab-register" type="button" class="py-2.5 rounded-xl font-headline text-xs font-semibold tracking-wide transition-all duration-200 text-black/60 hover:text-black flex items-center justify-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">person_add</span>
+            <span>Create Account</span>
+          </button>
+        </div>
+
+        <!-- NOTIFICATION / FEEDBACK BANNER -->
+        <div id="auth-alert" class="hidden mb-6 p-4 rounded-2xl text-xs border transition-all duration-200">
+          <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined text-[20px] shrink-0" id="alert-icon">info</span>
+            <div class="flex-grow">
+              <p class="font-semibold" id="alert-title">Notice</p>
+              <p class="text-[11px] mt-0.5 leading-relaxed" id="alert-message">Description message goes here.</p>
+              <button id="alert-action-btn" type="button" class="hidden mt-2 px-3 py-1 rounded-lg bg-black text-white font-medium hover:bg-neutral-800 transition-colors">
+                Switch to Register
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- FORM 1: LOGIN FORM                             -->
+        <!-- ============================================== -->
+        <form id="form-login" class="space-y-4" novalidate>
+          <div>
+            <label for="login-email" class="block font-headline text-xs font-semibold text-black mb-1.5">
+              Email Address
+            </label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-black/40 text-[18px]">mail</span>
+              <input 
+                type="email" 
+                id="login-email" 
+                placeholder="you@company.com" 
+                required
+                class="w-full pl-10 pr-4 py-3 rounded-xl bg-white/80 border border-black/15 focus:border-black focus:ring-1 focus:ring-black focus:bg-white text-sm text-black placeholder:text-black/35 outline-none transition-all"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label for="login-password" class="block font-headline text-xs font-semibold text-black">
+                Password
+              </label>
+              <a href="#" id="link-forgot-pw" class="text-[11px] text-black/60 hover:text-black hover:underline transition-colors font-medium">
+                Forgot password?
+              </a>
+            </div>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-black/40 text-[18px]">lock</span>
+              <input 
+                type="password" 
+                id="login-password" 
+                placeholder="Enter your password" 
+                required
+                class="w-full pl-10 pr-11 py-3 rounded-xl bg-white/80 border border-black/15 focus:border-black focus:ring-1 focus:ring-black focus:bg-white text-sm text-black placeholder:text-black/35 outline-none transition-all"
+              />
+              <button type="button" class="toggle-password absolute right-3.5 top-1/2 -translate-y-1/2 text-black/40 hover:text-black transition-colors" data-target="login-password" aria-label="Toggle password visibility">
+                <span class="material-symbols-outlined text-[18px]">visibility</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-1">
+            <label class="flex items-center gap-2 cursor-pointer text-xs text-black/70">
+              <input type="checkbox" id="login-remember" class="w-4 h-4 rounded border-black/20 text-black focus:ring-black accent-black cursor-pointer" checked />
+              <span>Remember this device</span>
+            </label>
+          </div>
+
+          <!-- Submit Button -->
+          <button 
+            type="submit" 
+            id="btn-login-submit"
+            class="w-full py-3.5 rounded-xl bg-black text-white font-headline text-sm font-semibold tracking-wide hover:bg-neutral-800 active:scale-[0.99] transition-all duration-200 shadow-md flex items-center justify-center gap-2 mt-2 cursor-pointer"
+          >
+            <span>Sign In to SachScan</span>
+            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+          </button>
+        </form>
+
+        <!-- ============================================== -->
+        <!-- FORM 2: REGISTER FORM                          -->
+        <!-- ============================================== -->
+        <form id="form-register" class="space-y-4 hidden" novalidate>
+          
+          <!-- Free Tier Perk Banner -->
+          <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-900 flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-emerald-600 text-[20px]">verified</span>
+            <div class="text-[11px] leading-tight">
+              <span class="font-bold">500 Free Scans/Month:</span> Zero credit card required. Instant multi-platform API token included.
+            </div>
+          </div>
+
+          <div>
+            <label for="reg-name" class="block font-headline text-xs font-semibold text-black mb-1.5">
+              Full Name
+            </label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-black/40 text-[18px]">person</span>
+              <input 
+                type="text" 
+                id="reg-name" 
+                placeholder="Jane Doe" 
+                required
+                class="w-full pl-10 pr-4 py-3 rounded-xl bg-white/80 border border-black/15 focus:border-black focus:ring-1 focus:ring-black focus:bg-white text-sm text-black placeholder:text-black/35 outline-none transition-all"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="reg-email" class="block font-headline text-xs font-semibold text-black mb-1.5">
+              Email Address
+            </label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-black/40 text-[18px]">mail</span>
+              <input 
+                type="email" 
+                id="reg-email" 
+                placeholder="you@company.com" 
+                required
+                class="w-full pl-10 pr-4 py-3 rounded-xl bg-white/80 border border-black/15 focus:border-black focus:ring-1 focus:ring-black focus:bg-white text-sm text-black placeholder:text-black/35 outline-none transition-all"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="reg-password" class="block font-headline text-xs font-semibold text-black mb-1.5">
+              Create Password
+            </label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-black/40 text-[18px]">lock</span>
+              <input 
+                type="password" 
+                id="reg-password" 
+                placeholder="At least 6 characters" 
+                required
+                class="w-full pl-10 pr-11 py-3 rounded-xl bg-white/80 border border-black/15 focus:border-black focus:ring-1 focus:ring-black focus:bg-white text-sm text-black placeholder:text-black/35 outline-none transition-all"
+              />
+              <button type="button" class="toggle-password absolute right-3.5 top-1/2 -translate-y-1/2 text-black/40 hover:text-black transition-colors" data-target="reg-password" aria-label="Toggle password visibility">
+                <span class="material-symbols-outlined text-[18px]">visibility</span>
+              </button>
+            </div>
+            <!-- Strength Indicator -->
+            <div class="mt-2 flex items-center gap-1.5">
+              <div class="h-1 flex-1 rounded-full bg-black/10 overflow-hidden">
+                <div id="strength-bar" class="h-full w-0 transition-all duration-300 bg-red-500"></div>
+              </div>
+              <span id="strength-text" class="text-[10px] font-mono text-black/50">Password strength</span>
+            </div>
+          </div>
+
+          <div>
+            <label for="reg-confirm-password" class="block font-headline text-xs font-semibold text-black mb-1.5">
+              Confirm Password
+            </label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-black/40 text-[18px]">check_circle</span>
+              <input 
+                type="password" 
+                id="reg-confirm-password" 
+                placeholder="Re-enter your password" 
+                required
+                class="w-full pl-10 pr-11 py-3 rounded-xl bg-white/80 border border-black/15 focus:border-black focus:ring-1 focus:ring-black focus:bg-white text-sm text-black placeholder:text-black/35 outline-none transition-all"
+              />
+              <button type="button" class="toggle-password absolute right-3.5 top-1/2 -translate-y-1/2 text-black/40 hover:text-black transition-colors" data-target="reg-confirm-password" aria-label="Toggle password visibility">
+                <span class="material-symbols-outlined text-[18px]">visibility</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="pt-1">
+            <label class="flex items-start gap-2 cursor-pointer text-xs text-black/70">
+              <input type="checkbox" id="reg-terms" class="mt-0.5 w-4 h-4 rounded border-black/20 text-black focus:ring-black accent-black cursor-pointer" required checked />
+              <span class="text-[11px] leading-tight">
+                I agree to the SachScan <a href="#" class="underline hover:text-black">Terms of Service</a> and confirm zero-retention cryptographic privacy.
+              </span>
+            </label>
+          </div>
+
+          <!-- Submit Button -->
+          <button 
+            type="submit" 
+            id="btn-register-submit"
+            class="w-full py-3.5 rounded-xl bg-black text-white font-headline text-sm font-semibold tracking-wide hover:bg-neutral-800 active:scale-[0.99] transition-all duration-200 shadow-md flex items-center justify-center gap-2 mt-2 cursor-pointer"
+          >
+            <span>Create Free Account (500 Scans)</span>
+            <span class="material-symbols-outlined text-[18px]">bolt</span>
+          </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="relative my-6">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-black/10"></div>
+          </div>
+          <div class="relative flex justify-center text-xs uppercase">
+            <span class="bg-white/90 px-3 text-black/40 font-mono text-[10px] tracking-wider">or continue with</span>
+          </div>
+        </div>
+
+        <!-- Social Quick Auth Options -->
+        <div class="grid grid-cols-2 gap-3">
+          <button type="button" id="btn-oauth-google" class="py-2.5 px-4 rounded-xl border border-black/15 bg-white/70 hover:bg-white hover:border-black/30 text-xs font-semibold text-black transition-all duration-200 flex items-center justify-center gap-2 shadow-sm cursor-pointer">
+            <svg class="w-4 h-4" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            <span>Google</span>
+          </button>
+          <button type="button" id="btn-oauth-github" class="py-2.5 px-4 rounded-xl border border-black/15 bg-white/70 hover:bg-white hover:border-black/30 text-xs font-semibold text-black transition-all duration-200 flex items-center justify-center gap-2 shadow-sm cursor-pointer">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            <span>GitHub / SSO</span>
+          </button>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- SUCCESS CARD VIEW (ACTIVE LOGGED IN USER)     -->
+        <!-- ============================================== -->
+        <div id="auth-success-card" class="hidden text-center py-4">
+          <div class="w-16 h-16 rounded-2xl bg-emerald-100 border border-emerald-300 text-emerald-700 flex items-center justify-center mx-auto mb-4 shadow-sm">
+            <span class="material-symbols-outlined text-[36px]">verified_user</span>
+          </div>
+          <h2 class="font-headline text-xl font-bold text-black" id="success-user-name">Welcome Back!</h2>
+          <p class="text-xs text-on-surface-variant mt-1" id="success-user-email">user@domain.com</p>
+          
+          <div class="mt-5 p-4 rounded-2xl bg-surface-container border border-black/5 text-left space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-black/60 font-medium">Account Status</span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">ACTIVE • FREE TIER</span>
+            </div>
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-black/60 font-medium">Remaining Quota</span>
+              <span class="font-mono font-bold text-black" id="success-scans-left">500 / 500 scans</span>
+            </div>
+            <div class="flex items-center justify-between text-xs pt-1 border-t border-black/5">
+              <span class="text-black/60 font-medium">Sovereign Key</span>
+              <span class="font-mono text-[11px] text-black/80">sach_live_sec_7f99...</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
+            <a href="integrations.html" class="py-3 px-4 rounded-xl bg-black text-white font-headline text-xs font-semibold hover:bg-neutral-800 transition-colors flex items-center justify-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">apps</span>
+              <span>Integrations Hub</span>
+            </a>
+            <a href="index.html" class="py-3 px-4 rounded-xl border border-black/20 bg-white hover:bg-black/5 text-black font-headline text-xs font-semibold transition-colors flex items-center justify-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">radar</span>
+              <span>Return to Scanner</span>
+            </a>
+          </div>
+
+          <button type="button" id="btn-sign-out" class="mt-4 text-xs text-red-600 hover:text-red-700 hover:underline font-medium">
+            Sign Out
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Quick Trust Indicators Below Box -->
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-6 text-xs text-on-surface-variant font-mono">
+        <span class="flex items-center gap-1">
+          <span class="material-symbols-outlined text-emerald-600 text-[16px]">lock</span>
+          256-Bit Encrypted
+        </span>
+        <span class="flex items-center gap-1">
+          <span class="material-symbols-outlined text-emerald-600 text-[16px]">privacy_tip</span>
+          Zero Data Retention
+        </span>
+        <span class="flex items-center gap-1">
+          <span class="material-symbols-outlined text-emerald-600 text-[16px]">electric_bolt</span>
+          500 Scans Activated
+        </span>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full bg-surface-container-low py-6 border-t border-black/10 text-center text-xs text-black/50">
+    <p>© 2025 SachScan Sovereign Intelligence Labs Inc. All rights reserved.</p>
+  </footer>
+
+  <!-- ============================================== -->
+  <!-- AUTH JAVASCRIPT LOGIC                          -->
+  <!-- ============================================== -->
+  <script>
+    (function() {
+      // Storage keys
+      const STORAGE_USERS = 'sachscan_registered_users';
+      const STORAGE_SESSION = 'sachscan_session_user';
+
+      // Pre-seed demo user if none exists
+      function getRegisteredUsers() {
+        try {
+          const raw = localStorage.getItem(STORAGE_USERS);
+          if (raw) return JSON.parse(raw);
+        } catch (e) {
+          console.error('Error reading localStorage', e);
+        }
+        // Default seeded sample
+        const defaultList = [
+          { name: 'SachScan Pilot', email: 'demo@sachscan.com', password: 'password123', scansLeft: 500, createdAt: new Date().toISOString() }
+        ];
+        localStorage.setItem(STORAGE_USERS, JSON.stringify(defaultList));
+        return defaultList;
+      }
+
+      function saveUser(user) {
+        const users = getRegisteredUsers();
+        users.push(user);
+        localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
+      }
+
+      function getCurrentSession() {
+        try {
+          const raw = localStorage.getItem(STORAGE_SESSION);
+          if (raw) return JSON.parse(raw);
+        } catch (e) {
+          console.error('Error reading session', e);
+        }
+        return null;
+      }
+
+      function setCurrentSession(user) {
+        localStorage.setItem(STORAGE_SESSION, JSON.stringify(user));
+      }
+
+      function clearCurrentSession() {
+        localStorage.removeItem(STORAGE_SESSION);
+      }
+
+      // DOM Elements
+      const tabLogin = document.getElementById('tab-login');
+      const tabRegister = document.getElementById('tab-register');
+      const formLogin = document.getElementById('form-login');
+      const formRegister = document.getElementById('form-register');
+      const authTitle = document.getElementById('auth-title');
+      const authSubtitle = document.getElementById('auth-subtitle');
+      
+      const alertBox = document.getElementById('auth-alert');
+      const alertIcon = document.getElementById('alert-icon');
+      const alertTitle = document.getElementById('alert-title');
+      const alertMessage = document.getElementById('alert-message');
+      const alertActionBtn = document.getElementById('alert-action-btn');
+
+      const loginEmail = document.getElementById('login-email');
+      const loginPassword = document.getElementById('login-password');
+
+      const regName = document.getElementById('reg-name');
+      const regEmail = document.getElementById('reg-email');
+      const regPassword = document.getElementById('reg-password');
+      const regConfirmPassword = document.getElementById('reg-confirm-password');
+      const strengthBar = document.getElementById('strength-bar');
+      const strengthText = document.getElementById('strength-text');
+
+      const authSuccessCard = document.getElementById('auth-success-card');
+      const successUserName = document.getElementById('success-user-name');
+      const successUserEmail = document.getElementById('success-user-email');
+      const successScansLeft = document.getElementById('success-scans-left');
+      const btnSignOut = document.getElementById('btn-sign-out');
+
+      // Check current session on page load
+      const session = getCurrentSession();
+      if (session) {
+        renderSuccessView(session);
+      }
+
+      // Check URL parameters (e.g. ?mode=register or #register)
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('mode') === 'register' || window.location.hash === '#register') {
+        switchTab('register');
+      }
+
+      // Tab switching handlers
+      tabLogin.addEventListener('click', () => switchTab('login'));
+      tabRegister.addEventListener('click', () => switchTab('register'));
+
+      function switchTab(mode) {
+        hideAlert();
+        if (mode === 'login') {
+          tabLogin.className = "py-2.5 rounded-xl font-headline text-xs font-semibold tracking-wide transition-all duration-200 bg-black text-white shadow-sm flex items-center justify-center gap-1.5";
+          tabRegister.className = "py-2.5 rounded-xl font-headline text-xs font-semibold tracking-wide transition-all duration-200 text-black/60 hover:text-black flex items-center justify-center gap-1.5";
+          formLogin.classList.remove('hidden');
+          formRegister.classList.add('hidden');
+          authTitle.textContent = "Sign In to SachScan";
+          authSubtitle.textContent = "Enter your credentials to access your verification dashboard.";
+        } else {
+          tabRegister.className = "py-2.5 rounded-xl font-headline text-xs font-semibold tracking-wide transition-all duration-200 bg-black text-white shadow-sm flex items-center justify-center gap-1.5";
+          tabLogin.className = "py-2.5 rounded-xl font-headline text-xs font-semibold tracking-wide transition-all duration-200 text-black/60 hover:text-black flex items-center justify-center gap-1.5";
+          formRegister.classList.remove('hidden');
+          formLogin.classList.add('hidden');
+          authTitle.textContent = "Create Free Account";
+          authSubtitle.textContent = "Get started with 500 free scans/month. Instant sovereign protection.";
+        }
+      }
+
+      // Alert Banner Helpers
+      function showAlert(type, title, message, showRegisterBtn = false, emailToPrefill = '') {
+        alertBox.classList.remove('hidden', 'bg-red-50', 'border-red-200', 'text-red-900', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-900', 'bg-amber-50', 'border-amber-200', 'text-amber-900');
+        
+        if (type === 'error') {
+          alertBox.classList.add('bg-red-50', 'border-red-200', 'text-red-900');
+          alertIcon.textContent = 'error';
+          alertIcon.className = 'material-symbols-outlined text-[20px] text-red-600 shrink-0';
+        } else if (type === 'success') {
+          alertBox.classList.add('bg-emerald-50', 'border-emerald-200', 'text-emerald-900');
+          alertIcon.textContent = 'check_circle';
+          alertIcon.className = 'material-symbols-outlined text-[20px] text-emerald-600 shrink-0';
+        } else {
+          alertBox.classList.add('bg-amber-50', 'border-amber-200', 'text-amber-900');
+          alertIcon.textContent = 'warning';
+          alertIcon.className = 'material-symbols-outlined text-[20px] text-amber-600 shrink-0';
+        }
+
+        alertTitle.textContent = title;
+        alertMessage.textContent = message;
+
+        if (showRegisterBtn) {
+          alertActionBtn.classList.remove('hidden');
+          alertActionBtn.onclick = () => {
+            switchTab('register');
+            if (emailToPrefill) {
+              regEmail.value = emailToPrefill;
+              regName.focus();
+            }
+          };
+        } else {
+          alertActionBtn.classList.add('hidden');
+        }
+      }
+
+      function hideAlert() {
+        alertBox.classList.add('hidden');
+      }
+
+      // Password visibility toggle
+      document.querySelectorAll('.toggle-password').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-target');
+          const input = document.getElementById(targetId);
+          if (input) {
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            btn.querySelector('span').textContent = isPassword ? 'visibility_off' : 'visibility';
+          }
+        });
+      });
+
+      // Password strength listener
+      regPassword.addEventListener('input', () => {
+        const val = regPassword.value;
+        if (!val) {
+          strengthBar.style.width = '0%';
+          strengthText.textContent = 'Password strength';
+          return;
+        }
+        let score = 0;
+        if (val.length >= 6) score++;
+        if (val.length >= 10) score++;
+        if (/[A-Z]/.test(val)) score++;
+        if (/[0-9]/.test(val) || /[^A-Za-z0-9]/.test(val)) score++;
+
+        if (score <= 1) {
+          strengthBar.style.width = '25%';
+          strengthBar.className = 'h-full transition-all duration-300 bg-red-500';
+          strengthText.textContent = 'Weak';
+        } else if (score === 2) {
+          strengthBar.style.width = '60%';
+          strengthBar.className = 'h-full transition-all duration-300 bg-amber-500';
+          strengthText.textContent = 'Moderate';
+        } else {
+          strengthBar.style.width = '100%';
+          strengthBar.className = 'h-full transition-all duration-300 bg-emerald-500';
+          strengthText.textContent = 'Strong';
+        }
+      });
+
+      // ==============================================
+      // LOGIN FORM SUBMISSION HANDLER
+      // ==============================================
+      formLogin.addEventListener('submit', (e) => {
+        e.preventDefault();
+        hideAlert();
+
+        const email = loginEmail.value.trim().toLowerCase();
+        const password = loginPassword.value;
+
+        if (!email || !password) {
+          showAlert('error', 'Missing Information', 'Please provide both your email and password to sign in.');
+          return;
+        }
+
+        const users = getRegisteredUsers();
+        const existingUser = users.find(u => u.email.toLowerCase() === email);
+
+        // Core requirement: If user has not registered before, they must register!
+        if (!existingUser) {
+          showAlert(
+            'error', 
+            'Account Not Registered', 
+            `No account found for "${email}". Since you have not registered before, please create an account first to claim your 500 free monthly scans!`,
+            true,
+            email
+          );
+          return;
+        }
+
+        // Validate password
+        if (existingUser.password !== password) {
+          showAlert('error', 'Incorrect Password', 'The password you entered does not match our records. Please try again or reset it.');
+          return;
+        }
+
+        // Login success!
+        setCurrentSession(existingUser);
+        showAlert('success', 'Sign In Successful', 'Authenticating your session...');
+        setTimeout(() => {
+          renderSuccessView(existingUser);
+        }, 600);
+      });
+
+      // ==============================================
+      // REGISTER FORM SUBMISSION HANDLER
+      // ==============================================
+      formRegister.addEventListener('submit', (e) => {
+        e.preventDefault();
+        hideAlert();
+
+        const name = regName.value.trim();
+        const email = regEmail.value.trim().toLowerCase();
+        const password = regPassword.value;
+        const confirmPassword = regConfirmPassword.value;
+
+        if (!name || !email || !password) {
+          showAlert('error', 'Incomplete Form', 'Please fill in all required fields.');
+          return;
+        }
+
+        if (password.length < 6) {
+          showAlert('error', 'Weak Password', 'Password must be at least 6 characters long.');
+          return;
+        }
+
+        if (password !== confirmPassword) {
+          showAlert('error', 'Password Mismatch', 'Your confirmation password does not match.');
+          return;
+        }
+
+        const users = getRegisteredUsers();
+        const existingUser = users.find(u => u.email.toLowerCase() === email);
+
+        if (existingUser) {
+          showAlert('warning', 'Account Already Exists', `An account with "${email}" is already registered. Please sign in instead.`);
+          setTimeout(() => switchTab('login'), 1200);
+          return;
+        }
+
+        // Create new account with 500 free scans
+        const newUser = {
+          name: name,
+          email: email,
+          password: password,
+          scansLeft: 500,
+          createdAt: new Date().toISOString()
+        };
+
+        saveUser(newUser);
+        setCurrentSession(newUser);
+
+        showAlert('success', 'Registration Complete!', `Welcome ${name}! Your free tier with 500 monthly scans has been activated.`);
+        setTimeout(() => {
+          renderSuccessView(newUser);
+        }, 800);
+      });
+
+      // Social OAuth Mock Handlers
+      document.getElementById('btn-oauth-google').addEventListener('click', () => {
+        const dummyUser = {
+          name: 'Google Explorer',
+          email: 'google.user@sachscan.io',
+          password: 'sso_google_dummy_secret',
+          scansLeft: 500,
+          createdAt: new Date().toISOString()
+        };
+        const users = getRegisteredUsers();
+        if (!users.find(u => u.email === dummyUser.email)) {
+          saveUser(dummyUser);
+        }
+        setCurrentSession(dummyUser);
+        renderSuccessView(dummyUser);
+      });
+
+      document.getElementById('btn-oauth-github').addEventListener('click', () => {
+        const dummyUser = {
+          name: 'Developer SSO',
+          email: 'dev@github.sachscan.io',
+          password: 'sso_github_dummy_secret',
+          scansLeft: 500,
+          createdAt: new Date().toISOString()
+        };
+        const users = getRegisteredUsers();
+        if (!users.find(u => u.email === dummyUser.email)) {
+          saveUser(dummyUser);
+        }
+        setCurrentSession(dummyUser);
+        renderSuccessView(dummyUser);
+      });
+
+      // Forgot password prompt
+      document.getElementById('link-forgot-pw').addEventListener('click', (e) => {
+        e.preventDefault();
+        const email = prompt("Enter your registered email to receive a password recovery link:", loginEmail.value || "");
+        if (email) {
+          showAlert('success', 'Recovery Link Sent', `If an account exists for "${email}", instructions to reset your password have been dispatched.`);
+        }
+      });
+
+      // Render logged in view
+      function renderSuccessView(user) {
+        hideAlert();
+        formLogin.classList.add('hidden');
+        formRegister.classList.add('hidden');
+        tabLogin.parentElement.classList.add('hidden');
+        
+        authTitle.textContent = "Authenticated Session";
+        authSubtitle.textContent = "Your SachScan cryptographic keys and quota are ready.";
+
+        authSuccessCard.classList.remove('hidden');
+        successUserName.textContent = `Welcome, ${user.name}!`;
+        successUserEmail.textContent = user.email;
+        successScansLeft.textContent = `${user.scansLeft || 500} / 500 scans remaining`;
+      }
+
+      // Sign out handler
+      btnSignOut.addEventListener('click', () => {
+        clearCurrentSession();
+        authSuccessCard.classList.add('hidden');
+        tabLogin.parentElement.classList.remove('hidden');
+        switchTab('login');
+        showAlert('success', 'Signed Out', 'You have been successfully signed out.');
+      });
+
+    })();
+  </script>
+  <!-- Navigation Dissolve Transitions -->
+  <script src="transitions.js?v=1.0.7"></script>
+  <!-- PWA Controller -->
+  <script src="pwa.js?v=1.0.7" defer></script>
+</body>
+</html>

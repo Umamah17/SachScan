@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>SachScan — AI Integrity &amp; Media Verification Intelligence</title>
+<meta name="theme-color" content="#eaeaea"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="SachScan"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-surface-variant":"#47464b","on-secondary-fixed":"#07006c","primary-fixed-dim":"#c8c5cb","surface-bright":"#f8f9fb","on-secondary-fixed-variant":"#2f2ebe","tertiary-fixed-dim":"#4edea3","surface-container-lowest":"#ffffff","surface-container-low":"#f3f4f6","surface-container":"#edeef0","on-tertiary-fixed":"#002113","on-tertiary-fixed-variant":"#005236","on-tertiary-container":"#009668","surface-dim":"#d9dadc","primary":"#000000","tertiary-fixed":"#6ffbbe","surface-tint":"#5f5e63","secondary-container":"#6063ee","surface":"#f8f9fb","surface-container-high":"#e7e8ea","secondary-fixed-dim":"#c0c1ff","surface-container-highest":"#e1e2e4","primary-container":"#1b1b1f","outline":"#78767b","error":"#ba1a1a","background":"#f8f9fb","on-surface":"#191c1e","on-error":"#ffffff","secondary-fixed":"#e1e0ff","on-secondary":"#ffffff","inverse-surface":"#2e3132","inverse-on-surface":"#f0f1f3","on-background":"#191c1e","on-primary":"#ffffff","on-primary-fixed":"#1b1b1f","tertiary":"#000000","error-container":"#ffdad6","tertiary-container":"#002113","on-secondary-container":"#fffbff","inverse-primary":"#c8c5cb","on-primary-fixed-variant":"#47464b","secondary":"#4648d4","outline-variant":"#c8c5cb","on-tertiary":"#ffffff","primary-fixed":"#e4e1e7","surface-variant":"#e1e2e4","on-primary-container":"#858388","on-error-container":"#93000a"},borderRadius:{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},spacing:{"gutter":"1.5rem","space-xl":"2.5rem","margin-mobile":"1rem","space-sm":"0.5rem","space-lg":"1.5rem","space-2xl":"4rem","space-xs":"0.25rem","space-md":"1rem","gutter-mobile":"0.75rem","margin":"2.5rem"},fontFamily:{"body-lg":["Inter"],"headline-xl-mobile":["Geist"],"body-sm":["Inter"],"code-mono":["JetBrains Mono"],"headline-xl":["Geist"],"headline-md":["Geist"],"label-md":["Geist"],"body-md":["Inter"],"display-hero-mobile":["Geist"],"headline-lg":["Geist"],"display-hero":["Geist"],"label-sm":["Geist"]},fontSize:{"body-lg":["16px",{"lineHeight":"26px","letterSpacing":"-0.005em","fontWeight":"400"}],"headline-xl-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.015em","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"18px","letterSpacing":"0.005em","fontWeight":"400"}],"code-mono":["12px",{"lineHeight":"18px","letterSpacing":"0em","fontWeight":"400"}],"headline-xl":["36px",{"lineHeight":"44px","letterSpacing":"-0.02em","fontWeight":"600"}],"headline-md":["20px",{"lineHeight":"28px","letterSpacing":"-0.01em","fontWeight":"500"}],"label-md":["13px",{"lineHeight":"18px","letterSpacing":"0.01em","fontWeight":"500"}],"body-md":["14px",{"lineHeight":"22px","letterSpacing":"0em","fontWeight":"400"}],"display-hero-mobile":["36px",{"lineHeight":"44px","letterSpacing":"-0.025em","fontWeight":"600"}],"headline-lg":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"600"}],"display-hero":["56px",{"lineHeight":"64px","letterSpacing":"-0.03em","fontWeight":"600"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.04em","fontWeight":"600"}]}}}}</script></head><body class="bg-background font-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 w-full px-gutter flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm"><img alt="SachScan Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Vf2HSM_dLTScAyZWgh_PqlUPdl6Pl4yry0RrqH6PtDMp5w1zeVy36XwjEHn1bxbeYoyZCePehbG6XgGtRW46Oiu2dIvy-bBSQtTbdZqHZIuAN42ksU8OVaC_Yc48D6jHSpdgkVNVneL6ElOwQGP1nX5f8EI2FbgioyHvt58UP8R4umASvrHI-zl1jFdJcDz9Wl1GOzJ_TDw0J-zoY4KIbCUQOC2T4t3Yiwm9HuzFV4eJU6MpmG3AOHihA"/><span class="font-headline-md text-headline-md tracking-tight text-on-surface">SachScan</span></div><div class="hidden xl:flex items-center gap-space-xs px-space-sm py-1 bg-surface-container-low rounded-xl text-on-tertiary-container font-label-sm text-label-sm"><span class="inline-block w-1.5 h-1.5 rounded-full bg-on-tertiary-container animate-pulse"></span><span>Model v3.8 Active</span></div><div class="hidden 2xl:flex items-center gap-space-xs px-space-sm py-1 bg-surface-container rounded-xl font-code-mono text-code-mono text-on-surface-variant"><span class="material-symbols-outlined text-[14px]">ssid_chart</span><span>2.4M Scans / 24h • 99.87% Precision</span></div></div><nav class="hidden lg:flex items-center gap-space-xs" data-active-classes="bg-surface-container text-on-surface font-semibold rounded-xl"><a aria-current="page" class="px-space-sm py-space-xs transition-colors bg-surface-container text-on-surface font-semibold rounded-xl" data-path="technology" href="#">Technology</a><a class="px-space-sm py-space-xs font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-xl transition-colors" data-path="live-scanner" href="#">Live Scanner</a><a class="px-space-sm py-space-xs font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-xl transition-colors" data-path="integrations" href="#">Integrations</a><a class="px-space-sm py-space-xs font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-xl transition-colors" data-path="benchmark-reports" href="#">Benchmark Reports</a><a class="px-space-sm py-space-xs font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-xl transition-colors" data-path="api-and-docs" href="#">API &amp; Docs</a><a class="px-space-sm py-space-xs font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-xl transition-colors" data-path="pricing" href="#">Pricing</a></nav><div class="flex items-center gap-space-sm"><a class="hidden sm:inline-flex items-center justify-center px-space-md py-space-xs rounded-xl font-label-md text-label-md text-on-surface bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] hover:bg-surface-container hover:text-on-surface transition-all" data-path="live-scanner" href="#">Launch Web Scanner</a><a class="inline-flex items-center justify-center px-space-md py-space-xs rounded-xl font-label-md text-label-md text-on-primary bg-primary hover:bg-primary-container hover:text-on-primary transition-all shadow-[0_4px_12px_rgba(0,0,0,0.15)]" data-path="signup" href="#">Start Free Trial</a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center ml-space-xs"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-background min-h-screen"><div class="flex flex-col w-full">
+<!-- HERO SECTION -->
+<section class="relative w-full px-gutter max-w-7xl mx-auto pt-space-xl pb-space-2xl overflow-hidden">
+<div class="flex flex-col items-center text-center max-w-4xl mx-auto">
+<!-- Status Badge -->
+<div class="inline-flex items-center gap-space-xs px-space-sm py-1 rounded-full bg-surface-container-high shadow-sm mb-space-md">
+<span class="w-2 h-2 rounded-full bg-on-tertiary-container animate-ping"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface">Next-Gen Multi-Modal Synthetic Media Detection</span>
+</div>
+<!-- Main Headline -->
+<h1 class="font-display-hero text-display-hero text-on-surface tracking-tight mb-space-sm">
+        Verify Digital Reality Before You Trust It.
+      </h1>
+<!-- Subheadline -->
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mb-space-lg">
+        SachScan inspects incoming messages, screenshots, voice notes, and high-res imagery across WhatsApp, Gmail, Discord, and Telegram in under 180ms — detecting AI hallucinations, GAN deepfakes, phishing narratives, and synthetic manipulation with 99.87% benchmarked accuracy.
+      </p>
+<!-- CTAs -->
+<div class="flex flex-wrap items-center justify-center gap-space-sm mb-space-xl">
+<a class="inline-flex items-center gap-space-xs px-space-lg py-3 rounded-xl bg-primary text-on-primary font-label-md text-label-md shadow-xl hover:bg-primary-container transition-all" href="#live-scanner-demo">
+<span>Scan Media Now (Instant Free)</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+<a class="inline-flex items-center gap-space-xs px-space-lg py-3 rounded-xl bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm hover:bg-surface-container transition-all" href="#architecture">
+<span class="material-symbols-outlined text-[18px]">terminal</span>
+<span>Explore API &amp; Enterprise Sandbox</span>
+</a>
+</div>
+</div>
+<!-- Hero Visual Stage: Chrome AI Sentinel & Floating Telemetry Panels -->
+<div class="relative w-full max-w-5xl mx-auto mt-space-sm">
+<!-- Ambient Chrome & Backlight Glow -->
+<div class="absolute inset-0 bg-gradient-to-b from-surface-container-low via-surface-container-lowest to-transparent rounded-full filter blur-3xl opacity-50 -z-10"></div>
+<!-- Centerpiece Visual Container -->
+<div class="relative rounded-xl overflow-hidden bg-surface-container-lowest shadow-xl flex items-center justify-center min-h-[460px] lg:min-h-[580px]">
+<img alt="SachScan Autonomous Synthetic Media Forensic Sentinel" class="w-full h-full object-cover max-h-[620px] filter contrast-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAz0-nhMMqGNve0z9LVuPMfXRYedCdK7M3uPSiP4M3t6pakwi7YQutBBUYqWsoeD2TVvrasC_vBEADr9Zny2kYQHfZbFuCplRlUJOeE4Hk-JQZPVO7JBBcLmiLZFHWe4Q1OMeUin3QwK7r_V5GFG1__cNNr03kDcDFo8Ivmlm-FfU-3r_DTlVBSsWthZ8YQRoDVxxMxuM5mPpfQJxW1oo4sAqoWVmtc0K7UDo02zFbTmxVjNQpRj0TXGpyeCeVk0aJByA"/>
+<!-- Grid Matrix Overlay Graphic -->
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent opacity-60"></div>
+<!-- Floating Diagnostic Card 1 (Top Left): WhatsApp Inbound -->
+<div class="absolute top-6 left-4 sm:left-8 max-w-xs sm:max-w-sm p-space-md rounded-xl bg-surface-container-lowest/90 backdrop-blur-xl shadow-xl transition-transform hover:-translate-y-1">
+<div class="flex items-center justify-between gap-space-sm mb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">chat</span>
+<span class="font-label-sm text-label-sm text-on-surface uppercase">WhatsApp Inbound Stream</span>
+</div>
+<span class="font-code-mono text-code-mono text-on-surface-variant">#W-9042</span>
+</div>
+<div class="flex items-start gap-space-xs p-space-xs rounded-lg bg-surface-container-high mb-space-xs">
+<span class="material-symbols-outlined text-error text-[18px] mt-0.5">warning</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-semibold">Synthetic GAN Artifacts Detected</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">98.4% Confidence • Midjourney v6.1 latent frequency signature matched</p>
+</div>
+</div>
+<div class="flex items-center justify-between font-code-mono text-code-mono text-on-surface-variant pt-1">
+<span>Payload: Voice + Photo</span>
+<span class="text-error font-semibold">QUARANTINED</span>
+</div>
+</div>
+<!-- Floating Diagnostic Card 2 (Bottom Left): Gmail Executive Thread -->
+<div class="absolute bottom-6 left-4 sm:left-8 max-w-xs sm:max-w-sm p-space-md rounded-xl bg-surface-container-lowest/90 backdrop-blur-xl shadow-xl transition-transform hover:-translate-y-1">
+<div class="flex items-center justify-between gap-space-sm mb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">mail</span>
+<span class="font-label-sm text-label-sm text-on-surface uppercase">Gmail Executive Thread</span>
+</div>
+<span class="font-code-mono text-code-mono text-on-surface-variant">142ms</span>
+</div>
+<div class="flex items-start gap-space-xs p-space-xs rounded-lg bg-surface-container-high">
+<span class="material-symbols-outlined text-error text-[18px] mt-0.5">crisis_alert</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-semibold">AI Spear Phishing Narrative</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">C-Suite impersonation detected via LLM semantic syntax entropy</p>
+</div>
+</div>
+</div>
+<!-- Floating Diagnostic Card 3 (Right Center): Discord Server Stream -->
+<div class="absolute top-1/3 right-4 sm:right-8 max-w-xs sm:max-w-sm p-space-md rounded-xl bg-surface-container-lowest/90 backdrop-blur-xl shadow-xl transition-transform hover:-translate-y-1 hidden md:block">
+<div class="flex items-center justify-between gap-space-sm mb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">forum</span>
+<span class="font-label-sm text-label-sm text-on-surface uppercase">Discord Sentinel Node</span>
+</div>
+<span class="font-code-mono text-code-mono text-on-tertiary-container">VALIDATED</span>
+</div>
+<div class="flex items-start gap-space-xs p-space-xs rounded-lg bg-surface-container mb-space-xs">
+<span class="material-symbols-outlined text-on-tertiary-container text-[18px] mt-0.5">verified_user</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-semibold">Authentic Human Photography</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">CMOS sensor PRNU noise &amp; C2PA hardware provenance intact</p>
+</div>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+<div class="bg-on-tertiary-container h-full w-[99.8%]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Live Telemetry Ticker / Metrics Bar -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-space-md mt-space-lg max-w-5xl mx-auto">
+<div class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col items-center sm:items-start text-center sm:text-left">
+<span class="font-headline-xl text-headline-xl text-on-surface tracking-tight">42.8M+</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Multi-modal Inbound Scanned</span>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col items-center sm:items-start text-center sm:text-left">
+<span class="font-headline-xl text-headline-xl text-on-surface tracking-tight">99.87%</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Benchmarked Detection Precision</span>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col items-center sm:items-start text-center sm:text-left">
+<span class="font-headline-xl text-headline-xl text-on-surface tracking-tight">&lt; 180ms</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Median Inference Latency</span>
+</div>
+<div class="p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col items-center sm:items-start text-center sm:text-left">
+<span class="font-headline-xl text-headline-xl text-on-surface tracking-tight">0-Day</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Synthetic Model Fingerprinting</span>
+</div>
+</div>
+</section>
+<!-- INTERACTIVE LIVE DEMO SCANNER SECTION -->
+<section class="w-full px-gutter max-w-7xl mx-auto py-space-2xl" id="live-scanner-demo">
+<div class="flex flex-col items-center text-center mb-space-xl">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant mb-space-xs">Interactive Forensic Viewport</span>
+<h2 class="font-headline-xl text-headline-xl text-on-surface">Live Multi-Channel Verification Console</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl mt-space-xs">
+        Examine how SachScan decodes synthetic media streams in real time. Switch between connected ingress sources or drag in custom files.
+      </p>
+</div>
+<!-- Verification Console Shell -->
+<div class="rounded-xl bg-surface-container-lowest shadow-xl overflow-hidden p-space-md lg:p-space-lg">
+<!-- Channel Switcher Tabs -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm pb-space-md mb-space-md">
+<div class="flex flex-wrap items-center gap-space-xs" id="channel-tabs">
+<button class="tab-btn px-space-md py-space-xs rounded-xl bg-primary text-on-primary font-label-md text-label-md transition-all flex items-center gap-space-xs" data-channel="whatsapp" type="button">
+<span class="material-symbols-outlined text-[16px]">chat</span>
+<span>WhatsApp Chat</span>
+</button>
+<button class="tab-btn px-space-md py-space-xs rounded-xl bg-surface-container text-on-surface font-label-md text-label-md transition-all hover:bg-surface-container-high flex items-center gap-space-xs" data-channel="gmail" type="button">
+<span class="material-symbols-outlined text-[16px]">mail</span>
+<span>Gmail Inbox</span>
+</button>
+<button class="tab-btn px-space-md py-space-xs rounded-xl bg-surface-container text-on-surface font-label-md text-label-md transition-all hover:bg-surface-container-high flex items-center gap-space-xs" data-channel="discord" type="button">
+<span class="material-symbols-outlined text-[16px]">forum</span>
+<span>Discord Channel</span>
+</button>
+<button class="tab-btn px-space-md py-space-xs rounded-xl bg-surface-container text-on-surface font-label-md text-label-md transition-all hover:bg-surface-container-high flex items-center gap-space-xs" data-channel="upload" type="button">
+<span class="material-symbols-outlined text-[16px]">cloud_upload</span>
+<span>Telegram / Upload</span>
+</button>
+</div>
+<div class="flex items-center gap-space-sm font-code-mono text-code-mono text-on-surface-variant">
+<span class="inline-block w-2 h-2 rounded-full bg-on-tertiary-container animate-pulse"></span>
+<span>Engine: Core v3.8 • AES-256 Memory Sandboxed</span>
+</div>
+</div>
+<!-- Main Inspection Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- Left Pane: Inbound Raw Media / Message View -->
+<div class="lg:col-span-5 flex flex-col gap-space-md">
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col">
+<div class="flex items-center justify-between pb-space-sm mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">verified</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold" id="sample-title">Incoming Payload: wire_auth_screenshot.png</span>
+</div>
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant font-code-mono text-code-mono">3.4 MB</span>
+</div>
+<!-- Suspicious Media Viewport with Scanning Crosshair -->
+<div class="relative w-full h-72 rounded-lg bg-surface-container-highest overflow-hidden flex items-center justify-center group">
+<img class="w-full h-full object-cover" data-alt="High-contrast close-up shot of an authentic versus synthetically generated photorealistic biometric human face with digital grid lines and visual frequency analysis markers overlaid, minimalist black and chrome palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5JwJiPQECUcPC9jYfR9sLcTI2ptZ-UcPz0iSvkd6wYWQ4fEHi__vdzVNc-tLRVLyPwKEZoj3QGpc008ySH370XjB7WnwBrFASOKA0D_mqzhbW7mFbdRaVSPJ9q7cBvvDlB7O-cr0FXDJXexLtNgg34cFB2QVTvIxDLl70Q-8RVqpcSBTPISW0sQ96fxSdukC6pH5QbevMaW3hzzIJsscww2DJ3rzh1oXMWZ8gsuX3-crwbkvRWopa"/>
+<!-- Scanning Line Animation -->
+<div class="absolute inset-x-0 top-0 h-1 bg-secondary shadow-lg animate-bounce opacity-75"></div>
+<!-- Hotspot Artifact Overlays -->
+<div class="absolute top-1/4 right-1/4 px-2 py-1 rounded bg-primary-container/90 text-on-primary font-code-mono text-code-mono flex items-center gap-1 shadow-md">
+<span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span>
+<span>Latent Blur Anomaly</span>
+</div>
+<div class="absolute bottom-1/4 left-1/3 px-2 py-1 rounded bg-primary-container/90 text-on-primary font-code-mono text-code-mono flex items-center gap-1 shadow-md">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+<span>Unnatural Noise Ratio</span>
+</div>
+</div>
+<!-- Intercepted Raw Text Content -->
+<div class="mt-space-md p-space-sm rounded-lg bg-surface-container text-on-surface font-code-mono text-code-mono leading-relaxed">
+<p class="text-on-surface-variant font-body-sm text-body-sm mb-1 uppercase tracking-wider font-semibold">Extracted Metadata &amp; Inbound Message:</p>
+<p id="sample-text">"Urgent: Authorization signature appended for offshore liquidity reconciliation. Complete prior to 16:00 UTC."</p>
+</div>
+<!-- Drag and Drop Test Zone -->
+<div class="mt-space-md p-space-md rounded-xl bg-surface-container-lowest text-center cursor-pointer hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-on-surface-variant text-[32px] mb-space-xs">drag_pan</span>
+<p class="font-label-md text-label-md text-on-surface font-semibold">Drop any image, PDF, or forward a message to test live</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Supports JPG, PNG, WEBP, MP3, WAV, MP4 — auto encrypted &amp; zero stored</p>
+</div>
+</div>
+</div>
+<!-- Center & Right Pane: Deep Forensic Breakdown Viewport -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<!-- Overall Verdict Card -->
+<div class="p-space-md rounded-xl bg-surface-container-high flex flex-col sm:flex-row items-center justify-between gap-space-md shadow-sm">
+<div class="flex items-center gap-space-md">
+<div class="w-14 h-14 rounded-xl bg-error flex items-center justify-center text-on-error shadow-md">
+<span class="material-symbols-outlined text-[32px]">gpp_bad</span>
+</div>
+<div>
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-lg text-headline-lg text-on-surface font-semibold">SYNTHETIC MEDIA CONFIRMED</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Classified: Non-Biological / Latent Model Diffusion Generation</p>
+</div>
+</div>
+<div class="text-right sm:border-l sm:border-surface-variant sm:pl-space-md">
+<div class="font-display-hero text-display-hero text-error leading-none">99.2%</div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Artificial Confidence</span>
+</div>
+</div>
+<!-- Multi-Vector Forensics Analysis Stack -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- 1. Multi-spectral FFT Frequency Analysis -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">grain</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Fast Fourier Transform (FFT)</span>
+</div>
+<span class="font-code-mono text-code-mono text-error font-semibold">ANOMALY</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                High-frequency radial spectrum shows concentric checkerboard peaks typical of transposed convolutional upsampling.
+              </p>
+<!-- Inline Data Visualization: Micro Frequency Graph -->
+<div class="h-16 w-full bg-surface-container-highest rounded-lg p-2 flex items-end gap-1">
+<div class="w-1/12 bg-on-surface h-[30%] rounded-sm"></div>
+<div class="w-1/12 bg-on-surface h-[50%] rounded-sm"></div>
+<div class="w-1/12 bg-on-surface h-[40%] rounded-sm"></div>
+<div class="w-1/12 bg-on-surface h-[65%] rounded-sm"></div>
+<div class="w-1/12 bg-error h-[95%] rounded-sm"></div>
+<div class="w-1/12 bg-error h-[100%] rounded-sm"></div>
+<div class="w-1/12 bg-error h-[88%] rounded-sm"></div>
+<div class="w-1/12 bg-on-surface h-[45%] rounded-sm"></div>
+<div class="w-1/12 bg-on-surface h-[35%] rounded-sm"></div>
+<div class="w-1/12 bg-on-surface h-[20%] rounded-sm"></div>
+<div class="w-1/12 bg-on-surface h-[15%] rounded-sm"></div>
+<div class="w-1/12 bg-on-surface h-[10%] rounded-sm"></div>
+</div>
+</div>
+<!-- 2. Provenance & C2PA Trail -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">fingerprint</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">C2PA Provenance Manifest</span>
+</div>
+<span class="font-code-mono text-code-mono text-error font-semibold">ABSENT</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                No cryptographic camera ledger or digital chain of custody detected. EXIF timestamps fabricated via software pipeline.
+              </p>
+<div class="mt-auto flex items-center justify-between font-code-mono text-code-mono text-on-surface-variant pt-2">
+<span>Ledger Hash: null</span>
+<span>Hardware Trust: 0%</span>
+</div>
+</div>
+<!-- 3. Latent Noise Consistency Check -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">blur_circular</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Diffusion Noise Variance</span>
+</div>
+<span class="font-code-mono text-code-mono text-error font-semibold">97.8% NOISE SHIFT</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Mathematical residual noise distribution mirrors Stable Diffusion 3.5 scheduler profiles rather than physical sensor shot-noise.
+              </p>
+<div class="w-full bg-surface-container-highest rounded-full h-2 mt-auto">
+<div class="bg-error h-full rounded-full w-[97.8%]"></div>
+</div>
+</div>
+<!-- 4. Semantic Intent & Phishing Heuristics -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">psychology</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Semantic LLM Syntax</span>
+</div>
+<span class="font-code-mono text-code-mono text-secondary font-semibold">FLAGGED</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Token perplexity score is 1.12 standard deviations below organic human executive correspondence, indicating automated synthesis.
+              </p>
+<div class="flex items-center gap-space-xs font-code-mono text-code-mono text-on-surface-variant mt-auto">
+<span class="material-symbols-outlined text-[14px] text-secondary">insights</span>
+<span>Model Match: Claude 3.5 Sonnet Prompt Chain</span>
+</div>
+</div>
+</div>
+<!-- Bottom Action Strip -->
+<div class="p-space-sm rounded-xl bg-surface-container flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<button class="px-space-md py-1.5 rounded-lg bg-primary text-on-primary font-label-md text-label-md shadow-sm hover:bg-primary-container transition-all" type="button">
+                Export Forensic PDF Report
+              </button>
+<button class="px-space-md py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm hover:bg-surface-container-high transition-all" type="button">
+                Dispatch Webhook Quarantine
+              </button>
+</div>
+<div class="font-code-mono text-code-mono text-on-surface-variant">
+              Hash: 0x8F9a...2B04e
+            </div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SUPPORTED PLATFORMS & ONE-CLICK INTEGRATIONS -->
+<section class="w-full px-gutter max-w-7xl mx-auto py-space-2xl">
+<div class="flex flex-col items-center text-center mb-space-xl">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant mb-space-xs">Omni-Channel Native Shields</span>
+<h2 class="font-headline-xl text-headline-xl text-on-surface">Drop-In Protection Everywhere Communication Occurs</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mt-space-xs">
+        Synthetically generated attacks bypass perimeter firewalls because they arrive through trusted employees' chat applications and inboxes. Deploy zero-touch inspection across your entire stack.
+      </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-md">
+<!-- Card 1: WhatsApp -->
+<div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center mb-space-md">
+<span class="material-symbols-outlined text-[28px] text-on-surface">chat_bubble</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">WhatsApp Business &amp; Personal Bot</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
+            Forward any forwarded voice note, screenshot, or video to @SachScanBot for an instant 2-second cryptographic verification and deepfake alert.
+          </p>
+</div>
+<div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
+<span class="text-on-surface-variant font-code-mono text-code-mono">Forward to +1-800-SACH-SCAN</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</div>
+</div>
+<!-- Card 2: Gmail & Workspace -->
+<div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center mb-space-md">
+<span class="material-symbols-outlined text-[28px] text-on-surface">mark_email_read</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Gmail &amp; Google Workspace Add-on</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
+            Automated background inbox scanner highlighting synthetic emails, spoofed supplier invoices, and generative AI executive impersonation in real time.
+          </p>
+</div>
+<div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
+<span class="text-on-surface-variant font-code-mono text-code-mono">Google Workspace Marketplace</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</div>
+</div>
+<!-- Card 3: Discord Sentinel -->
+<div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center mb-space-md">
+<span class="material-symbols-outlined text-[28px] text-on-surface">shield</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Discord Bot &amp; AutoMod Sentinel</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
+            Server shield that quarantines AI-generated deepfakes, crypto phishing visuals, and generative bot brigading before members interact.
+          </p>
+</div>
+<div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
+<span class="text-on-surface-variant font-code-mono text-code-mono">1-Click Discord Install</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</div>
+</div>
+<!-- Card 4: Telegram Inline Inspector -->
+<div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+<div>
+<div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center mb-space-md">
+<span class="material-symbols-outlined text-[28px] text-on-surface">send</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Telegram Inline Inspector</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
+            Instant channel moderation bot with inline verification queries, automated fake audio silencing, and immediate threat quarantine queues.
+          </p>
+</div>
+<div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
+<span class="text-on-surface-variant font-code-mono text-code-mono">Add @SachScanBot</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</div>
+</div>
+      <!-- Card 5: X (Twitter) -->
+      <div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center p-1.5 mb-space-md shadow-sm overflow-hidden">
+            <img src="logo-x.svg" alt="X Logo" class="w-full h-full object-contain" />
+          </div>
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">X Feed &amp; Direct Message Shield</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
+            Real-time feed scan for viral synthetic media, manipulated election clips, and automated generative impersonation accounts.
+          </p>
+        </div>
+        <div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
+          <span class="text-on-surface-variant font-code-mono text-code-mono">@SachScanShield</span>
+          <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </div>
+      </div>
+      <!-- Card 6: Reddit -->
+      <div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center p-1.5 mb-space-md shadow-sm overflow-hidden">
+            <img src="logo-reddit.svg" alt="Reddit Logo" class="w-full h-full object-contain" />
+          </div>
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Reddit AutoMod &amp; Subreddit Bot</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
+            Automated subreddit bot flagging generative propaganda, fake proof-of-work slips, and neural sockpuppet brigading.
+          </p>
+        </div>
+        <div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
+          <span class="text-on-surface-variant font-code-mono text-code-mono">r/SachScanVerify</span>
+          <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </div>
+      </div>
+      <!-- Card 7: Instagram -->
+      <div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center p-1.5 mb-space-md shadow-sm overflow-hidden">
+            <img src="logo-instagram.svg" alt="Instagram Logo" class="w-full h-full object-contain" />
+          </div>
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Instagram Reels &amp; Story Sentinel</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
+            Facial warp and generative diffusion analysis across viral Reels, Stories, influencer endorsements, and sponsored assets.
+          </p>
+        </div>
+        <div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
+          <span class="text-on-surface-variant font-code-mono text-code-mono">@sachscan.security</span>
+          <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </div>
+      </div>
+      <!-- Card 8: Threads -->
+      <div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center p-1.5 mb-space-md shadow-sm overflow-hidden">
+            <img src="logo-threads.svg" alt="Threads Logo" class="w-full h-full object-contain" />
+          </div>
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Threads Microblog &amp; Post Sentinel</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
+            Live cross-platform thread verification identifying automated LLM narrative bot swarms and synthetic photos.
+          </p>
+        </div>
+        <div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
+          <span class="text-on-surface-variant font-code-mono text-code-mono">@sachscan</span>
+          <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </div>
+      </div>
+      <!-- Card 9: Chrome Extension -->
+      <div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+        <div>
+          <div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center mb-space-md">
+            <span class="material-symbols-outlined text-[28px] text-on-surface">extension</span>
+          </div>
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Chrome &amp; Chromium Extension</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
+            Hover over any image on the web or social streams (X, LinkedIn, Reddit) to visualize immediate authenticity provenance badges and spectral heatmaps.
+          </p>
+        </div>
+        <div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
+          <span class="text-on-surface-variant font-code-mono text-code-mono">Chrome Web Store • v2.4</span>
+          <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+        </div>
+      </div>
+</div>
+</section>
+<!-- HOW SACHSCAN DETECTS WHAT HUMANS MISS (CORE TECHNOLOGY) -->
+<section class="w-full px-gutter max-w-7xl mx-auto py-space-2xl" id="architecture">
+<div class="flex flex-col items-center text-center mb-space-xl">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant mb-space-xs">Algorithmic Physics</span>
+<h2 class="font-headline-xl text-headline-xl text-on-surface">How SachScan Detects What Humans Miss</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mt-space-xs">
+        Modern generative models fool the human eye and traditional optical filters. SachScan probes the underlying mathematical physics of how digital sensors capture photons versus neural networks synthesizing tokens.
+      </p>
+</div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg">
+      <!-- Card 1: Claim DNA -->
+      <div class="card-effect-3d card-capability-3d p-space-xl rounded-xl bg-surface-container-lowest shadow-md flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-space-md">
+            <span class="font-headline-xl text-headline-xl text-on-surface font-semibold">01</span>
+            <span class="material-symbols-outlined text-secondary text-[28px]">account_tree</span>
+          </div>
+          <h3 class="font-headline-lg text-headline-lg text-on-surface mb-space-xs">Claim DNA — Break one forward into claims</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant mb-space-md leading-relaxed">
+            A single message may contain three claims: one true, one misleading, and one fabricated. Extract and verify each separately instead of assigning one verdict to the entire message.
+          </p>
+        </div>
+        <div class="p-space-sm rounded-lg bg-surface-container-high font-code-mono text-code-mono text-on-surface leading-relaxed">
+          &gt; Example: “A new government scheme gives ₹50,000 to every student.” The system separately checks whether the scheme exists, who qualifies, and whether the amount is correct.
+        </div>
+      </div>
+      <!-- Card 2: Evidence Lens -->
+      <div class="card-effect-3d card-capability-3d p-space-xl rounded-xl bg-surface-container-lowest shadow-md flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-space-md">
+            <span class="font-headline-xl text-headline-xl text-on-surface font-semibold">02</span>
+            <span class="material-symbols-outlined text-secondary text-[28px]">fact_check</span>
+          </div>
+          <h3 class="font-headline-lg text-headline-lg text-on-surface mb-space-xs">Evidence Lens — Show, don't just tell</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant mb-space-md leading-relaxed">
+            Highlight the exact passage from an official notice, government website, or reputable report that supports or contradicts each claim. Display the publication date, source, and what the evidence cannot establish.
+          </p>
+        </div>
+        <div class="p-space-sm rounded-lg bg-surface-container-high font-code-mono text-code-mono text-on-surface leading-relaxed">
+          &gt; Unique value: users can inspect the proof themselves rather than trusting an AI-generated answer.
+        </div>
+      </div>
+      <!-- Card 3: Context & Media Detective -->
+      <div class="card-effect-3d card-capability-3d p-space-xl rounded-xl bg-surface-container-lowest shadow-md flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-space-md">
+            <span class="font-headline-xl text-headline-xl text-on-surface font-semibold">03</span>
+            <span class="material-symbols-outlined text-secondary text-[28px]">image_search</span>
+          </div>
+          <h3 class="font-headline-lg text-headline-lg text-on-surface mb-space-xs">Context &amp; Media Detective</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant mb-space-md leading-relaxed">
+            Check whether an image or video is old, reused, cropped, or presented with a misleading caption. Inspect available metadata and use reverse-image search where available.
+          </p>
+        </div>
+        <div class="p-space-sm rounded-lg bg-surface-container-high font-code-mono text-code-mono text-on-surface leading-relaxed">
+          &gt; Important: detecting edits or finding an older copy does not automatically prove a message is fake. The assistant should state uncertainty honestly.
+        </div>
+      </div>
+      <!-- Card 4: Share-Safe Reply -->
+      <div class="card-effect-3d card-capability-3d p-space-xl rounded-xl bg-surface-container-lowest shadow-md flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-space-md">
+            <span class="font-headline-xl text-headline-xl text-on-surface font-semibold">04</span>
+            <span class="material-symbols-outlined text-secondary text-[28px]">quickreply</span>
+          </div>
+          <h3 class="font-headline-lg text-headline-lg text-on-surface mb-space-xs">Share-Safe Reply — Stop misinformation at the source</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant mb-space-md leading-relaxed">
+            Generate a short, respectful reply in the original language that users can share with the person or group that sent the forward.
+          </p>
+        </div>
+        <div class="p-space-sm rounded-lg bg-surface-container-high font-code-mono text-code-mono text-on-surface leading-relaxed">
+          &gt; Example: “This message isn't confirmed by the official sources checked. Please verify the announcement before forwarding it further.”
+        </div>
+      </div>
+    </div>
+</section>
+<!-- ACCURACY BENCHMARK & COMPARISON TABLE -->
+<section class="w-full px-gutter max-w-7xl mx-auto py-space-2xl">
+<div class="flex flex-col items-center text-center mb-space-xl">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant mb-space-xs">Independent Benchmarks</span>
+<h2 class="font-headline-xl text-headline-xl text-on-surface">Objective Performance Matrix</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl mt-space-xs">
+        Standard security measures were engineered for static malware signatures, not dynamic generative AI models. See how SachScan compares against legacy tiers.
+      </p>
+</div>
+<div class="overflow-x-auto rounded-xl bg-surface-container-lowest shadow-md">
+<table class="w-full text-left font-body-md text-body-md">
+<thead>
+<tr class="bg-surface-container">
+<th class="p-space-md font-label-md text-label-md text-on-surface uppercase tracking-wider">Evaluation Vector</th>
+<th class="p-space-md font-label-md text-label-md text-on-surface uppercase tracking-wider bg-surface-container-high">SachScan Engine</th>
+<th class="p-space-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Legacy Email Gateways</th>
+<th class="p-space-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Generic Endpoint Antivirus</th>
+<th class="p-space-md font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Human Manual Review</th>
+</tr>
+</thead>
+<tbody>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="p-space-md font-semibold text-on-surface">Deepfake Images &amp; Photoreal AI</td>
+<td class="p-space-md font-semibold text-on-tertiary-container bg-surface-container-high flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span>99.87% Precision</span>
+</td>
+<td class="p-space-md text-on-surface-variant">0% (Unrecognized payload)</td>
+<td class="p-space-md text-on-surface-variant">0% (Clean file hash)</td>
+<td class="p-space-md text-on-surface-variant">42.1% (Flawed human perception)</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="p-space-md font-semibold text-on-surface">Cloned Voice &amp; Synthetic Audio</td>
+<td class="p-space-md font-semibold text-on-tertiary-container bg-surface-container-high flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span>99.41% Detection</span>
+</td>
+<td class="p-space-md text-on-surface-variant">Unsupported</td>
+<td class="p-space-md text-on-surface-variant">Unsupported</td>
+<td class="p-space-md text-on-surface-variant">31.8% (Easily impersonated)</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="p-space-md font-semibold text-on-surface">LLM Spear-Phishing Narratives</td>
+<td class="p-space-md font-semibold text-on-tertiary-container bg-surface-container-high flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span>98.92% Intercept</span>
+</td>
+<td class="p-space-md text-on-surface-variant">18.4% (Keyword rules miss context)</td>
+<td class="p-space-md text-on-surface-variant">N/A</td>
+<td class="p-space-md text-on-surface-variant">54.0% (Prone to social leverage)</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="p-space-md font-semibold text-on-surface">Inspection Speed / Latency</td>
+<td class="p-space-md font-semibold text-on-surface bg-surface-container-high font-code-mono text-code-mono">&lt; 180 ms</td>
+<td class="p-space-md text-on-surface-variant font-code-mono text-code-mono">3 – 15 seconds</td>
+<td class="p-space-md text-on-surface-variant font-code-mono text-code-mono">Instant (local hashes)</td>
+<td class="p-space-md text-on-surface-variant font-code-mono text-code-mono">4 – 48 hours</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="p-space-md font-semibold text-on-surface">False Positive Rate</td>
+<td class="p-space-md font-semibold text-on-tertiary-container bg-surface-container-high font-code-mono text-code-mono">&lt; 0.02%</td>
+<td class="p-space-md text-on-surface-variant font-code-mono text-code-mono">4.80%</td>
+<td class="p-space-md text-on-surface-variant font-code-mono text-code-mono">1.20%</td>
+<td class="p-space-md text-on-surface-variant font-code-mono text-code-mono">18.50%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- ENTERPRISE COMPLIANCE & PRIVACY GUARANTEE -->
+<section class="w-full px-gutter max-w-7xl mx-auto py-space-2xl">
+<div class="p-space-xl rounded-xl bg-surface-container-low shadow-md">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-center">
+<div class="lg:col-span-8 flex flex-col gap-space-md">
+<div class="inline-flex items-center gap-space-xs px-space-sm py-1 rounded-full bg-surface-container font-label-sm text-label-sm text-on-surface w-fit">
+<span class="material-symbols-outlined text-[16px] text-on-tertiary-container">lock</span>
+<span>Zero-Retention Architecture Guarantee</span>
+</div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface">Your Enterprise Payloads Never Train Our Models. Period.</h2>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+            Every payload passed to SachScan runs inside an ephemeral hardware-isolated enclave (AMD SEV-SNP &amp; Intel SGX). The second the cryptographic score is generated and returned to your endpoint, the payload memory buffer is overwritten with zeroes. We maintain zero data repositories, zero log caches of inspected media, and complete compliance with sovereign defense regulations.
+          </p>
+<div class="flex flex-wrap items-center gap-space-sm pt-space-xs">
+<div class="p-space-sm rounded-lg bg-surface-container-lowest shadow-sm flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-on-surface text-[20px]">verified</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">SOC 2 Type II Certified</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest shadow-sm flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-on-surface text-[20px]">health_and_safety</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">HIPAA Ready</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest shadow-sm flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-on-surface text-[20px]">security</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">ISO 27001 Certified</span>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest shadow-sm flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-on-surface text-[20px]">policy</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">GDPR Sovereign Compliant</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-4 p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex flex-col gap-space-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Cryptographic Enclave Status</span>
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-body-sm text-body-sm text-on-surface">Memory Sanitization</span>
+<span class="font-code-mono text-code-mono text-on-tertiary-container">ACTIVE (0ms PURGE)</span>
+</div>
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-body-sm text-body-sm text-on-surface">End-to-End Encryption</span>
+<span class="font-code-mono text-code-mono text-on-surface">TLS 1.3 / AES-256-GCM</span>
+</div>
+<div class="flex items-center justify-between pb-space-xs">
+<span class="font-body-sm text-body-sm text-on-surface">Model Retraining</span>
+<span class="font-code-mono text-code-mono text-error font-semibold">STRICT PROHIBITION</span>
+</div>
+<div class="flex items-center justify-between pt-space-xs">
+<span class="font-body-sm text-body-sm text-on-surface">Audit Logs</span>
+<span class="font-code-mono text-code-mono text-on-surface">Tamper-Proof Merkle Tree</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- FINAL CTA & PRICING PREVIEW -->
+<section class="w-full px-gutter max-w-7xl mx-auto pt-space-xl pb-space-2xl">
+<div class="p-space-2xl rounded-xl bg-surface-container-highest shadow-xl flex flex-col items-center text-center relative overflow-hidden">
+<!-- Chrome Mirror Accent Glow -->
+<div class="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-surface-container-lowest rounded-full filter blur-3xl opacity-40"></div>
+<div class="relative max-w-3xl flex flex-col items-center">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-on-surface-variant mb-space-xs">Zero Risk Deployment</span>
+<h2 class="font-headline-xl text-headline-xl text-on-surface mb-space-sm">
+          Protect Your Enterprise, Team, or Personal Comms From the Next Wave of Synthetic Deception.
+        </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-space-xl max-w-2xl">
+          Deploy SachScan bot bridges in 60 seconds or plug our high-throughput REST/gRPC API directly into your communications pipeline.
+        </p>
+<div class="flex flex-wrap items-center justify-center gap-space-sm mb-space-lg">
+<a class="px-space-xl py-3.5 rounded-xl bg-primary text-on-primary font-label-md text-label-md shadow-xl hover:bg-neutral-800 transition-all flex items-center gap-space-xs cursor-pointer group" href="login.html" id="btn-get-started-free">
+<span>Get Started Free (500 scans/mo)</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-0.5 transition-transform">bolt</span>
+</a>
+</div>
+<div class="flex flex-wrap items-center justify-center gap-space-lg text-on-surface-variant font-body-sm text-body-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-on-tertiary-container text-[18px]">check</span>
+            No credit card required
+          </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-on-tertiary-container text-[18px]">check</span>
+            Instant API token generation
+          </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-on-tertiary-container text-[18px]">check</span>
+            Cancel anytime
+          </span>
+</div>
+</div>
+</div>
+</section>
+<!-- Interactive Sandbox Script -->
+<script>
+    (function() {
+      const tabs = document.querySelectorAll('#channel-tabs .tab-btn');
+      const sampleTitle = document.getElementById('sample-title');
+      const sampleText = document.getElementById('sample-text');
+
+      const dataMap = {
+        whatsapp: {
+          title: "Incoming Payload: wire_auth_screenshot.png",
+          text: '"Urgent: Authorization signature appended for offshore liquidity reconciliation. Complete prior to 16:00 UTC."'
+        },
+        gmail: {
+          title: "Incoming Payload: cfo_urgent_wire_instructions.eml",
+          text: '"Please route standard quarterly vendor escrow funds to revised account #8912-US. Signed via mobile iPad."'
+        },
+        discord: {
+          title: "Incoming Payload: token_presale_airdrop_flyer.webp",
+          text: '"Exclusive verified community mint for founder tier members only. Connect cold storage for instant allocation."'
+        },
+        upload: {
+          title: "Incoming Payload: custom_biometric_scan.jpg",
+          text: '"Physical passport and face selfie submission received via secure Telegram KYC onboarding desk."'
+        }
+      };
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => {
+            t.classList.remove('bg-primary', 'text-on-primary');
+            t.classList.add('bg-surface-container', 'text-on-surface');
+          });
+          tab.classList.remove('bg-surface-container', 'text-on-surface');
+          tab.classList.add('bg-primary', 'text-on-primary');
+
+          const channel = tab.getAttribute('data-channel');
+          if (dataMap[channel]) {
+            if (sampleTitle) sampleTitle.textContent = dataMap[channel].title;
+            if (sampleText) sampleText.textContent = dataMap[channel].text;
+          }
+        });
+      });
+    })();
+  </script>
+</div></main><footer class="w-full bg-surface-container-low pt-space-2xl pb-space-xl"><div class="w-full px-gutter max-w-7xl mx-auto flex flex-col gap-space-2xl"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-space-xl"><div class="lg:col-span-2 flex flex-col gap-space-md"><div class="flex items-center gap-space-sm"><img alt="SachScan Logo" class="h-7 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Vf2HSM_dLTScAyZWgh_PqlUPdl6Pl4yry0RrqH6PtDMp5w1zeVy36XwjEHn1bxbeYoyZCePehbG6XgGtRW46Oiu2dIvy-bBSQtTbdZqHZIuAN42ksU8OVaC_Yc48D6jHSpdgkVNVneL6ElOwQGP1nX5f8EI2FbgioyHvt58UP8R4umASvrHI-zl1jFdJcDz9Wl1GOzJ_TDw0J-zoY4KIbCUQOC2T4t3Yiwm9HuzFV4eJU6MpmG3AOHihA"/><span class="font-headline-md text-headline-md text-on-surface">SachScan</span></div><p class="font-body-md text-body-md text-on-surface-variant max-w-sm">Sovereign media authenticity intelligence engine. Cryptographically verifying multimodal records across enterprise communication channels.</p><div class="flex flex-wrap items-center gap-space-xs pt-space-sm"><span class="px-space-sm py-0.5 rounded-xl bg-surface-container font-code-mono text-code-mono text-on-surface-variant">SOC2 Type II</span><span class="px-space-sm py-0.5 rounded-xl bg-surface-container font-code-mono text-code-mono text-on-surface-variant">ISO 27001</span><span class="px-space-sm py-0.5 rounded-xl bg-surface-container font-code-mono text-code-mono text-on-surface-variant">GDPR Compliant</span><span class="px-space-sm py-0.5 rounded-xl bg-surface-container font-code-mono text-code-mono text-on-surface-variant">Zero Retain</span></div></div><div class="flex flex-col gap-space-sm"><span class="font-label-md text-label-md text-on-surface">Integrations</span><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface" data-path="integrations" href="#">WhatsApp Bot</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface" data-path="integrations" href="#">Gmail Add-on</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface" data-path="integrations" href="#">Discord Sentinel</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface" data-path="integrations" href="#">Slack App</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface" data-path="integrations" href="#">Chrome Extension</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface" data-path="integrations" href="#">Telegram Bot</a></div><div class="flex flex-col gap-space-sm"><span class="font-label-md text-label-md text-on-surface">Intelligence &amp; Platform</span><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface" data-path="technology" href="#">Synthetic Artifact Engine</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface" data-path="live-scanner" href="#">Deepfake Radar</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface" data-path="benchmark-reports" href="#">Benchmark Reports</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface" data-path="api-and-docs" href="#">Developer Hub</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface" data-path="pricing" href="#">Enterprise Licensing</a></div><div class="flex flex-col gap-space-sm"><span class="font-label-md text-label-md text-on-surface">Trust &amp; Verification</span><div class="flex items-center gap-space-xs font-code-mono text-code-mono text-on-tertiary-container"><span class="w-2 h-2 rounded-full bg-on-tertiary-container animate-ping"></span><span>API Status: 99.99% Operational</span></div><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface" data-path="security-and-trust" href="#">Security Architecture</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface" data-path="privacy-policy" href="#">Privacy Guarantee</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface" data-path="terms-of-service" href="#">Terms of Service</a><a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface" data-path="vulnerability-disclosure" href="#">Responsible Disclosure</a></div></div><div class="pt-space-lg flex flex-col sm:flex-row items-center justify-between gap-space-md font-body-sm text-body-sm text-on-surface-variant"><p>© 2025 SachScan Sovereign Intelligence Labs Inc. All rights reserved.</p><div class="flex items-center gap-space-md"><span class="font-code-mono text-code-mono">Node cluster: eu-central-prod-04</span><span>Cryptographic Hash Attested</span></div></div></div></footer></body></html>

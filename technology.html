@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Technology &amp; Architecture Explained — SachScan</title>
+  <meta name="description" content="Discover how SachScan's multimodal intelligence engine, computer vision transformers, and vector evidence retrieval verify synthetic media in real time."/>
+  <meta name="theme-color" content="#eaeaea"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="SachScan"/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="apple-touch-icon" href="icons/icon-192.png"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-surface-variant": "#47464b",
+            "surface-bright": "#f8f9fb",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f3f4f6",
+            "surface-container": "#edeef0",
+            "surface-container-high": "#e7e8ea",
+            "surface-container-highest": "#e1e2e4",
+            "primary": "#000000",
+            "primary-container": "#1b1b1f",
+            "outline": "#78767b",
+            "error": "#ba1a1a",
+            "background": "#eaeaea",
+            "on-surface": "#191c1e",
+            "on-primary": "#ffffff",
+            "secondary": "#4648d4",
+            "emerald-accent": "#009668"
+          },
+          fontFamily: {
+            "body-lg": ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "body-sm": ["Inter", "sans-serif"],
+            "code-mono": ["JetBrains Mono", "monospace"],
+            "headline-xl": ["Geist", "sans-serif"],
+            "headline-lg": ["Geist", "sans-serif"],
+            "headline-md": ["Geist", "sans-serif"],
+            "label-md": ["Geist", "sans-serif"],
+            "label-sm": ["Geist", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="style.css?v=1.0.7"/>
+  <style>
+    /* Pulse badge animation */
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.6; }
+    }
+    .animate-pulse-dot {
+      animation: pulse-dot 2s infinite ease-in-out;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.03);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.18);
+      border-radius: 999px;
+    }
+    .pipeline-step-active {
+      border-color: #000000 !important;
+      background: #ffffff !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
+    }
+    /* 3D Tilt & Ambient Aura Card Effect from CARD EFFECT.txt - Matched to SachScan Theme */
+    .card-capability-3d {
+      position: relative;
+      transform-style: preserve-3d;
+      will-change: transform;
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 20px;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+      z-index: 1;
+    }
+    .card-capability-3d::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      background: linear-gradient(135deg, rgba(70, 72, 212, 0.42) 0%, rgba(0, 0, 0, 0.2) 48%, rgba(0, 150, 104, 0.3) 100%);
+      filter: blur(28px);
+      opacity: 0;
+      border-radius: inherit;
+      z-index: -1;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      transform: scale(0.95);
+    }
+    .card-capability-3d:hover::before {
+      opacity: 0.95;
+      transform: scale(1.05);
+    }
+    .card-capability-3d:hover {
+      border-color: rgba(70, 72, 212, 0.35) !important;
+      box-shadow: 0 20px 45px -10px rgba(70, 72, 212, 0.2), 0 0 0 1px rgba(70, 72, 212, 0.18) !important;
+    }
+    .card-capability-3d:active {
+      transform: perspective(800px) scale3d(0.985, 0.985, 0.985) !important;
+    }
+  </style>
+</head>
+<body class="bg-background font-body-md text-on-surface antialiased min-h-screen flex flex-col selection:bg-black selection:text-white">
+
+  <!-- Glassmorphic Top Navigation Bar (Identical Theme to Home & Integrations) -->
+  <header id="main-navbar" class="fixed top-0 left-0 right-0 z-50 w-full transition-transform duration-300">
+    <div class="w-full px-6 sm:px-10 lg:px-12 h-16 sm:h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo (Left) -->
+      <a href="index.html" class="flex items-center gap-2.5 group focus:outline-none" aria-label="SachScan Home">
+        <img src="download__4_-removebg-preview.png" alt="SachScan Logo" class="h-9 sm:h-10 w-auto object-contain transition-transform duration-200 group-hover:scale-105" />
+        <span class="font-headline-md text-black font-bold tracking-tight text-xl">SachScan</span>
+      </a>
+
+      <!-- Centered Navigation Links (Titles in Black) -->
+      <nav class="hidden md:flex items-center gap-7 lg:gap-10" id="navbar-links">
+        <a href="index.html" class="nav-item relative py-2 text-[14px] lg:text-[15px] font-medium text-black/65 hover:text-black transition-colors duration-200">
+          <span>Home</span>
+          <span class="nav-indicator absolute bottom-0 left-0 right-0 h-[2px] bg-black rounded-full scale-x-0 opacity-0"></span>
+        </a>
+        <a href="integrations.html" class="nav-item relative py-2 text-[14px] lg:text-[15px] font-medium text-black/65 hover:text-black transition-colors duration-200">
+          <span>Integrations</span>
+          <span class="nav-indicator absolute bottom-0 left-0 right-0 h-[2px] bg-black rounded-full scale-x-0 opacity-0"></span>
+        </a>
+        <!-- ACTIVE: Technology -->
+        <a href="technology.html" class="nav-item active relative py-2 text-[14px] lg:text-[15px] font-semibold text-black transition-colors duration-200">
+          <span>Technology</span>
+          <span class="nav-indicator absolute bottom-0 left-0 right-0 h-[2px] bg-black rounded-full"></span>
+        </a>
+        <a href="index.html#benchmarks" class="nav-item relative py-2 text-[14px] lg:text-[15px] font-medium text-black/65 hover:text-black transition-colors duration-200">
+          <span>Benchmarks</span>
+          <span class="nav-indicator absolute bottom-0 left-0 right-0 h-[2px] bg-black rounded-full scale-x-0 opacity-0"></span>
+        </a>
+        <a href="help.html" class="nav-item relative py-2 text-[14px] lg:text-[15px] font-medium text-black/65 hover:text-black transition-colors duration-200">
+          <span>Help</span>
+          <span class="nav-indicator absolute bottom-0 left-0 right-0 h-[2px] bg-black rounded-full scale-x-0 opacity-0"></span>
+        </a>
+      </nav>
+
+      <!-- Right Action Buttons -->
+      <div class="hidden sm:flex items-center gap-3">
+        <a href="index.html#demo" class="px-5 py-2 rounded-full border border-black/25 text-black font-semibold text-[11px] lg:text-[12px] tracking-wider uppercase backdrop-blur-md bg-white/40 hover:bg-black hover:text-white transition-all duration-200">
+          Get In Touch
+        </a>
+        <a href="login.html" class="px-5 py-2 rounded-full bg-black text-white font-semibold text-[11px] lg:text-[12px] tracking-wider uppercase shadow-[0_2px_12px_rgba(0,0,0,0.18)] hover:bg-neutral-800 hover:shadow-[0_4px_16px_rgba(0,0,0,0.25)] transition-all duration-200">
+          Get Started
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button id="nav-mobile-btn" type="button" class="md:hidden p-2 rounded-lg text-black hover:bg-black/5 transition-colors focus:outline-none" aria-label="Toggle Navigation">
+        <span class="material-symbols-outlined text-[24px]" id="nav-mobile-icon">menu</span>
+      </button>
+    </div>
+
+    <!-- Mobile Collapsible Menu Drawer -->
+    <div id="nav-mobile-drawer" class="hidden md:hidden px-6 pt-2 pb-6 border-t border-black/10 bg-white/95 backdrop-blur-2xl shadow-xl">
+      <div class="flex flex-col gap-3 pt-2">
+        <a href="index.html" class="mobile-nav-link text-black/75 hover:text-black font-medium text-base py-1.5">Home</a>
+        <a href="integrations.html" class="mobile-nav-link text-black/75 hover:text-black font-medium text-base py-1.5">Integrations</a>
+        <a href="technology.html" class="mobile-nav-link text-black font-semibold text-base py-1.5 flex items-center justify-between">
+          <span>Technology</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-black"></span>
+        </a>
+        <a href="index.html#benchmarks" class="mobile-nav-link text-black/75 hover:text-black font-medium text-base py-1.5">Benchmarks</a>
+        <a href="help.html" class="mobile-nav-link text-black/75 hover:text-black font-medium text-base py-1.5">Help &amp; Verification</a>
+        <div class="pt-4 flex flex-col gap-2.5">
+          <a href="login.html" class="w-full text-center py-2.5 rounded-full bg-black text-white font-semibold text-sm tracking-wider uppercase shadow-md">Get Started Free</a>
+          <a href="index.html#demo" class="w-full text-center py-2.5 rounded-full border border-black/25 text-black font-semibold text-sm tracking-wider uppercase bg-white/50">Get In Touch</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow pt-28 sm:pt-36 pb-20 px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto w-full">
+    
+    <!-- Hero Header -->
+    <section class="text-center max-w-4xl mx-auto mb-16 sm:mb-20">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container-high border border-black/10 text-xs font-semibold text-black/80 uppercase tracking-widest mb-6 shadow-sm">
+        <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse-dot"></span>
+        <span>Sovereign Architecture • Simple Breakdown</span>
+      </div>
+      <h1 class="font-headline-xl text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-on-surface mb-6 leading-[1.15]">
+        The Technology Behind SachScan, <br class="hidden sm:block"/>
+        <span class="bg-gradient-to-r from-black via-neutral-700 to-black bg-clip-text text-transparent">Explained Simply.</span>
+      </h1>
+      <p class="font-body-lg text-base sm:text-lg lg:text-xl text-on-surface-variant max-w-3xl mx-auto leading-relaxed">
+        You don't need a degree in machine learning to understand how we stop synthetic disinformation. 
+        Here is a transparent, plain-English look at the software, neural models, forensic math, and cloud pipelines powering every 2-second scan.
+      </p>
+
+      <!-- Key Performance Badges -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-10 max-w-3xl mx-auto">
+        <div class="p-3.5 rounded-2xl bg-surface-container-lowest border border-black/5 shadow-sm flex flex-col items-center">
+          <span class="font-code-mono font-bold text-lg sm:text-xl text-black">&lt; 180 ms</span>
+          <span class="text-[11px] sm:text-xs text-on-surface-variant uppercase tracking-wider mt-0.5">Response Latency</span>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-surface-container-lowest border border-black/5 shadow-sm flex flex-col items-center">
+          <span class="font-code-mono font-bold text-lg sm:text-xl text-emerald-700">99.87%</span>
+          <span class="text-[11px] sm:text-xs text-on-surface-variant uppercase tracking-wider mt-0.5">Diffusion Precision</span>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-surface-container-lowest border border-black/5 shadow-sm flex flex-col items-center">
+          <span class="font-code-mono font-bold text-lg sm:text-xl text-black">0 Bytes</span>
+          <span class="text-[11px] sm:text-xs text-on-surface-variant uppercase tracking-wider mt-0.5">User Data Retained</span>
+        </div>
+        <div class="p-3.5 rounded-2xl bg-surface-container-lowest border border-black/5 shadow-sm flex flex-col items-center">
+          <span class="font-code-mono font-bold text-lg sm:text-xl text-secondary">12+ Langs</span>
+          <span class="text-[11px] sm:text-xs text-on-surface-variant uppercase tracking-wider mt-0.5">Regional Translation</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Visual Journey: "The 4-Step Life of a Forward" -->
+    <section class="mb-20 sm:mb-24">
+      <div class="text-center mb-8">
+        <span class="font-label-sm text-xs uppercase tracking-widest text-on-surface-variant font-semibold">How It Works In Real Life</span>
+        <h2 class="font-headline-lg text-2xl sm:text-3xl font-bold text-on-surface mt-1">What Happens in the 2 Seconds After You Hit Send</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-5">
+        <!-- Step 1 -->
+        <div class="card-effect-3d card-capability-3d p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="w-8 h-8 rounded-full bg-black text-white font-code-mono font-bold text-xs flex items-center justify-center shadow-sm">01</span>
+              <span class="material-symbols-outlined text-secondary text-[22px]">lock_person</span>
+            </div>
+            <h3 class="font-headline-md font-bold text-base text-black mb-1.5">Privacy Air-Gap</h3>
+            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+              Your message arrives via WhatsApp or Telegram. Personal phone numbers, sender names, and metadata are immediately stripped in temporary RAM.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-black/5 text-[11px] font-code-mono text-emerald-700 flex items-center gap-1 font-semibold">
+            <span class="material-symbols-outlined text-[14px]">shield_check</span>
+            <span>Zero PII stored</span>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="card-effect-3d card-capability-3d p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="w-8 h-8 rounded-full bg-black text-white font-code-mono font-bold text-xs flex items-center justify-center shadow-sm">02</span>
+              <span class="material-symbols-outlined text-secondary text-[22px]">account_tree</span>
+            </div>
+            <h3 class="font-headline-md font-bold text-base text-black mb-1.5">Claim DNA Extraction</h3>
+            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+              Long messages are split into separate testable sentences. Photos and voice notes are separated into pixel and acoustic channels.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-black/5 text-[11px] font-code-mono text-neutral-600 flex items-center gap-1 font-semibold">
+            <span class="material-symbols-outlined text-[14px]">psychology</span>
+            <span>Atomic claim splitting</span>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="card-effect-3d card-capability-3d p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="w-8 h-8 rounded-full bg-black text-white font-code-mono font-bold text-xs flex items-center justify-center shadow-sm">03</span>
+              <span class="material-symbols-outlined text-secondary text-[22px]">troubleshoot</span>
+            </div>
+            <h3 class="font-headline-md font-bold text-base text-black mb-1.5">Multimodal Evidence Hunt</h3>
+            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+              Our vector search probes millions of official gazettes, press bureaus, and reverse-image databases to find supporting or disproving quotes.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-black/5 text-[11px] font-code-mono text-secondary flex items-center gap-1 font-semibold">
+            <span class="material-symbols-outlined text-[14px]">manage_search</span>
+            <span>Vector RAG in &lt;100ms</span>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="card-effect-3d card-capability-3d p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="w-8 h-8 rounded-full bg-black text-white font-code-mono font-bold text-xs flex items-center justify-center shadow-sm">04</span>
+              <span class="material-symbols-outlined text-secondary text-[22px]">reply_all</span>
+            </div>
+            <h3 class="font-headline-md font-bold text-base text-black mb-1.5">Share-Safe Reply</h3>
+            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
+              You receive a clean verdict with exact proof excerpts, plus a ready-to-forward polite reply in the original language to stop the rumor at its source.
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-black/5 text-[11px] font-code-mono text-neutral-600 flex items-center gap-1 font-semibold">
+            <span class="material-symbols-outlined text-[14px]">mark_chat_read</span>
+            <span>Polite 1-tap forward</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: THE FULL TECH STACK BREAKDOWN (Cards with 3D Tilt & Aura) -->
+    <section class="mb-20 sm:mb-24" id="techstack-grid">
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="font-label-sm text-xs uppercase tracking-widest text-on-surface-variant font-semibold">Under The Hood</span>
+        <h2 class="font-headline-xl text-3xl sm:text-4xl font-extrabold text-on-surface mt-1.5">
+          The 6 Core Technologies Powering SachScan
+        </h2>
+        <p class="font-body-md text-sm sm:text-base text-on-surface-variant mt-2">
+          Each component is purpose-built to tackle a specific piece of the misinformation problem. Hover over any card to reveal its reactive neural aura.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+        
+        <!-- CARD 1: Claim DNA & NLP Reasoning -->
+        <div class="card-effect-3d card-capability-3d p-6 sm:p-7 flex flex-col justify-between">
+          <div>
+            <!-- Top Badges & Icon -->
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-11 h-11 rounded-xl bg-black text-white flex items-center justify-center font-bold font-code-mono text-base shadow-sm">
+                01
+              </div>
+              <span class="material-symbols-outlined text-secondary text-[30px]">psychology</span>
+            </div>
+
+            <!-- Title & Simple Analogy -->
+            <h3 class="font-headline-md text-xl font-bold text-black mb-1">Claim DNA Engine</h3>
+            <div class="text-xs font-semibold text-secondary uppercase tracking-wider mb-3">Natural Language Processing (NLP)</div>
+            
+            <!-- In Simple Words Box -->
+            <div class="p-3.5 rounded-xl bg-surface-container-low border border-black/5 mb-4">
+              <span class="text-xs font-bold text-black uppercase tracking-wider block mb-1">💡 In Simple Words:</span>
+              <p class="text-xs sm:text-sm text-black/80 font-medium leading-relaxed">
+                "The careful editor that dissects long viral text messages into single, verifiable facts."
+              </p>
+            </div>
+
+            <!-- How It Works -->
+            <h4 class="text-xs font-bold text-on-surface uppercase tracking-wider mb-1.5">How It Works:</h4>
+            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-4">
+              Instead of labeling an entire forwarded message as simply "True" or "Fake", Claim DNA extracts every individual claim. If a post mixes real news with a fake link, it flags only the dangerous part.
+            </p>
+
+            <!-- Real-World Example Box -->
+            <div class="p-3.5 rounded-xl bg-surface-container-high border border-black/5 font-code-mono text-xs text-on-surface mb-4">
+              <span class="text-[10px] text-neutral-500 block mb-1">INPUT: "Govt scheme offers ₹50,000 to all students"</span>
+              <span class="text-emerald-800 font-semibold block">&gt; Claim 1: Scheme exists? (YES)</span>
+              <span class="text-error font-semibold block">&gt; Claim 2: All students qualify? (NO - Merit only)</span>
+            </div>
+          </div>
+
+          <!-- Technologies Used -->
+          <div class="pt-4 border-t border-black/5">
+            <span class="text-[11px] font-semibold text-neutral-500 uppercase tracking-wider block mb-2">Technologies Used:</span>
+            <div class="flex flex-wrap gap-1.5 font-code-mono text-[11px]">
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">LLaMA-3 70B</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">FastAPI</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">IndicTrans2</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">LangChain</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2: Forensic Vision & Diffusion Transformers -->
+        <div class="card-effect-3d card-capability-3d p-6 sm:p-7 flex flex-col justify-between">
+          <div>
+            <!-- Top Badges & Icon -->
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-11 h-11 rounded-xl bg-black text-white flex items-center justify-center font-bold font-code-mono text-base shadow-sm">
+                02
+              </div>
+              <span class="material-symbols-outlined text-secondary text-[30px]">filter_center_focus</span>
+            </div>
+
+            <!-- Title & Simple Analogy -->
+            <h3 class="font-headline-md text-xl font-bold text-black mb-1">Spectral Vision Inspector</h3>
+            <div class="text-xs font-semibold text-secondary uppercase tracking-wider mb-3">Computer Vision &amp; Deepfake AI</div>
+            
+            <!-- In Simple Words Box -->
+            <div class="p-3.5 rounded-xl bg-surface-container-low border border-black/5 mb-4">
+              <span class="text-xs font-bold text-black uppercase tracking-wider block mb-1">💡 In Simple Words:</span>
+              <p class="text-xs sm:text-sm text-black/80 font-medium leading-relaxed">
+                "A digital microscope that spots mathematical pixel flaws that the human eye cannot see."
+              </p>
+            </div>
+
+            <!-- How It Works -->
+            <h4 class="text-xs font-bold text-on-surface uppercase tracking-wider mb-1.5">How It Works:</h4>
+            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-4">
+              Physical cameras capture light through glass lenses, creating natural sensor noise. AI image generators (Midjourney, Flux, Stable Diffusion) synthesize pixels mathematically, leaving tiny diffusion residuals and warped reflections.
+            </p>
+
+            <!-- Real-World Example Box -->
+            <div class="p-3.5 rounded-xl bg-surface-container-high border border-black/5 font-code-mono text-xs text-on-surface mb-4">
+              <span class="text-[10px] text-neutral-500 block mb-1">ANALYSIS: Viral protest photo</span>
+              <span class="text-error font-semibold block">&gt; Ear/hair boundary mismatch: 98.4%</span>
+              <span class="text-error font-semibold block">&gt; Asymmetrical pupil light angle: Synthesized</span>
+            </div>
+          </div>
+
+          <!-- Technologies Used -->
+          <div class="pt-4 border-t border-black/5">
+            <span class="text-[11px] font-semibold text-neutral-500 uppercase tracking-wider block mb-2">Technologies Used:</span>
+            <div class="flex flex-wrap gap-1.5 font-code-mono text-[11px]">
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">PyTorch</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">Vision Transformers</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">OpenCV</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">FFT Frequency Analysis</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: Acoustic Voice Clone Detective -->
+        <div class="card-effect-3d card-capability-3d p-6 sm:p-7 flex flex-col justify-between">
+          <div>
+            <!-- Top Badges & Icon -->
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-11 h-11 rounded-xl bg-black text-white flex items-center justify-center font-bold font-code-mono text-base shadow-sm">
+                03
+              </div>
+              <span class="material-symbols-outlined text-secondary text-[30px]">graphic_eq</span>
+            </div>
+
+            <!-- Title & Simple Analogy -->
+            <h3 class="font-headline-md text-xl font-bold text-black mb-1">Voice Clone Radar</h3>
+            <div class="text-xs font-semibold text-secondary uppercase tracking-wider mb-3">Audio ML &amp; Neural Vocoder Forensics</div>
+            
+            <!-- In Simple Words Box -->
+            <div class="p-3.5 rounded-xl bg-surface-container-low border border-black/5 mb-4">
+              <span class="text-xs font-bold text-black uppercase tracking-wider block mb-1">💡 In Simple Words:</span>
+              <p class="text-xs sm:text-sm text-black/80 font-medium leading-relaxed">
+                "An acoustic lie detector that knows the difference between human vocal cords and cloned audio."
+              </p>
+            </div>
+
+            <!-- How It Works -->
+            <h4 class="text-xs font-bold text-on-surface uppercase tracking-wider mb-1.5">How It Works:</h4>
+            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-4">
+              Cloned voices sound smooth to human ears, but their acoustic wave transitions lack natural breathing pauses and micro-vocal cord tremors. We detect neural vocoder frequency gaps in cloned WhatsApp voice notes.
+            </p>
+
+            <!-- Real-World Example Box -->
+            <div class="p-3.5 rounded-xl bg-surface-container-high border border-black/5 font-code-mono text-xs text-on-surface mb-4">
+              <span class="text-[10px] text-neutral-500 block mb-1">ANALYSIS: CEO wire transfer audio note</span>
+              <span class="text-error font-semibold block">&gt; Vocoder pitch continuity: Synthetic (99.2%)</span>
+              <span class="text-neutral-600 block">&gt; Natural breathing cadence: Missing</span>
+            </div>
+          </div>
+
+          <!-- Technologies Used -->
+          <div class="pt-4 border-t border-black/5">
+            <span class="text-[11px] font-semibold text-neutral-500 uppercase tracking-wider block mb-2">Technologies Used:</span>
+            <div class="flex flex-wrap gap-1.5 font-code-mono text-[11px]">
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">Whisper ASR</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">WavLM</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">Mel-Spectrograms</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">Librosa</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 4: Evidence Lens & Vector Search (RAG) -->
+        <div class="card-effect-3d card-capability-3d p-6 sm:p-7 flex flex-col justify-between">
+          <div>
+            <!-- Top Badges & Icon -->
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-11 h-11 rounded-xl bg-black text-white flex items-center justify-center font-bold font-code-mono text-base shadow-sm">
+                04
+              </div>
+              <span class="material-symbols-outlined text-secondary text-[30px]">fact_check</span>
+            </div>
+
+            <!-- Title & Simple Analogy -->
+            <h3 class="font-headline-md text-xl font-bold text-black mb-1">Vector Evidence Lens</h3>
+            <div class="text-xs font-semibold text-secondary uppercase tracking-wider mb-3">Semantic Vector Search &amp; Live RAG</div>
+            
+            <!-- In Simple Words Box -->
+            <div class="p-3.5 rounded-xl bg-surface-container-low border border-black/5 mb-4">
+              <span class="text-xs font-bold text-black uppercase tracking-wider block mb-1">💡 In Simple Words:</span>
+              <p class="text-xs sm:text-sm text-black/80 font-medium leading-relaxed">
+                "A super-librarian that reads millions of official gazettes and trusted reports in 100 milliseconds."
+              </p>
+            </div>
+
+            <!-- How It Works -->
+            <h4 class="text-xs font-bold text-on-surface uppercase tracking-wider mb-1.5">How It Works:</h4>
+            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-4">
+              Converts claims into mathematical vectors to search high-dimensional indexes of government announcements, court rulings, and news feeds. It pinpoints the exact paragraph and publication date to show, not just tell.
+            </p>
+
+            <!-- Real-World Example Box -->
+            <div class="p-3.5 rounded-xl bg-surface-container-high border border-black/5 font-code-mono text-xs text-on-surface mb-4">
+              <span class="text-[10px] text-neutral-500 block mb-1">PROOF MATCH: Gazette Notification #281</span>
+              <span class="text-emerald-800 font-semibold block">&gt; Excerpt: "Eligibility restricted to BPL"</span>
+              <span class="text-neutral-600 block">&gt; Published: Ministry of Education (12 Oct)</span>
+            </div>
+          </div>
+
+          <!-- Technologies Used -->
+          <div class="pt-4 border-t border-black/5">
+            <span class="text-[11px] font-semibold text-neutral-500 uppercase tracking-wider block mb-2">Technologies Used:</span>
+            <div class="flex flex-wrap gap-1.5 font-code-mono text-[11px]">
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">Milvus Vector DB</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">BGE Embeddings</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">Google FactCheck API</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">PIB Live Feed</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 5: High-Speed Microservices & Viral Cache -->
+        <div class="card-effect-3d card-capability-3d p-6 sm:p-7 flex flex-col justify-between">
+          <div>
+            <!-- Top Badges & Icon -->
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-11 h-11 rounded-xl bg-black text-white flex items-center justify-center font-bold font-code-mono text-base shadow-sm">
+                05
+              </div>
+              <span class="material-symbols-outlined text-secondary text-[30px]">bolt</span>
+            </div>
+
+            <!-- Title & Simple Analogy -->
+            <h3 class="font-headline-md text-xl font-bold text-black mb-1">Viral Caching &amp; Scale</h3>
+            <div class="text-xs font-semibold text-secondary uppercase tracking-wider mb-3">Distributed Backend &amp; Gateway APIs</div>
+            
+            <!-- In Simple Words Box -->
+            <div class="p-3.5 rounded-xl bg-surface-container-low border border-black/5 mb-4">
+              <span class="text-xs font-bold text-black uppercase tracking-wider block mb-1">💡 In Simple Words:</span>
+              <p class="text-xs sm:text-sm text-black/80 font-medium leading-relaxed">
+                "The lightning engine room that handles 50,000 requests at once without slowing down."
+              </p>
+            </div>
+
+            <!-- How It Works -->
+            <h4 class="text-xs font-bold text-on-surface uppercase tracking-wider mb-1.5">How It Works:</h4>
+            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-4">
+              When a rumor goes viral, thousands forward the exact same file. SachScan creates an anonymous perceptual hash. The first check takes 1.2s; the next 50,000 checks return from our Redis memory cache in under 35ms!
+            </p>
+
+            <!-- Real-World Example Box -->
+            <div class="p-3.5 rounded-xl bg-surface-container-high border border-black/5 font-code-mono text-xs text-on-surface mb-4">
+              <span class="text-[10px] text-neutral-500 block mb-1">REQUEST: Viral election clip (48,200 requests)</span>
+              <span class="text-emerald-800 font-semibold block">&gt; Cache Hit: YES (Redis Cluster)</span>
+              <span class="text-emerald-800 font-semibold block">&gt; Delivery Time: 28 ms</span>
+            </div>
+          </div>
+
+          <!-- Technologies Used -->
+          <div class="pt-4 border-t border-black/5">
+            <span class="text-[11px] font-semibold text-neutral-500 uppercase tracking-wider block mb-2">Technologies Used:</span>
+            <div class="flex flex-wrap gap-1.5 font-code-mono text-[11px]">
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">Node.js</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">Redis Cluster</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">Docker &amp; K8s</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">gRPC Pipelines</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 6: Zero-Retention Privacy & Ephemeral Enclaves -->
+        <div class="card-effect-3d card-capability-3d p-6 sm:p-7 flex flex-col justify-between">
+          <div>
+            <!-- Top Badges & Icon -->
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-11 h-11 rounded-xl bg-black text-white flex items-center justify-center font-bold font-code-mono text-base shadow-sm">
+                06
+              </div>
+              <span class="material-symbols-outlined text-secondary text-[30px]">lock_reset</span>
+            </div>
+
+            <!-- Title & Simple Analogy -->
+            <h3 class="font-headline-md text-xl font-bold text-black mb-1">Zero-Retention Enclaves</h3>
+            <div class="text-xs font-semibold text-secondary uppercase tracking-wider mb-3">Privacy &amp; Cryptographic Attestation</div>
+            
+            <!-- In Simple Words Box -->
+            <div class="p-3.5 rounded-xl bg-surface-container-low border border-black/5 mb-4">
+              <span class="text-xs font-bold text-black uppercase tracking-wider block mb-1">💡 In Simple Words:</span>
+              <p class="text-xs sm:text-sm text-black/80 font-medium leading-relaxed">
+                "The digital paper shredder that ensures your private family chats are never saved on our servers."
+              </p>
+            </div>
+
+            <!-- How It Works -->
+            <h4 class="text-xs font-bold text-on-surface uppercase tracking-wider mb-1.5">How It Works:</h4>
+            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed mb-4">
+              Payloads are processed exclusively in volatile RAM enclaves with zero disk writes. The moment verification finishes, the raw image, audio, or text is cryptographically purged. Only a one-way mathematical hash is kept.
+            </p>
+
+            <!-- Real-World Example Box -->
+            <div class="p-3.5 rounded-xl bg-surface-container-high border border-black/5 font-code-mono text-xs text-on-surface mb-4">
+              <span class="text-[10px] text-neutral-500 block mb-1">SECURITY GUARANTEE: Ephemeral Session</span>
+              <span class="text-emerald-800 font-semibold block">&gt; Disk writes: 0 Bytes</span>
+              <span class="text-emerald-800 font-semibold block">&gt; Compliance: SOC2 Type II, GDPR, ISO 27001</span>
+            </div>
+          </div>
+
+          <!-- Technologies Used -->
+          <div class="pt-4 border-t border-black/5">
+            <span class="text-[11px] font-semibold text-neutral-500 uppercase tracking-wider block mb-2">Technologies Used:</span>
+            <div class="flex flex-wrap gap-1.5 font-code-mono text-[11px]">
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">Confidential RAM Enclaves</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">SHA-256 Hashing</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">C2PA Metadata</span>
+              <span class="px-2.5 py-1 rounded-lg bg-surface-container border border-black/5 font-medium text-black">Zero-Knowledge Proofs</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- INTERACTIVE SECTION: LIVE TECH STACK SIMULATOR -->
+    <section class="mb-20 sm:mb-24 p-6 sm:p-10 rounded-3xl bg-surface-container-lowest border border-black/10 shadow-lg">
+      <div class="text-center max-w-2xl mx-auto mb-8">
+        <span class="font-label-sm text-xs uppercase tracking-widest text-on-surface-variant font-semibold">Interactive Sandbox</span>
+        <h2 class="font-headline-lg text-2xl sm:text-3xl font-bold text-black mt-1">
+          Test the Stack in Action
+        </h2>
+        <p class="text-xs sm:text-sm text-on-surface-variant mt-1.5">
+          Pick a real-world scenario below to see which layer of the tech stack activates and how it processes the payload step-by-step.
+        </p>
+      </div>
+
+      <!-- Scenario Selector Buttons -->
+      <div class="flex flex-wrap items-center justify-center gap-2.5 mb-8" id="sim-selector">
+        <button type="button" class="sim-btn active px-4 py-2 rounded-xl bg-black text-white font-semibold text-xs transition-all shadow-sm flex items-center gap-1.5" data-scenario="scheme">
+          <span class="material-symbols-outlined text-[16px]">account_balance</span>
+          <span>Viral Government Cash Scheme</span>
+        </button>
+        <button type="button" class="sim-btn px-4 py-2 rounded-xl bg-surface-container text-black font-semibold text-xs hover:bg-surface-container-high transition-all flex items-center gap-1.5" data-scenario="deepfake">
+          <span class="material-symbols-outlined text-[16px]">face</span>
+          <span>Photoreal Celebrity Deepfake Photo</span>
+        </button>
+        <button type="button" class="sim-btn px-4 py-2 rounded-xl bg-surface-container text-black font-semibold text-xs hover:bg-surface-container-high transition-all flex items-center gap-1.5" data-scenario="voice">
+          <span class="material-symbols-outlined text-[16px]">record_voice_over</span>
+          <span>Urgent CFO Voice Clone Audio</span>
+        </button>
+      </div>
+
+      <!-- Simulator Output Box -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left: Incoming Payload Card -->
+        <div class="lg:col-span-5 p-5 rounded-2xl bg-surface-container-low border border-black/5">
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-black/5">
+            <span class="text-xs font-bold text-black uppercase tracking-wider flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Incoming Payload
+            </span>
+            <span id="sim-type-badge" class="font-code-mono text-[11px] px-2 py-0.5 rounded bg-black/10 text-black">WhatsApp Text</span>
+          </div>
+          <div id="sim-input-box" class="p-3.5 rounded-xl bg-white border border-black/5 text-xs text-black leading-relaxed font-body-md mb-3 shadow-sm">
+            "Urgent: Prime Minister announces ₹50,000 direct bank transfer to all students under National Youth Scheme. Click tinyurl.com/pm-grant-2025 before 18:00 to claim your quota!"
+          </div>
+          <div class="space-y-1.5 text-[11px] text-neutral-600 font-code-mono">
+            <div class="flex justify-between">
+              <span>Channel:</span>
+              <span class="text-black font-semibold" id="sim-channel">WhatsApp Business Bot</span>
+            </div>
+            <div class="flex justify-between">
+              <span>PII Sanitization:</span>
+              <span class="text-emerald-700 font-semibold">Sender Phone Stripped (RAM)</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Payload Hash:</span>
+              <span class="text-black font-semibold" id="sim-hash">sha256:7f4a...890c</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Real-Time Execution Pipeline -->
+        <div class="lg:col-span-7 p-5 rounded-2xl bg-neutral-900 text-white font-code-mono text-xs flex flex-col justify-between shadow-md">
+          <div class="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
+            <span class="text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">terminal</span>
+              Live Pipeline Telemetry
+            </span>
+            <span class="text-neutral-400 text-[11px]" id="sim-timer">Elapsed: 142ms</span>
+          </div>
+
+          <!-- Live Log Lines -->
+          <div class="space-y-2 mb-4 leading-relaxed custom-scrollbar max-h-56 overflow-y-auto" id="sim-logs">
+            <div class="text-neutral-400">[0.00s] <span class="text-white">Ingesting payload via gRPC gateway</span></div>
+            <div class="text-neutral-400">[0.04s] <span class="text-secondary">Claim DNA: Extracted 3 claims (Scheme validity, Eligibility, URL safety)</span></div>
+            <div class="text-neutral-400">[0.09s] <span class="text-neutral-300">Vector RAG: Queried Milvus for Gazette &amp; PIB FactCheck database</span></div>
+            <div class="text-neutral-400">[0.12s] <span class="text-error font-semibold">Evidence Match: Official PIB release warns link is phishing scam</span></div>
+            <div class="text-emerald-400 font-semibold">[0.14s] Verdict: MISLEADING &amp; MALICIOUS URL DETECTED (Score: 0.99)</div>
+          </div>
+
+          <!-- Final Generated Share-Safe Reply -->
+          <div class="p-3.5 rounded-xl bg-neutral-800 border border-white/10 text-neutral-200">
+            <span class="text-[10px] text-emerald-400 font-sans font-bold uppercase tracking-wider block mb-1">Generated Share-Safe Reply for Group Chat:</span>
+            <p class="font-sans text-xs text-white leading-relaxed italic" id="sim-reply">
+              "This message isn't confirmed by official government sources. PIB Fact Check has declared this link a phishing scheme. Please do not share or click any links."
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: COMPARISON TABLE (Old Way vs SachScan Tech Stack) -->
+    <section class="mb-20 sm:mb-24">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="font-label-sm text-xs uppercase tracking-widest text-on-surface-variant font-semibold">Direct Comparison</span>
+        <h2 class="font-headline-lg text-2xl sm:text-3xl font-bold text-black mt-1">
+          Why Traditional Fact-Checking Failed
+        </h2>
+        <p class="text-xs sm:text-sm text-on-surface-variant mt-1.5">
+          See the difference between slow manual newsrooms and SachScan's sovereign automated neural pipeline.
+        </p>
+      </div>
+
+      <div class="overflow-x-auto rounded-2xl bg-surface-container-lowest border border-black/10 shadow-sm">
+        <table class="w-full text-left font-body-md text-xs sm:text-sm">
+          <thead>
+            <tr class="bg-surface-container-high border-b border-black/10">
+              <th class="p-4 font-headline-md font-bold text-black">Feature / Dimension</th>
+              <th class="p-4 font-headline-md font-bold text-emerald-800 bg-white/70">SachScan Autonomous Stack</th>
+              <th class="p-4 font-headline-md font-bold text-neutral-600">Manual Newsroom Review</th>
+              <th class="p-4 font-headline-md font-bold text-neutral-600">Generic Antivirus Gateways</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-black/5">
+            <tr class="hover:bg-black/[0.01]">
+              <td class="p-4 font-semibold text-black">Inspection Speed</td>
+              <td class="p-4 font-code-mono font-bold text-emerald-700 bg-white/40">&lt; 180 ms (Instant)</td>
+              <td class="p-4 text-on-surface-variant">4 to 48 hours</td>
+              <td class="p-4 text-on-surface-variant">Static hash only (&lt;1s)</td>
+            </tr>
+            <tr class="hover:bg-black/[0.01]">
+              <td class="p-4 font-semibold text-black">Multi-Claim Deconstruction</td>
+              <td class="p-4 font-semibold text-black bg-white/40">Separates each individual claim</td>
+              <td class="p-4 text-on-surface-variant">Binary (True or False for entire post)</td>
+              <td class="p-4 text-on-surface-variant">Unsupported (Cannot parse text)</td>
+            </tr>
+            <tr class="hover:bg-black/[0.01]">
+              <td class="p-4 font-semibold text-black">AI Image &amp; Deepfake Forensics</td>
+              <td class="p-4 font-semibold text-black bg-white/40">Pixel diffusion residuals + FFT</td>
+              <td class="p-4 text-on-surface-variant">Subjective visual inspection</td>
+              <td class="p-4 text-on-surface-variant">0% (Only checks file virus signatures)</td>
+            </tr>
+            <tr class="hover:bg-black/[0.01]">
+              <td class="p-4 font-semibold text-black">Cloned Audio Analysis</td>
+              <td class="p-4 font-semibold text-black bg-white/40">Neural vocoder phase checks</td>
+              <td class="p-4 text-on-surface-variant">Extremely rare / Out of scope</td>
+              <td class="p-4 text-on-surface-variant">Unsupported</td>
+            </tr>
+            <tr class="hover:bg-black/[0.01]">
+              <td class="p-4 font-semibold text-black">Data Privacy &amp; Retention</td>
+              <td class="p-4 font-bold text-black bg-white/40">Zero Retain (Purged from RAM)</td>
+              <td class="p-4 text-on-surface-variant">Manual submission stored in email</td>
+              <td class="p-4 text-on-surface-variant">Telemetry stored on vendor servers</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION: CALL TO ACTION -->
+    <section class="p-8 sm:p-12 rounded-3xl bg-neutral-900 text-white text-center relative overflow-hidden shadow-2xl">
+      <!-- Glow ambient background -->
+      <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-secondary/30 rounded-full filter blur-3xl pointer-events-none"></div>
+      
+      <div class="relative max-w-2xl mx-auto flex flex-col items-center">
+        <span class="text-xs font-code-mono uppercase tracking-widest text-emerald-400 font-semibold mb-2">Ready to Protect Your Comms?</span>
+        <h2 class="font-headline-xl text-2xl sm:text-4xl font-extrabold mb-4 leading-tight">
+          Integrate the SachScan Stack in Under 60 Seconds.
+        </h2>
+        <p class="font-body-md text-sm sm:text-base text-neutral-300 mb-8 max-w-xl leading-relaxed">
+          Whether you need a simple WhatsApp verification bot for family forwards or a high-throughput enterprise API gateway for millions of emails.
+        </p>
+
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <a href="integrations.html" class="px-6 py-3 rounded-full bg-white text-black font-semibold text-xs sm:text-sm tracking-wider uppercase hover:bg-neutral-200 transition-all shadow-md flex items-center gap-1.5">
+            <span>Explore All Integrations</span>
+            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+          </a>
+          <a href="login.html" class="px-6 py-3 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm tracking-wider uppercase transition-all">
+            Get Started Free
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer (Identical Theme to Home & Integrations) -->
+  <footer class="w-full bg-surface-container-low pt-16 pb-12 border-t border-black/10 mt-auto">
+    <div class="w-full px-6 sm:px-10 lg:px-12 max-w-7xl mx-auto flex flex-col gap-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+        
+        <!-- Col 1: Brand Info -->
+        <div class="lg:col-span-2 flex flex-col gap-4">
+          <div class="flex items-center gap-2.5">
+            <img alt="SachScan Logo" class="h-8 w-auto object-contain" src="download__4_-removebg-preview.png"/>
+            <span class="font-headline-md text-black font-bold text-xl tracking-tight">SachScan</span>
+          </div>
+          <p class="font-body-md text-sm text-on-surface-variant max-w-sm leading-relaxed">
+            Sovereign media authenticity intelligence engine. Cryptographically verifying multimodal records and synthetic disinformation across enterprise communication channels.
+          </p>
+          <div class="flex flex-wrap items-center gap-1.5 pt-2">
+            <span class="px-2.5 py-0.5 rounded-lg bg-surface-container font-code-mono text-xs text-on-surface-variant">SOC2 Type II</span>
+            <span class="px-2.5 py-0.5 rounded-lg bg-surface-container font-code-mono text-xs text-on-surface-variant">ISO 27001</span>
+            <span class="px-2.5 py-0.5 rounded-lg bg-surface-container font-code-mono text-xs text-on-surface-variant">GDPR Compliant</span>
+            <span class="px-2.5 py-0.5 rounded-lg bg-surface-container font-code-mono text-xs text-on-surface-variant">Zero Retain</span>
+          </div>
+        </div>
+
+        <!-- Col 2: Integrations -->
+        <div class="flex flex-col gap-2.5">
+          <span class="font-label-md text-sm font-bold text-on-surface">Integrations</span>
+          <a class="font-body-md text-sm text-on-surface-variant hover:text-black transition-colors" href="integrations.html">WhatsApp Bot</a>
+          <a class="font-body-md text-sm text-on-surface-variant hover:text-black transition-colors" href="integrations.html">Gmail Add-on</a>
+          <a class="font-body-md text-sm text-on-surface-variant hover:text-black transition-colors" href="integrations.html">Discord Sentinel</a>
+          <a class="font-body-md text-sm text-on-surface-variant hover:text-black transition-colors" href="integrations.html">Telegram Bot</a>
+          <a class="font-body-md text-sm text-on-surface-variant hover:text-black transition-colors" href="integrations.html">Chrome Extension</a>
+        </div>
+
+        <!-- Col 3: Intelligence & Platform -->
+        <div class="flex flex-col gap-2.5">
+          <span class="font-label-md text-sm font-bold text-on-surface">Platform</span>
+          <a class="font-body-md text-sm text-black font-semibold" href="technology.html">Technology Stack</a>
+          <a class="font-body-md text-sm text-on-surface-variant hover:text-black transition-colors" href="index.html#benchmarks">Benchmark Reports</a>
+          <a class="font-body-md text-sm text-on-surface-variant hover:text-black transition-colors" href="index.html#demo">Live Scanner</a>
+          <a class="font-body-md text-sm text-on-surface-variant hover:text-black transition-colors" href="login.html">Developer API</a>
+        </div>
+
+        <!-- Col 4: Trust & Security -->
+        <div class="flex flex-col gap-2.5">
+          <span class="font-label-md text-sm font-bold text-on-surface">Trust &amp; Verification</span>
+          <div class="flex items-center gap-1.5 font-code-mono text-xs text-emerald-700">
+            <span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
+            <span>API Status: 99.99% Operational</span>
+          </div>
+          <a class="font-body-md text-sm text-on-surface-variant hover:text-black transition-colors" href="#">Security Architecture</a>
+          <a class="font-body-md text-sm text-on-surface-variant hover:text-black transition-colors" href="#">Privacy Guarantee</a>
+          <a class="font-body-md text-sm text-on-surface-variant hover:text-black transition-colors" href="#">Terms of Service</a>
+        </div>
+
+      </div>
+
+      <!-- Copyright Bottom Bar -->
+      <div class="pt-8 border-t border-black/10 flex flex-col sm:flex-row items-center justify-between gap-4 font-body-sm text-xs text-on-surface-variant">
+        <p>© 2025 SachScan Sovereign Intelligence Labs Inc. All rights reserved.</p>
+        <div class="flex items-center gap-4">
+          <span class="font-code-mono text-xs">Cluster: eu-central-prod-04</span>
+          <span>•</span>
+          <span>Cryptographic Hash Attested</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    (function initTechnologyPage() {
+
+
+      // 2. Mobile Menu Toggle
+      const mobileBtn = document.getElementById('nav-mobile-btn');
+      const mobileDrawer = document.getElementById('nav-mobile-drawer');
+      const mobileIcon = document.getElementById('nav-mobile-icon');
+      if (mobileBtn && mobileDrawer) {
+        mobileBtn.addEventListener('click', () => {
+          const isClosed = mobileDrawer.classList.contains('hidden');
+          if (isClosed) {
+            mobileDrawer.classList.remove('hidden');
+            if (mobileIcon) mobileIcon.textContent = 'close';
+          } else {
+            mobileDrawer.classList.add('hidden');
+            if (mobileIcon) mobileIcon.textContent = 'menu';
+          }
+        });
+      }
+
+      // 3. 3D Tilt Mouse Tracker (Adapted from CARD EFFECT.txt)
+      const tiltCards = document.querySelectorAll('.card-effect-3d, .card-capability-3d');
+      if (tiltCards.length && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        tiltCards.forEach(card => {
+          let rafId = null;
+          card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = (e.clientY - rect.top) / rect.height;
+
+            const tiltX = (0.5 - y) * 12;
+            const tiltY = (x - 0.5) * 12;
+
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => {
+              card.style.transform = `perspective(800px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+              card.style.transition = 'transform 75ms ease-out, filter 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease';
+            });
+          });
+
+          card.addEventListener('mouseleave', () => {
+            if (rafId) cancelAnimationFrame(rafId);
+            card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+            card.style.transition = 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease';
+          });
+        });
+      }
+
+      // 4. Interactive Live Simulator Scenarios
+      const scenarios = {
+        scheme: {
+          badge: "WhatsApp Text Forward",
+          channel: "WhatsApp Business Bot (+1-800-SACH-SCAN)",
+          input: '"Urgent: Prime Minister announces ₹50,000 direct bank transfer to all students under National Youth Scheme. Click tinyurl.com/pm-grant-2025 before 18:00 to claim your quota!"',
+          hash: "sha256:7f4a...890c",
+          timer: "Elapsed: 142ms",
+          logs: [
+            '<div class="text-neutral-400">[0.00s] <span class="text-white">Ingesting payload via gRPC gateway</span></div>',
+            '<div class="text-neutral-400">[0.04s] <span class="text-secondary">Claim DNA: Extracted 3 claims (Scheme existence, Universal eligibility, URL legitimacy)</span></div>',
+            '<div class="text-neutral-400">[0.09s] <span class="text-neutral-300">Vector RAG: Queried Milvus for Gazette &amp; PIB FactCheck database</span></div>',
+            '<div class="text-neutral-400">[0.12s] <span class="text-error font-semibold">Evidence Match: Official PIB release confirms link is an active phishing scam</span></div>',
+            '<div class="text-emerald-400 font-semibold">[0.14s] Verdict: MISLEADING &amp; MALICIOUS URL DETECTED (Confidence: 99.8%)</div>'
+          ],
+          reply: '"This message isn\'t confirmed by official government sources. PIB Fact Check has declared this link a phishing scheme. Please do not share or click any links."'
+        },
+        deepfake: {
+          badge: "Instagram / X Image",
+          channel: "Chromium Extension & Feed Scanner",
+          input: '"[IMAGE UPLOAD: photoreal_speech_clip.jpg] — Viral photograph showing prominent opposition leader meeting secretly in Zurich private bank."',
+          hash: "sha256:d91c...43b1",
+          timer: "Elapsed: 168ms",
+          logs: [
+            '<div class="text-neutral-400">[0.00s] <span class="text-white">Image received: Decoding 4K uncompressed frame in volatile RAM</span></div>',
+            '<div class="text-neutral-400">[0.05s] <span class="text-secondary">Vision Transformers: Running ViT-L-14 patch embedding analysis</span></div>',
+            '<div class="text-neutral-400">[0.10s] <span class="text-secondary">FFT Spectral Probe: Discovered Midjourney diffusion lattice frequency spikes (p &lt; 0.001)</span></div>',
+            '<div class="text-neutral-400">[0.14s] <span class="text-error font-semibold">Facial Landmark Mesh: Inconsistent ear-to-jawline shadow gradient</span></div>',
+            '<div class="text-emerald-400 font-semibold">[0.17s] Verdict: SYNTHETIC DIFFUSION GENERATED (Deepfake Confidence: 99.91%)</div>'
+          ],
+          reply: '"This photo has been verified as an AI-generated image created with a diffusion model. No records of this meeting exist in official itineraries or verified news databases."'
+        },
+        voice: {
+          badge: "Telegram / Gmail Audio Note",
+          channel: "Discord Sentinel & Telegram Bot",
+          input: '"[AUDIO NOTE: urgent_cfo_voice_auth.ogg] — Voice note: \'Hey David, please approve the wire transfer to account 4481 right now, I\'m on a flight and can\'t reach Slack.\'"',
+          hash: "sha256:1a8e...ee72",
+          timer: "Elapsed: 154ms",
+          logs: [
+            '<div class="text-neutral-400">[0.00s] <span class="text-white">Acoustic payload queued: Whisper transcribing spoken phonemes</span></div>',
+            '<div class="text-neutral-400">[0.04s] <span class="text-secondary">WavLM Neural Probe: Extracting vocal tract resonance frequencies</span></div>',
+            '<div class="text-neutral-400">[0.09s] <span class="text-secondary">Vocoder Forensic Check: Detected phase discontinuities characteristic of ElevenLabs clone engine</span></div>',
+            '<div class="text-neutral-400">[0.12s] <span class="text-error font-semibold">Biometric Match: Zero micro-jitter in vocal cord breath cadence</span></div>',
+            '<div class="text-emerald-400 font-semibold">[0.15s] Verdict: CLONED SYNTHETIC AUDIO ALERT (Impersonation risk: CRITICAL)</div>'
+          ],
+          reply: '"Warning: This voice note has been flagged as a computer-synthesized voice clone. Do not authorize any transactions without out-of-band video or phone verification."'
+        }
+      };
+
+      const simButtons = document.querySelectorAll('.sim-btn');
+      const simTypeBadge = document.getElementById('sim-type-badge');
+      const simInputBox = document.getElementById('sim-input-box');
+      const simChannel = document.getElementById('sim-channel');
+      const simHash = document.getElementById('sim-hash');
+      const simTimer = document.getElementById('sim-timer');
+      const simLogs = document.getElementById('sim-logs');
+      const simReply = document.getElementById('sim-reply');
+
+      simButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          simButtons.forEach(b => {
+            b.classList.remove('bg-black', 'text-white', 'shadow-sm', 'active');
+            b.classList.add('bg-surface-container', 'text-black');
+          });
+          btn.classList.remove('bg-surface-container', 'text-black');
+          btn.classList.add('bg-black', 'text-white', 'shadow-sm', 'active');
+
+          const scKey = btn.getAttribute('data-scenario');
+          const data = scenarios[scKey];
+          if (!data) return;
+
+          if (simTypeBadge) simTypeBadge.textContent = data.badge;
+          if (simInputBox) simInputBox.textContent = data.input;
+          if (simChannel) simChannel.textContent = data.channel;
+          if (simHash) simHash.textContent = data.hash;
+          if (simTimer) simTimer.textContent = data.timer;
+          if (simReply) simReply.textContent = data.reply;
+          if (simLogs) {
+            simLogs.innerHTML = data.logs.join('');
+          }
+        });
+      });
+    })();
+  </script>
+  <!-- Navigation Dissolve Transitions -->
+  <script src="transitions.js?v=1.0.7"></script>
+  <!-- PWA Controller -->
+  <script src="pwa.js?v=1.0.7" defer></script>
+</body>
+</html>

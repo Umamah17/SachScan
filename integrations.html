@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Integrations &amp; Live Agent Gateways — SachScan</title>
+  <meta name="theme-color" content="#eaeaea"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="SachScan"/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="apple-touch-icon" href="icons/icon-192.png"/>
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-surface-variant": "#47464b",
+            "surface-bright": "#f8f9fb",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f3f4f6",
+            "surface-container": "#edeef0",
+            "surface-container-high": "#e7e8ea",
+            "surface-container-highest": "#e1e2e4",
+            "primary": "#000000",
+            "primary-container": "#1b1b1f",
+            "outline": "#78767b",
+            "error": "#ba1a1a",
+            "background": "#f8f9fb",
+            "on-surface": "#191c1e",
+            "on-primary": "#ffffff",
+            "secondary": "#4648d4"
+          },
+          fontFamily: {
+            "body-lg": ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "body-sm": ["Inter", "sans-serif"],
+            "code-mono": ["JetBrains Mono", "monospace"],
+            "headline-xl": ["Geist", "sans-serif"],
+            "headline-lg": ["Geist", "sans-serif"],
+            "headline-md": ["Geist", "sans-serif"],
+            "label-md": ["Geist", "sans-serif"],
+            "label-sm": ["Geist", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="style.css?v=1.0.7"/>
+  <style>
+    /* Custom Chat & Pulse Animations */
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.05); }
+    }
+    .animate-pulse-subtle {
+      animation: pulse-subtle 2.5s infinite ease-in-out;
+    }
+    .chat-bubble-agent {
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+    }
+    .chat-bubble-user {
+      background: #000000;
+      color: #ffffff;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+    }
+    .app-card.active-app {
+      border-color: #000000 !important;
+      background: #ffffff !important;
+      box-shadow: 0 12px 36px -6px rgba(0, 0, 0, 0.12) !important;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.02);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body class="bg-background font-body-md text-on-surface antialiased min-h-screen flex flex-col selection:bg-black selection:text-white">
+
+  <!-- Glassmorphic Top Navigation Bar (Identical Theme to Home Page) -->
+  <header id="main-navbar" class="fixed top-0 left-0 right-0 z-50 w-full transition-transform duration-300">
+    <div class="w-full px-6 sm:px-10 lg:px-12 h-16 sm:h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo (Left) -->
+      <a href="index.html" class="flex items-center gap-2.5 group focus:outline-none" aria-label="SachScan Home">
+        <img src="download__4_-removebg-preview.png" alt="SachScan Logo" class="h-9 sm:h-10 w-auto object-contain transition-transform duration-200 group-hover:scale-105" />
+        <span class="font-headline-md text-black font-bold tracking-tight text-xl">SachScan</span>
+      </a>
+
+      <!-- Centered Navigation Links (Titles in Black) -->
+      <nav class="hidden md:flex items-center gap-7 lg:gap-10" id="navbar-links">
+        <a href="index.html" class="nav-item relative py-2 text-[14px] lg:text-[15px] font-medium text-black/65 hover:text-black transition-colors duration-200">
+          <span>Home</span>
+          <span class="nav-indicator absolute bottom-0 left-0 right-0 h-[2px] bg-black rounded-full scale-x-0 opacity-0"></span>
+        </a>
+        <!-- ACTIVE: Integrations -->
+        <a href="integrations.html" class="nav-item active relative py-2 text-[14px] lg:text-[15px] font-semibold text-black transition-colors duration-200">
+          <span>Integrations</span>
+          <span class="nav-indicator absolute bottom-0 left-0 right-0 h-[2px] bg-black rounded-full"></span>
+        </a>
+        <a href="technology.html" class="nav-item relative py-2 text-[14px] lg:text-[15px] font-medium text-black/65 hover:text-black transition-colors duration-200">
+          <span>Technology</span>
+          <span class="nav-indicator absolute bottom-0 left-0 right-0 h-[2px] bg-black rounded-full scale-x-0 opacity-0"></span>
+        </a>
+        <a href="index.html#benchmarks" class="nav-item relative py-2 text-[14px] lg:text-[15px] font-medium text-black/65 hover:text-black transition-colors duration-200">
+          <span>Benchmarks</span>
+          <span class="nav-indicator absolute bottom-0 left-0 right-0 h-[2px] bg-black rounded-full scale-x-0 opacity-0"></span>
+        </a>
+        <a href="help.html" class="nav-item relative py-2 text-[14px] lg:text-[15px] font-medium text-black/65 hover:text-black transition-colors duration-200">
+          <span>Help</span>
+          <span class="nav-indicator absolute bottom-0 left-0 right-0 h-[2px] bg-black rounded-full scale-x-0 opacity-0"></span>
+        </a>
+      </nav>
+
+      <!-- Right Action Buttons -->
+      <div class="hidden sm:flex items-center gap-3">
+        <a href="index.html#demo" class="px-5 py-2 rounded-full border border-black/25 text-black font-semibold text-[11px] lg:text-[12px] tracking-wider uppercase backdrop-blur-md bg-white/40 hover:bg-black hover:text-white transition-all duration-200">
+          Get In Touch
+        </a>
+        <a href="login.html" class="px-5 py-2 rounded-full bg-black text-white font-semibold text-[11px] lg:text-[12px] tracking-wider uppercase shadow-[0_2px_12px_rgba(0,0,0,0.18)] hover:bg-neutral-800 hover:shadow-[0_4px_16px_rgba(0,0,0,0.25)] transition-all duration-200">
+          Get Started
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button id="nav-mobile-btn" type="button" class="md:hidden p-2 rounded-lg text-black hover:bg-black/5 transition-colors focus:outline-none" aria-label="Toggle Navigation">
+        <span class="material-symbols-outlined text-[24px]" id="nav-mobile-icon">menu</span>
+      </button>
+    </div>
+
+    <!-- Mobile Collapsible Menu Drawer -->
+    <div id="nav-mobile-drawer" class="hidden md:hidden px-6 pt-2 pb-6 border-t border-black/10 bg-white/95 backdrop-blur-2xl shadow-xl">
+      <div class="flex flex-col gap-3 pt-2">
+        <a href="index.html" class="mobile-nav-link text-black/75 hover:text-black font-medium text-base py-1.5">Home</a>
+        <a href="integrations.html" class="mobile-nav-link text-black font-semibold text-base py-1.5 flex items-center justify-between">
+          <span>Integrations</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-black"></span>
+        </a>
+        <a href="technology.html" class="mobile-nav-link text-black/75 hover:text-black font-medium text-base py-1.5">Technology</a>
+        <a href="index.html#benchmarks" class="mobile-nav-link text-black/75 hover:text-black font-medium text-base py-1.5">Benchmarks</a>
+        <a href="help.html" class="mobile-nav-link text-black/75 hover:text-black font-medium text-base py-1.5">Help &amp; Verification</a>
+        <div class="pt-4 flex flex-col gap-2.5">
+          <a href="index.html#demo" class="mobile-nav-link w-full text-center py-2.5 rounded-full border border-black/25 text-black font-semibold text-xs tracking-wider uppercase hover:bg-black hover:text-white transition-colors">
+            Get In Touch
+          </a>
+          <a href="login.html" class="mobile-nav-link w-full text-center py-2.5 rounded-full bg-black text-white font-semibold text-xs tracking-wider uppercase hover:bg-neutral-800 transition-colors shadow-md">
+            Get Started
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Integration Page Content -->
+  <main class="w-full flex-1 pt-28 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col gap-8">
+    
+    <!-- Hero Header -->
+    <div class="flex flex-col items-center text-center max-w-3xl mx-auto pt-4 pb-2">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-black/10 shadow-sm text-xs font-semibold uppercase tracking-wider text-black mb-3">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>Omni-Channel Native Shields &amp; Integrations</span>
+      </div>
+      <h1 class="font-headline-xl text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-black mb-3">
+        Supported Platforms &amp; Integrations
+      </h1>
+      <p class="font-body-md text-base sm:text-lg text-black/70 leading-relaxed">
+        Explore SachScan sovereign cryptographic detection gateways across WhatsApp, Discord, Telegram, Gmail, X, Reddit, Instagram, and Threads.
+      </p>
+    </div>
+
+    <!-- App Switcher Grid (WhatsApp, Discord, Telegram, Gmail) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="app-cards-container">
+      
+      <!-- App 1: WhatsApp -->
+      <button type="button" class="app-card active-app text-left p-5 rounded-2xl bg-white/70 border border-black/10 hover:border-black/30 hover:bg-white transition-all duration-200 flex flex-col justify-between group shadow-sm" data-app="whatsapp">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center shadow-sm p-1.5 group-hover:scale-105 transition-transform overflow-hidden">
+              <img src="logo-whatsapp.png" alt="WhatsApp Logo" class="w-full h-full object-contain" />
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200">
+              Online • 2s Scan
+            </span>
+          </div>
+          <h2 class="font-headline-md text-lg font-bold text-black mb-1">WhatsApp Sentinel</h2>
+          <p class="font-body-sm text-xs text-black/60 leading-relaxed mb-3">
+            Direct bot bridge for forwarded voice clips, payment screenshots, and viral media claims.
+          </p>
+        </div>
+        <div class="pt-2 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-black">
+          <span class="text-emerald-700 font-mono">+1-800-SACH-SCAN</span>
+          <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+        </div>
+      </button>
+
+      <!-- App 2: Discord -->
+      <button type="button" class="app-card text-left p-5 rounded-2xl bg-white/70 border border-black/10 hover:border-black/30 hover:bg-white transition-all duration-200 flex flex-col justify-between group shadow-sm" data-app="discord">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center shadow-sm p-1.5 group-hover:scale-105 transition-transform overflow-hidden">
+              <img src="logo-discord.jpg" alt="Discord Logo" class="w-full h-full object-contain rounded-lg" />
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-100 text-indigo-800 border border-indigo-200">
+              Active Sentinel
+            </span>
+          </div>
+          <h2 class="font-headline-md text-lg font-bold text-black mb-1">Discord Bot</h2>
+          <p class="font-body-sm text-xs text-black/60 leading-relaxed mb-3">
+            Server AutoMod shield blocking synthetic avatars, token phishing flyers, and deepfakes.
+          </p>
+        </div>
+        <div class="pt-2 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-black">
+          <span class="text-indigo-700 font-mono">#sachscan-verify</span>
+          <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+        </div>
+      </button>
+
+      <!-- App 3: Telegram -->
+      <button type="button" class="app-card text-left p-5 rounded-2xl bg-white/70 border border-black/10 hover:border-black/30 hover:bg-white transition-all duration-200 flex flex-col justify-between group shadow-sm" data-app="telegram">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center shadow-sm p-1.5 group-hover:scale-105 transition-transform overflow-hidden">
+              <img src="logo-telegram.png" alt="Telegram Logo" class="w-full h-full object-contain" />
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-sky-100 text-sky-800 border border-sky-200">
+              Inline Query
+            </span>
+          </div>
+          <h2 class="font-headline-md text-lg font-bold text-black mb-1">Telegram Bot</h2>
+          <p class="font-body-sm text-xs text-black/60 leading-relaxed mb-3">
+            Inline forensic lookup for biometric KYC photos, audio silencing, and diffusion artifacts.
+          </p>
+        </div>
+        <div class="pt-2 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-black">
+          <span class="text-sky-700 font-mono">@SachScanBot</span>
+          <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+        </div>
+      </button>
+
+      <!-- App 4: Gmail -->
+      <button type="button" class="app-card text-left p-5 rounded-2xl bg-white/70 border border-black/10 hover:border-black/30 hover:bg-white transition-all duration-200 flex flex-col justify-between group shadow-sm cursor-pointer" data-app="gmail">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center shadow-sm p-1.5 group-hover:scale-105 transition-transform overflow-hidden">
+              <img src="logo-gmail.png" alt="Gmail Logo" class="w-full h-full object-contain" />
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-red-100 text-red-800 border border-red-200">
+              Workspace Add-on
+            </span>
+          </div>
+          <h2 class="font-headline-md text-lg font-bold text-black mb-1">Gmail Sentinel</h2>
+          <p class="font-body-sm text-xs text-black/60 leading-relaxed mb-3">
+            Zero-retention inbox shield flagging synthetic CEO instructions, invoices, and spear-phishing.
+          </p>
+        </div>
+        <div class="pt-2 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-black">
+          <span class="text-red-700 font-mono">inbox-shield@scan</span>
+          <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+        </div>
+      </button>
+
+      <!-- App 5: X (Twitter) -->
+      <button type="button" class="app-card text-left p-5 rounded-2xl bg-white/70 border border-black/10 hover:border-black/30 hover:bg-white transition-all duration-200 flex flex-col justify-between group shadow-sm cursor-pointer" data-app="x">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center shadow-sm p-1.5 group-hover:scale-105 transition-transform overflow-hidden">
+              <img src="logo-x.svg" alt="X Logo" class="w-full h-full object-contain" />
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-neutral-100 text-neutral-800 border border-neutral-300">
+              Feed Shield
+            </span>
+          </div>
+          <h2 class="font-headline-md text-lg font-bold text-black mb-1">X Sentinel</h2>
+          <p class="font-body-sm text-xs text-black/60 leading-relaxed mb-3">
+            Real-time feed scan for viral synthetic media, manipulated election clips, and impersonation accounts.
+          </p>
+        </div>
+        <div class="pt-2 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-black">
+          <span class="text-neutral-900 font-mono">@SachScanShield</span>
+          <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+        </div>
+      </button>
+
+      <!-- App 6: Reddit -->
+      <button type="button" class="app-card text-left p-5 rounded-2xl bg-white/70 border border-black/10 hover:border-black/30 hover:bg-white transition-all duration-200 flex flex-col justify-between group shadow-sm cursor-pointer" data-app="reddit">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center shadow-sm p-1.5 group-hover:scale-105 transition-transform overflow-hidden">
+              <img src="logo-reddit.svg" alt="Reddit Logo" class="w-full h-full object-contain" />
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-orange-100 text-orange-800 border border-orange-200">
+              Community AutoMod
+            </span>
+          </div>
+          <h2 class="font-headline-md text-lg font-bold text-black mb-1">Reddit Sentinel</h2>
+          <p class="font-body-sm text-xs text-black/60 leading-relaxed mb-3">
+            Automated subreddit bot flagging generative propaganda, fake proof-of-work slips, and sockpuppets.
+          </p>
+        </div>
+        <div class="pt-2 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-black">
+          <span class="text-orange-700 font-mono">r/SachScanVerify</span>
+          <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+        </div>
+      </button>
+
+      <!-- App 7: Instagram -->
+      <button type="button" class="app-card text-left p-5 rounded-2xl bg-white/70 border border-black/10 hover:border-black/30 hover:bg-white transition-all duration-200 flex flex-col justify-between group shadow-sm cursor-pointer" data-app="instagram">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center shadow-sm p-1.5 group-hover:scale-105 transition-transform overflow-hidden">
+              <img src="logo-instagram.svg" alt="Instagram Logo" class="w-full h-full object-contain" />
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-pink-100 text-pink-800 border border-pink-200">
+              Reels &amp; Ads
+            </span>
+          </div>
+          <h2 class="font-headline-md text-lg font-bold text-black mb-1">Instagram Sentinel</h2>
+          <p class="font-body-sm text-xs text-black/60 leading-relaxed mb-3">
+            Facial warp and generative diffusion analysis across viral Reels, Stories, and sponsored campaign assets.
+          </p>
+        </div>
+        <div class="pt-2 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-black">
+          <span class="text-pink-700 font-mono">@sachscan.security</span>
+          <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+        </div>
+      </button>
+
+      <!-- App 8: Threads -->
+      <button type="button" class="app-card text-left p-5 rounded-2xl bg-white/70 border border-black/10 hover:border-black/30 hover:bg-white transition-all duration-200 flex flex-col justify-between group shadow-sm cursor-pointer" data-app="threads">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center shadow-sm p-1.5 group-hover:scale-105 transition-transform overflow-hidden">
+              <img src="logo-threads.svg" alt="Threads Logo" class="w-full h-full object-contain" />
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-800 border border-zinc-300">
+              Microblog Shield
+            </span>
+          </div>
+          <h2 class="font-headline-md text-lg font-bold text-black mb-1">Threads Sentinel</h2>
+          <p class="font-body-sm text-xs text-black/60 leading-relaxed mb-3">
+            Live cross-platform thread verification identifying automated LLM narrative bot swarms and synthetic photos.
+          </p>
+        </div>
+        <div class="pt-2 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-black">
+          <span class="text-zinc-900 font-mono">@sachscan</span>
+          <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+        </div>
+      </button>
+
+    </div>
+    <!-- Container placeholder for future sections -->
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full bg-surface-container-low py-8 border-t border-black/10 mt-auto">
+    <div class="max-w-7xl mx-auto px-6 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-black/60">
+      <div class="flex items-center gap-2">
+        <img src="download__4_-removebg-preview.png" alt="SachScan Logo" class="h-6 w-auto object-contain" />
+        <span class="font-bold text-black">SachScan Sovereign Intelligence Labs</span>
+        <span>• Cryptographically Attested v3.8</span>
+      </div>
+      <div>Zero-Data Retention Policy • Enclave AES-256 Sandboxed</div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    (function initIntegrationsPage() {
+      // Platform Card Click Interaction
+      const appCards = document.querySelectorAll('.app-card');
+      appCards.forEach(card => {
+        card.addEventListener('click', () => {
+          appCards.forEach(c => c.classList.remove('active-app'));
+          card.classList.add('active-app');
+        });
+      });
+
+
+
+      // 3D Tilt Mouse Tracker (Adapted from CARD EFFECT.txt)
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        appCards.forEach(card => {
+          let rafId = null;
+          card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = (e.clientY - rect.top) / rect.height;
+
+            const tiltX = (0.5 - y) * 14;
+            const tiltY = (x - 0.5) * 14;
+
+            if (rafId) cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => {
+              card.style.transform = `perspective(800px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+              card.style.transition = 'transform 75ms ease-out, filter 0.2s ease, box-shadow 0.2s ease';
+            });
+          });
+
+          card.addEventListener('mouseleave', () => {
+            if (rafId) cancelAnimationFrame(rafId);
+            card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+            card.style.transition = 'transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease, box-shadow 0.2s ease';
+          });
+        });
+      }
+
+      // Mobile Menu Drawer
+      const mobileBtn = document.getElementById('nav-mobile-btn');
+      const mobileDrawer = document.getElementById('nav-mobile-drawer');
+      const mobileIcon = document.getElementById('nav-mobile-icon');
+      if (mobileBtn && mobileDrawer) {
+        mobileBtn.addEventListener('click', () => {
+          const isClosed = mobileDrawer.classList.contains('hidden');
+          if (isClosed) {
+            mobileDrawer.classList.remove('hidden');
+            if (mobileIcon) mobileIcon.textContent = 'close';
+          } else {
+            mobileDrawer.classList.add('hidden');
+            if (mobileIcon) mobileIcon.textContent = 'menu';
+          }
+        });
+      }
+    })();
+  </script>
+  <!-- Navigation Dissolve Transitions -->
+  <script src="transitions.js?v=1.0.7"></script>
+  <!-- PWA Controller -->
+  <script src="pwa.js?v=1.0.7" defer></script>
+</body>
+</html>

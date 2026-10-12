@@ -1,0 +1,426 @@
+/* ==========================================================================
+   SENTINEL-01 // PREMIUM SCROLL ANIMATION & PRODUCT LANDING PAGE
+   Inspired by Apple & High-End Product Experiences
+   Seamless image frame integration, sticky scroll scrubbing, and fluid typography
+   ========================================================================== */
+
+:root {
+  /* Exact image background color to ensure 100% seamless bleed */
+  --bg-primary: #eaeaea;
+  --bg-secondary: #f4f5f7;
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --border-card: rgba(0, 0, 0, 0.08);
+
+  --text-primary: #111418;
+  --text-secondary: #525866;
+  --text-muted: #868e96;
+
+  --accent-green: #25d366;
+  --accent-cyan: #0284c7;
+  --accent-dark: #1e293b;
+
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Space Grotesk', monospace;
+
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  width: 100%;
+  overflow-x: hidden;
+  background-color: var(--bg-primary);
+}
+
+/* ==========================================================================
+   PRELOADER
+   ========================================================================== */
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--bg-primary);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.loader-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loader-content {
+  width: min(85vw, 360px);
+  text-align: center;
+}
+
+.loader-brand {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.loader-brand span {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.loader-status {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.loader-bar-wrap {
+  width: 100%;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.loader-bar-fill {
+  width: 0%;
+  height: 100%;
+  background: var(--text-primary);
+  border-radius: 999px;
+  transition: width 0.15s ease-out;
+}
+
+.loader-info {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+
+
+
+
+/* ==========================================================================
+   ANIMATION CONTAINER (STICKY SCROLL SEQUENCE)
+   ========================================================================== */
+.animation-container {
+  position: relative;
+  width: 100%;
+  height: 480vh; /* Smooth, natural scroll journey */
+}
+
+.sticky-viewport {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+}
+
+#animation-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   TRANSLUCENT GLASSMORPHIC TOP NAVIGATION BAR
+   Ultra-sleek frosted glassmorphism with black typography and indicators
+   ========================================================================== */
+#main-navbar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 9999 !important;
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(28px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.06), inset 0 1px 0 0 rgba(255, 255, 255, 0.8) !important;
+  transform: translateY(0) !important;
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform;
+}
+
+#main-navbar.nav-hidden {
+  transform: translateY(-115%) !important;
+  pointer-events: none !important;
+}
+
+.nav-item {
+  position: relative;
+  cursor: pointer;
+  text-decoration: none;
+  color: rgba(0, 0, 0, 0.65) !important;
+  transition: color 0.2s ease;
+}
+
+.nav-item:hover {
+  color: #000000 !important;
+}
+
+.nav-item .nav-indicator {
+  background-color: #000000 !important;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  transform-origin: center;
+}
+
+.nav-item.active {
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+.nav-item.active .nav-indicator {
+  transform: scaleX(1) !important;
+  opacity: 1 !important;
+  background-color: #000000 !important;
+}
+
+.nav-item:not(.active) .nav-indicator {
+  transform: scaleX(0);
+  opacity: 0;
+}
+
+.nav-item:not(.active):hover .nav-indicator {
+  transform: scaleX(0.75);
+  opacity: 0.35;
+  background-color: #000000 !important;
+}
+
+/* ==========================================================================
+   SOVEREIGN 3D TILT & AMBIENT AURA CARD EFFECT
+   Adapted from CARD EFFECT.txt and tailored to the SachScan Design System.
+   Sleek monochromatic gradient with sovereign indigo & emerald micro-undertones.
+   ========================================================================== */
+.card-effect-3d,
+.card-capability-3d,
+.card-integration-3d,
+.app-card {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, filter 0.3s ease, border-color 0.3s ease;
+  z-index: 1;
+}
+
+/* Ambient glowing halo backdrop inspired by #card::before in CARD EFFECT.txt */
+.card-effect-3d::before,
+.card-capability-3d::before,
+.card-integration-3d::before,
+.app-card::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  background: linear-gradient(135deg, rgba(70, 72, 212, 0.22) 0%, rgba(0, 0, 0, 0.16) 50%, rgba(0, 150, 104, 0.15) 100%);
+  filter: blur(24px);
+  opacity: 0;
+  border-radius: inherit;
+  z-index: -1;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  transform: scale(0.95);
+}
+
+.card-effect-3d:hover::before,
+.card-capability-3d:hover::before,
+.card-integration-3d:hover::before,
+.app-card:hover::before {
+  opacity: 0.85;
+  transform: scale(1.03);
+}
+
+.card-effect-3d:hover,
+.card-capability-3d:hover,
+.card-integration-3d:hover,
+.app-card:hover {
+  filter: brightness(1.02);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.08) !important;
+}
+
+.card-effect-3d:active,
+.card-capability-3d:active,
+.card-integration-3d:active,
+.app-card:active {
+  transform: perspective(800px) scale3d(0.985, 0.985, 0.985) !important;
+  transition: transform 0.1s ease !important;
+}
+
+/* Capability Cards Specific Aura (Technology Section) - Theme Matched from CARD EFFECT.txt */
+.card-capability-3d::before {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  background: linear-gradient(135deg, rgba(70, 72, 212, 0.42) 0%, rgba(0, 0, 0, 0.2) 48%, rgba(0, 150, 104, 0.3) 100%);
+  filter: blur(28px);
+  opacity: 0;
+  border-radius: inherit;
+  z-index: -1;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  transform: scale(0.95);
+}
+
+.card-capability-3d:hover::before {
+  opacity: 0.95;
+  transform: scale(1.05);
+}
+
+.card-capability-3d {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card-capability-3d:hover {
+  border-color: rgba(70, 72, 212, 0.35) !important;
+  box-shadow: 0 20px 45px -10px rgba(70, 72, 212, 0.2), 0 0 0 1px rgba(70, 72, 212, 0.18) !important;
+}
+
+/* Integration Grid Cards Aura */
+.card-integration-3d::before {
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(70, 72, 212, 0.28) 55%, rgba(0, 150, 104, 0.18) 100%);
+  filter: blur(24px);
+}
+
+/* ==========================================================================
+   SOVEREIGN VISIBLE SCROLLBAR
+   Aesthetic, high-contrast monochromatic scrollbar
+   ========================================================================== */
+html, body {
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(0, 0, 0, 0.35) rgba(0, 0, 0, 0.05) !important;
+}
+
+::-webkit-scrollbar {
+  width: 9px !important;
+  height: 9px !important;
+  display: block !important;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.04) !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.32) !important;
+  border-radius: 999px !important;
+  border: 2px solid transparent !important;
+  background-clip: content-box !important;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.65) !important;
+  background-clip: content-box !important;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent !important;
+}
+
+/* ==========================================================================
+   SOVEREIGN DISSOLVE TRANSITION ENGINE
+   Fluid crossfade & dissolve page transitions + focal in-page section dissolves
+   ========================================================================== */
+@keyframes pageDissolveIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+body {
+  opacity: 1;
+  animation: pageDissolveIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.page-dissolving-out {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* In-Page Section Dissolve Transitions */
+.section-dissolving-out {
+  opacity: 0.18 !important;
+  filter: blur(5px) !important;
+  transition: opacity 0.16s cubic-bezier(0.16, 1, 0.3, 1), filter 0.16s ease !important;
+  pointer-events: none;
+}
+
+@keyframes sectionDissolveIn {
+  0% {
+    opacity: 0.2;
+    filter: blur(5px);
+    transform: scale(0.998);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0px);
+    transform: scale(1);
+  }
+}
+
+.section-dissolve-entering {
+  animation: sectionDissolveIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* In-Page Section Focal Dissolve Highlight */
+@keyframes sectionDissolveFocus {
+  0% {
+    opacity: 0.55;
+    filter: blur(4px);
+    transform: translateY(10px) scale(0.995);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.18);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgba(70, 72, 212, 0.08);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0px);
+    transform: translateY(0) scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+.section-dissolve-highlight {
+  animation: sectionDissolveFocus 0.65s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+
+

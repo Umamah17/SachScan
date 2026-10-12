@@ -1,0 +1,13 @@
+{
+  "name": "robot-scroll-animation",
+  "version": "1.0.0",
+  "description": "High-performance scroll-driven frame animation for humanoid robot sequence",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["scroll-animation", "canvas", "interactive", "web-animation"],
+  "author": "",
+  "license": "MIT"
+}

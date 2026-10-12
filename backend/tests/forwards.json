@@ -1,0 +1,10 @@
+[
+  {"language": "en", "expected": "false", "text": "Urgent: Prime Minister announces ₹50,000 direct bank transfer to all students under National Youth Scheme. Click tinyurl.com/pm-grant-2025 before 18:00 to claim your quota!"},
+  {"language": "en", "expected": "false", "text": "WHO confirms that drinking hot water every 15 minutes kills the coronavirus in the throat. Forward this to all groups!"},
+  {"language": "en", "expected": "verified", "text": "IMD Weather Advisory: Heavy to very heavy rainfall expected across coastal districts over the next 48 hours. Fishermen are advised not to venture into deep sea areas."},
+  {"language": "en", "expected": "partly_supported", "text": "RBI has made UPI payments free for everyone, and from next month every UPI transaction above ₹2,000 will be charged 5% GST."},
+  {"language": "hi", "expected": "false", "text": "मोदी सरकार सभी छात्रों को 50,000 रुपये दे रही है। यह योजना आज ही खत्म हो जाएगी, तुरंत लिंक पर क्लिक करें और अपना OTP डालें।"},
+  {"language": "hi", "expected": "false", "text": "गर्म पानी पीने से कोरोना पूरी तरह ठीक हो जाता है, WHO ने कहा है। सबको भेजें!"},
+  {"language": "mr", "expected": "cannot_be_confirmed", "text": "सरकारने सर्व शेतकऱ्यांना मोफत ट्रॅक्टर देण्याची योजना जाहीर केली आहे. आजच अर्ज करा आणि सर्वांना पाठवा."},
+  {"language": "mr", "expected": "outdated", "text": "प्रधानमंत्री गरीब कल्याण अन्न योजनेअंतर्गत डिसेंबर 2022 पर्यंत मोफत धान्य मिळेल. रेशन दुकानात आजच नोंदणी करा."}
+]
