@@ -1,26 +1,20 @@
 /**
- * SachScan API bridge
- * -------------------
- * Injected by the backend into every HTML page at serve time, so the frontend files
- * stay untouched. It intercepts the existing forms/buttons (capture phase, before the
- * pages' own demo handlers run), calls the real API, and renders results with the same
- * markup and Tailwind classes the pages already use.
+ * SachScan frontend API layer
+ * ---------------------------
+ * - Supabase Auth (Google) session; the access token is attached to every API call,
+ *   and a 401 sends the user to the login page.
+ * - Live verification chat on help.html (rendered with the page's existing markup/classes).
+ * - Header avatar menu, integration cards, footer links, live API status.
+ * Loaded on every page right after the Supabase JS library.
  */
 (function () {
   'use strict';
 
   const API = (window.SACHSCAN_API_BASE || '').replace(/\/$/, '');
-  const TOKEN_KEY = 'sachscan_token';
-  const SESSION_KEY = 'sachscan_session_user'; // same key login.html already reads
 
   // ---------------------------------------------------------------------------
   // Helpers
   // ---------------------------------------------------------------------------
-  const store = {
-    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
-    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* private mode */ } },
-    del(k) { try { localStorage.removeItem(k); } catch (e) { /* private mode */ } },
-  };
   const $ = (id) => document.getElementById(id);
   const page = (location.pathname.split('/').pop() || 'index.html').replace(/\.html$/, '') || 'index';
 
@@ -32,12 +26,61 @@
   function safeUrl(u) {
     try { const p = new URL(u); return (p.protocol === 'https:' || p.protocol === 'http:') ? p.href : ''; } catch (e) { return ''; }
   }
-  function authHeaders() {
-    const t = store.get(TOKEN_KEY);
-    return t ? { Authorization: 'Bearer ' + t } : {};
+  function onReady(fn) {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
+    else fn();
   }
+
+  // ---------------------------------------------------------------------------
+  // Auth (Supabase, Google provider)
+  // ---------------------------------------------------------------------------
+  let configPromise = null;
+  function getConfig() {
+    if (!configPromise) configPromise = fetch(API + '/api/config').then((r) => r.json()).catch(() => ({}));
+    return configPromise;
+  }
+
+  let clientPromise = null;
+  function supa() {
+    if (!clientPromise) {
+      clientPromise = getConfig().then((c) => {
+        if (!c.supabaseUrl || !c.supabaseAnonKey || !window.supabase) return null;
+        return window.supabase.createClient(c.supabaseUrl, c.supabaseAnonKey, {
+          auth: { flowType: 'pkce', persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
+        });
+      });
+    }
+    return clientPromise;
+  }
+
+  async function getSession() {
+    const client = await supa();
+    if (!client) return null;
+    try { return (await client.auth.getSession()).data.session; } catch (e) { return null; }
+  }
+
+  async function authHeaders() {
+    const s = await getSession();
+    return s ? { Authorization: 'Bearer ' + s.access_token } : {};
+  }
+
+  function safeNext(n) {
+    return n && n.startsWith('/') && !n.startsWith('//') ? n : null;
+  }
+
+  function toLogin() {
+    if (page === 'login') return;
+    location.href = '/login.html?next=' + encodeURIComponent(location.pathname + location.search);
+  }
+
+  async function signOut() {
+    const client = await supa();
+    if (client) { try { await client.auth.signOut(); } catch (e) { /* already signed out */ } }
+    location.href = '/index.html';
+  }
+
   async function api(path, opts = {}) {
-    const headers = Object.assign({}, authHeaders(), opts.headers || {});
+    const headers = Object.assign({}, await authHeaders(), opts.headers || {});
     let body = opts.body;
     if (body && !(body instanceof FormData) && typeof body !== 'string') {
       headers['Content-Type'] = 'application/json';
@@ -46,6 +89,7 @@
     const res = await fetch(API + path, Object.assign({}, opts, { headers, body }));
     let data = null;
     try { data = await res.json(); } catch (e) { /* empty body */ }
+    if (res.status === 401 && !opts.allow401) toLogin();
     if (!res.ok) {
       const err = new Error((data && data.detail) || ('Request failed (' + res.status + ')'));
       err.status = res.status;
@@ -53,20 +97,9 @@
     }
     return data;
   }
-  function onReady(fn) {
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn);
-    else fn();
-  }
 
-  // Save session in the same shape the page's own script expects
-  function saveSession(token, user) {
-    if (token) store.set(TOKEN_KEY, token);
-    if (user) store.set(SESSION_KEY, JSON.stringify({
-      name: user.name, email: user.email, scansLeft: user.scansLeft,
-      scansTotal: user.scansTotal, apiKeyHint: user.apiKeyHint, provider: user.provider,
-    }));
-  }
-  function clearSession() { store.del(TOKEN_KEY); store.del(SESSION_KEY); }
+  // Expose a tiny API for other scripts (e.g. future pages)
+  window.SachScan = { api, getSession, signOut };
 
   // ===========================================================================
   // HELP PAGE — live verification chat
@@ -96,6 +129,7 @@
   }
 
   let pendingFile = null;
+  let currentConversation = null; // follow-up messages continue the same saved conversation
 
   function chatEls() {
     return {
@@ -270,11 +304,11 @@
     if (el.status) el.status.textContent = 'Connecting to SachScan verification engine…';
     scrollChat();
     try {
-      const res = await fetch(API + path, { method: 'POST', headers: authHeaders(), body: formData });
+      const res = await fetch(API + path, { method: 'POST', headers: await authHeaders(), body: formData });
       if (!res.ok) {
         let msg = 'Request failed (' + res.status + ')';
         try { msg = (await res.json()).detail || msg; } catch (e) { /* not JSON */ }
-        if (res.status === 401) clearSession();
+        if (res.status === 401) { toLogin(); return; }
         throw new Error(msg);
       }
       const reader = res.body.getReader();
@@ -290,8 +324,8 @@
         else if (ev.type === 'result') {
           gotResult = true;
           appendResult(ev.data);
-          if (ev.data.meta && ev.data.meta.scans_left != null) updateStoredScans(ev.data.meta.scans_left);
         } else if (ev.type === 'error') { gotResult = true; appendError(ev.message); }
+        else if (ev.type === 'conversation') { currentConversation = ev.id; document.dispatchEvent(new CustomEvent('sachscan:saved', { detail: ev.id })); }
       };
       for (;;) {
         const { value, done } = await reader.read();
@@ -311,13 +345,6 @@
     }
   }
 
-  function updateStoredScans(left) {
-    try {
-      const s = JSON.parse(store.get(SESSION_KEY) || 'null');
-      if (s) { s.scansLeft = left; store.set(SESSION_KEY, JSON.stringify(s)); }
-    } catch (e) { /* ignore */ }
-  }
-
   function setPendingFile(file) {
     const el = chatEls();
     pendingFile = file;
@@ -332,6 +359,7 @@
     const fd = new FormData();
     if (text) fd.append('text', text);
     if (pendingFile) fd.append('file', pendingFile, pendingFile.name || 'upload');
+    if (currentConversation) fd.append('conversation_id', currentConversation);
     appendUser(text, pendingFile ? (pendingFile.name || 'attachment') : '');
     el.input.value = '';
     setPendingFile(null);
@@ -348,9 +376,12 @@
       submitChat();
     }, true);
 
-    onReady(() => {
+    onReady(async () => {
       const el = chatEls();
       if (!el.input) return;
+      if (!(await getSession())) { toLogin(); return; }   // the checker requires sign-in
+      const clear = $('btn-clear-chat');
+      if (clear) clear.addEventListener('click', () => { currentConversation = null; });
 
       // Enter sends, Shift+Enter adds a newline (as the hint under the box says)
       el.input.addEventListener('keydown', (e) => {
@@ -388,185 +419,108 @@
   }
 
   // ===========================================================================
-  // LOGIN PAGE — real accounts
+  // LOGIN PAGE — "Continue with Google" (Supabase Auth, scopes: openid email profile)
   // ===========================================================================
   function initLogin() {
-    let cfg = { oauth: {}, demoSSO: true, freeScans: 500 };
-    api('/api/config').then((c) => { cfg = c || cfg; }).catch(() => {});
-
-    function showAlert(type, title, message, registerEmail) {
-      const box = $('auth-alert'), icon = $('alert-icon'), btn = $('alert-action-btn');
+    function showAlert(type, title, message) {
+      const box = $('auth-alert'), icon = $('alert-icon');
       if (!box) return;
-      box.classList.remove('hidden', 'bg-red-50', 'border-red-200', 'text-red-900', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-900', 'bg-amber-50', 'border-amber-200', 'text-amber-900');
       const map = {
         error: ['bg-red-50 border-red-200 text-red-900', 'error', 'text-red-600'],
-        success: ['bg-emerald-50 border-emerald-200 text-emerald-900', 'check_circle', 'text-emerald-600'],
         warning: ['bg-amber-50 border-amber-200 text-amber-900', 'warning', 'text-amber-600'],
-      }[type] || ['bg-amber-50 border-amber-200 text-amber-900', 'warning', 'text-amber-600'];
-      map[0].split(' ').forEach((c) => box.classList.add(c));
+      }[type] || ['bg-amber-50 border-amber-200 text-amber-900', 'info', 'text-amber-600'];
+      box.className = 'mb-6 p-4 rounded-2xl text-xs border transition-all duration-200 ' + map[0];
       icon.textContent = map[1];
       icon.className = `material-symbols-outlined text-[20px] ${map[2]} shrink-0`;
       $('alert-title').textContent = title;
       $('alert-message').textContent = message;
-      if (registerEmail !== undefined) {
-        btn.classList.remove('hidden');
-        btn.onclick = () => {
-          $('tab-register').click();
-          if (registerEmail) { $('reg-email').value = registerEmail; $('reg-name').focus(); }
-        };
-      } else {
-        btn.classList.add('hidden');
-      }
-    }
-    function hideAlert() { const b = $('auth-alert'); if (b) b.classList.add('hidden'); }
-
-    function renderSuccess(user) {
-      hideAlert();
-      $('form-login').classList.add('hidden');
-      $('form-register').classList.add('hidden');
-      $('tab-login').parentElement.classList.add('hidden');
-      $('auth-title').textContent = 'Authenticated Session';
-      $('auth-subtitle').textContent = 'Your SachScan cryptographic keys and quota are ready.';
-      $('auth-success-card').classList.remove('hidden');
-      $('success-user-name').textContent = `Welcome, ${user.name}!`;
-      $('success-user-email').textContent = user.email;
-      $('success-scans-left').textContent = `${user.scansLeft} / ${user.scansTotal || cfg.freeScans} scans remaining`;
-      if (user.apiKeyHint) {
-        const span = Array.from(document.querySelectorAll('#auth-success-card span.font-mono')).find((s) => /sach_live_sec_/.test(s.textContent));
-        if (span) { span.textContent = user.apiKeyHint; span.title = 'Your developer API key (send as X-API-Key header)'; }
-      }
-    }
-    function showLoggedOut() {
-      $('auth-success-card').classList.add('hidden');
-      $('tab-login').parentElement.classList.remove('hidden');
-      $('tab-login').click();
-    }
-    function busy(btn, on) {
-      if (!btn) return;
-      btn.disabled = on;
-      btn.style.opacity = on ? '0.6' : '';
+      const action = $('alert-action-btn');
+      if (action) action.classList.add('hidden');
     }
 
-    async function doLogin() {
-      hideAlert();
-      const email = $('login-email').value.trim().toLowerCase();
-      const password = $('login-password').value;
-      if (!email || !password) return showAlert('error', 'Missing Information', 'Please provide both your email and password to sign in.');
-      const btn = $('btn-login-submit');
-      busy(btn, true);
-      try {
-        const res = await api('/api/auth/login', { method: 'POST', body: { email, password, remember: !!($('login-remember') || {}).checked } });
-        saveSession(res.token, res.user);
-        showAlert('success', 'Sign In Successful', 'Authenticating your session...');
-        setTimeout(() => renderSuccess(res.user), 600);
-      } catch (err) {
-        if (err.status === 404) showAlert('error', 'Account Not Registered', err.message, email);
-        else if (err.status === 401) showAlert('error', 'Incorrect Password', err.message);
-        else showAlert('error', 'Sign In Failed', err.message);
-      } finally { busy(btn, false); }
-    }
-
-    async function doRegister() {
-      hideAlert();
-      const name = $('reg-name').value.trim();
-      const email = $('reg-email').value.trim().toLowerCase();
-      const password = $('reg-password').value;
-      const confirm = $('reg-confirm-password').value;
-      if (!name || !email || !password) return showAlert('error', 'Incomplete Form', 'Please fill in all required fields.');
-      if (password.length < 6) return showAlert('error', 'Weak Password', 'Password must be at least 6 characters long.');
-      if (password !== confirm) return showAlert('error', 'Password Mismatch', 'Your confirmation password does not match.');
-      if ($('reg-terms') && !$('reg-terms').checked) return showAlert('error', 'Terms Required', 'Please accept the Terms of Service to continue.');
-      const btn = $('btn-register-submit');
-      busy(btn, true);
-      try {
-        const res = await api('/api/auth/register', { method: 'POST', body: { name, email, password } });
-        saveSession(res.token, res.user);
-        showAlert('success', 'Registration Complete!', `Welcome ${res.user.name}! Your free tier with ${res.user.scansTotal} monthly scans has been activated.`);
-        setTimeout(() => renderSuccess(res.user), 800);
-      } catch (err) {
-        if (err.status === 409) {
-          showAlert('warning', 'Account Already Exists', err.message);
-          setTimeout(() => { $('tab-login').click(); $('login-email').value = email; }, 1200);
-        } else showAlert('error', 'Registration Failed', err.message);
-      } finally { busy(btn, false); }
-    }
-
-    async function doSSO(provider) {
-      if (cfg.oauth && cfg.oauth[provider]) {
-        location.href = API + `/api/auth/oauth/${provider}/start`;
+    onReady(async () => {
+      const params = new URLSearchParams(location.search);
+      const next = safeNext(params.get('next')) || '/help.html';
+      const btn = $('btn-google-signin');
+      const client = await supa();   // also completes the OAuth redirect (?code=...) if present
+      if (!client) {
+        showAlert('warning', 'Sign-in not configured', 'The server is missing its Supabase settings. See SETUP.md.');
+        if (btn) btn.disabled = true;
         return;
       }
-      try {
-        const res = await api('/api/auth/demo-sso', { method: 'POST', body: { provider } });
-        saveSession(res.token, res.user);
-        renderSuccess(res.user);
-      } catch (err) { showAlert('error', 'Sign In Failed', err.message); }
-    }
+      if (await getSession()) { location.replace(next); return; }
+      const err = params.get('error_description') || new URLSearchParams(location.hash.slice(1)).get('error_description');
+      if (err) showAlert('error', 'Sign-in failed', err);
+      if (params.get('reason') === 'expired') showAlert('warning', 'Session expired', 'Please sign in again.');
+      client.auth.onAuthStateChange((event, session) => { if (session) location.replace(next); });
 
-    async function doForgot() {
-      const email = prompt('Enter your registered email to receive a password recovery link:', $('login-email').value || '');
-      if (!email) return;
-      try {
-        await api('/api/auth/forgot', { method: 'POST', body: { email } });
-        showAlert('success', 'Recovery Link Sent', `If an account exists for "${email}", instructions to reset your password have been dispatched.`);
-      } catch (err) { showAlert('error', 'Could Not Send Link', err.message); }
-    }
-
-    async function doReset(token) {
-      const pw = prompt('Choose a new password (at least 6 characters):');
-      if (!pw) return;
-      if (pw.length < 6) return showAlert('error', 'Weak Password', 'Password must be at least 6 characters long.');
-      if (prompt('Confirm the new password:') !== pw) return showAlert('error', 'Password Mismatch', 'Your confirmation password does not match.');
-      try {
-        const res = await api('/api/auth/reset', { method: 'POST', body: { token, password: pw } });
-        saveSession(res.token, res.user);
-        renderSuccess(res.user);
-      } catch (err) { showAlert('error', 'Reset Failed', err.message); }
-    }
-
-    // Capture-phase interception so the page's localStorage demo handlers never run
-    window.addEventListener('submit', (e) => {
-      const id = e.target && e.target.id;
-      if (id !== 'form-login' && id !== 'form-register') return;
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      if (id === 'form-login') doLogin(); else doRegister();
-    }, true);
-
-    window.addEventListener('click', (e) => {
-      const t = e.target && e.target.closest ? e.target.closest('#btn-oauth-google, #btn-oauth-github, #link-forgot-pw, #btn-sign-out') : null;
-      if (!t) return;
-      if (t.id === 'btn-sign-out') {
-        // Let the page's own handler reset the UI; just end the server session too
-        const token = store.get(TOKEN_KEY);
-        if (token) fetch(API + '/api/auth/logout', { method: 'POST', headers: { Authorization: 'Bearer ' + token } }).catch(() => {});
-        store.del(TOKEN_KEY);
-        return;
-      }
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      if (t.id === 'link-forgot-pw') doForgot();
-      else doSSO(t.id === 'btn-oauth-google' ? 'google' : 'github');
-    }, true);
-
-    onReady(() => {
-      const hash = new URLSearchParams(location.hash.slice(1));
-      if (hash.get('sso') || hash.get('reset') || hash.get('sso_error')) history.replaceState(null, '', location.pathname + location.search);
-      if (hash.get('sso')) store.set(TOKEN_KEY, hash.get('sso'));
-      if (hash.get('sso_error')) showAlert('error', 'Sign In Failed', 'Single sign-on was cancelled or failed. Please try again.');
-      if (hash.get('reset')) { doReset(hash.get('reset')); return; }
-
-      const token = store.get(TOKEN_KEY);
-      if (!token) {
-        // A session from the old browser-only demo has no server account: sign it out
-        if (store.get(SESSION_KEY)) { store.del(SESSION_KEY); showLoggedOut(); }
-        return;
-      }
-      api('/api/auth/me')
-        .then((res) => { saveSession(null, res.user); renderSuccess(res.user); })
-        .catch((err) => {
-          if (err.status === 401) { clearSession(); showLoggedOut(); showAlert('warning', 'Session Expired', 'Please sign in again.'); }
+      if (btn) btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        const { error } = await client.auth.signInWithOAuth({
+          provider: 'google',
+          options: { redirectTo: location.origin + '/login.html?next=' + encodeURIComponent(next) },
         });
+        if (error) { btn.disabled = false; showAlert('error', 'Sign-in failed', error.message); }
+      });
+    });
+  }
+
+  // ===========================================================================
+  // HEADER — avatar menu with "Sign out" when signed in
+  // ===========================================================================
+  function initHeaderAuth() {
+    onReady(async () => {
+      const header = $('main-navbar');
+      if (!header || page === 'login') return;
+      const session = await getSession();
+      if (!session) return;
+      const meta = session.user.user_metadata || {};
+      const name = meta.full_name || meta.name || session.user.email || 'Account';
+      const avatar = safeUrl(meta.avatar_url || meta.picture || '');
+      const initial = esc((name.trim()[0] || '?').toUpperCase());
+
+      // Desktop: replace the "Get Started" pill with the avatar button + menu
+      // (the black "Get Started" pill: links to login.html on most pages, integrations.html on index)
+      const getStarted = Array.from(header.querySelectorAll('a.bg-black.rounded-full, a[href="login.html"], a[href="/login.html"]'))
+        .find((a) => !a.closest('#nav-mobile-drawer') && /get started/i.test(a.textContent));
+      if (getStarted) {
+        const wrap = document.createElement('div');
+        wrap.className = 'relative';
+        wrap.innerHTML = `
+          <button type="button" id="user-menu-btn" class="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-black/15 bg-white/70 hover:bg-white transition-all shadow-sm" aria-haspopup="true" aria-expanded="false">
+            ${avatar ? `<img src="${esc(avatar)}" alt="" referrerpolicy="no-referrer" class="w-7 h-7 rounded-full object-cover"/>`
+                     : `<span class="w-7 h-7 rounded-full bg-black text-white text-xs font-bold flex items-center justify-center">${initial}</span>`}
+            <span class="material-symbols-outlined text-[16px] text-black/60">expand_more</span>
+          </button>
+          <div id="user-menu" class="hidden absolute right-0 mt-2 w-60 rounded-2xl bg-white border border-black/10 shadow-xl p-2 z-50">
+            <div class="px-3 py-2 border-b border-black/5 mb-1">
+              <div class="text-sm font-semibold text-black truncate">${esc(name)}</div>
+              <div class="text-[11px] text-neutral-500 truncate">${esc(session.user.email || '')}</div>
+            </div>
+            <a href="/help.html" class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-black hover:bg-black/5">
+              <span class="material-symbols-outlined text-[18px]">fact_check</span>Check a message</a>
+            <button type="button" data-signout class="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-red-600 hover:bg-red-50">
+              <span class="material-symbols-outlined text-[18px]">logout</span>Sign out</button>
+          </div>`;
+        getStarted.replaceWith(wrap);
+        const btn = wrap.querySelector('#user-menu-btn'), menu = wrap.querySelector('#user-menu');
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const open = menu.classList.toggle('hidden') === false;
+          btn.setAttribute('aria-expanded', String(open));
+        });
+        document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) menu.classList.add('hidden'); });
+      }
+      // Mobile drawer: "Get Started" becomes "Sign out"
+      Array.from(header.querySelectorAll('#nav-mobile-drawer a')).filter((a) => /get started/i.test(a.textContent)).forEach((a) => {
+        a.textContent = 'Sign out';
+        a.setAttribute('href', '#');
+        a.setAttribute('data-signout', '');
+      });
+      header.addEventListener('click', (e) => {
+        const so = e.target.closest && e.target.closest('[data-signout]');
+        if (so) { e.preventDefault(); e.stopImmediatePropagation(); signOut(); }
+      }, true);
     });
   }
 
@@ -693,6 +647,7 @@
   // ---------------------------------------------------------------------------
   initFooterLinks();
   initApiStatus();
+  initHeaderAuth();
   if (page === 'index' || page === 'integrations') initIntegrationCards();
   if (page === 'help') initHelp();
   if (page === 'login') initLogin();

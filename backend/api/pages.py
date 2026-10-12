@@ -19,10 +19,11 @@ PAGES: dict[str, tuple[str, str, list[tuple[str, list[str]]]]] = {
         "Privacy Guarantee",
         "What happens to the messages you check.",
         [
-            ("Your messages are not stored", [
-                "Text, links, screenshots, voice notes and PDFs you submit are processed in memory and are never written to our database or disk.",
-                "To answer repeat checks quickly, a finished result is kept in server memory for up to 30 minutes and then discarded. Restarting the server clears it.",
-                "Items shared from WhatsApp through the app's share sheet are held in memory for at most 10 minutes and deleted as soon as they are checked.",
+            ("What we save", [
+                "Your checks (the message you sent and our verdict) are saved to your account so you can see them in History. You can delete any conversation at any time.",
+                f"Files you send (screenshots, voice notes, PDFs, videos) are stored privately and deleted automatically after {config.UPLOAD_RETENTION_HOURS} hours.",
+                "To answer repeated forwards instantly we keep verdicts in a cache keyed by a fingerprint of the content, for up to a day.",
+                "If you message our WhatsApp, Telegram or Discord bot without linking an account, the chat is saved with your platform id so you can attach it to your account later.",
             ]),
             ("AI and search providers", [
                 "To check a message, its text (or file) is sent to the AI providers configured on the server: Google Gemini and/or Anthropic Claude, and optionally Perplexity.",
@@ -30,9 +31,8 @@ PAGES: dict[str, tuple[str, str, list[tuple[str, list[str]]]]] = {
                 "Each provider handles data under its own privacy terms.",
             ]),
             ("Accounts", [
-                "If you create an account we store your name, email, a salted PBKDF2 hash of your password (never the password itself), your monthly scan count and a hashed API key.",
-                "Sign-in tokens are random and stored only as hashes. Signing out deletes the session on the server.",
-                "Google / GitHub sign-in, when enabled, only reads your name and verified email address.",
+                "You sign in with Google. We only receive your name, email address and profile picture; we never see your Google password.",
+                "Accounts are managed by Supabase Auth. Gmail scanning is a separate, optional permission you can grant and revoke at any time.",
             ]),
             ("Your choices", [
                 f"To delete your account and its data, contact {_CONTACT}.",
@@ -55,7 +55,7 @@ PAGES: dict[str, tuple[str, str, list[tuple[str, list[str]]]]] = {
                 "Do not use the service to harass people or to automate large volumes of requests beyond your quota.",
             ]),
             ("Free tier", [
-                f"Registered users get {config.FREE_MONTHLY_SCANS} scans per calendar month. Anonymous use is rate-limited per network.",
+                f"To keep the service fair, each account and each chat-app user can run up to {config.RATE_LIMIT_PER_HOUR} checks per hour.",
                 "The service is provided as-is, without warranties, and may change or be unavailable at times.",
             ]),
         ],
@@ -65,20 +65,20 @@ PAGES: dict[str, tuple[str, str, list[tuple[str, list[str]]]]] = {
         "How the platform protects you and your data.",
         [
             ("Data handling", [
-                "No user content is persisted; results live only in a short-lived in-memory cache.",
+                "Every table uses Row Level Security: you can only read your own conversations. Bots write with a server-only key.",
+                f"Uploaded media sits in a private storage bucket and is deleted after {config.UPLOAD_RETENTION_HOURS} hours.",
                 "API keys for AI providers stay on the server in environment variables and are never sent to the browser.",
             ]),
             ("Accounts and access", [
-                "Passwords are hashed with PBKDF2-HMAC-SHA256 (240,000 iterations, per-user salt).",
-                "Session tokens and developer API keys are random and stored only as SHA-256 hashes.",
-                "Login, registration and password-reset endpoints are rate-limited. Reset links expire after one hour and sign out all sessions.",
+                "Sign-in uses Google through Supabase Auth; every API request carries a signed token that the server verifies.",
+                "Gmail refresh tokens (only if you connect Gmail) are encrypted before they are stored.",
             ]),
             ("Fetching links safely", [
                 "When you check a URL, the server refuses private, loopback and link-local addresses on every redirect hop (SSRF protection), and limits download size.",
                 "Sources shown in a verdict can only be links that were actually retrieved during the search, so the AI cannot invent citations.",
             ]),
             ("Bots and webhooks", [
-                "Discord requests are verified with Ed25519 signatures; Telegram webhooks can require a secret token.",
+                "WhatsApp webhooks are verified with the app-secret HMAC signature; Telegram and Gmail webhooks require secret tokens.",
             ]),
         ],
     ),

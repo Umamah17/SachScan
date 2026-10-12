@@ -4,7 +4,7 @@
  * Version: 1.0.0
  */
 
-const CACHE_NAME = 'sachscan-v1.0.7';
+const CACHE_NAME = 'sachscan-v2.0.0';
 
 const PRECACHE_ASSETS = [
   '/',
@@ -19,6 +19,7 @@ const PRECACHE_ASSETS = [
   '/transitions.js',
   '/app.js',
   '/pwa.js',
+  '/sachscan-api.js',
   '/download__4_-removebg-preview.png',
   '/icons/icon-32.png',
   '/icons/icon-64.png',
@@ -91,6 +92,14 @@ self.addEventListener('fetch', (event) => {
   }
 
   const url = new URL(request.url);
+
+  // Never cache cross-origin calls (Supabase auth, CDNs handle their own caching) or API data
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+  if (/^\/(api|conversations|chat|check|link|me|health|share-target|webhooks|integrations\/gmail)(\/|$)/.test(url.pathname)) {
+    return;
+  }
 
   // A. Navigation Requests (HTML Pages): Network-First with Cache & Offline Fallback
   if (request.mode === 'navigate') {

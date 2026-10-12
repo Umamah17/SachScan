@@ -7,11 +7,19 @@
   "start_url": "/index.html",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui", "browser"],
+  "display_override": [
+    "standalone",
+    "minimal-ui",
+    "browser"
+  ],
   "orientation": "any",
   "background_color": "#eaeaea",
   "theme_color": "#eaeaea",
-  "categories": ["security", "productivity", "utilities"],
+  "categories": [
+    "security",
+    "productivity",
+    "utilities"
+  ],
   "icons": [
     {
       "src": "/icons/icon-192.png",
@@ -44,29 +52,80 @@
       "short_name": "Scanner",
       "description": "Scan messages, images, and claims with SachScan autonomous agent",
       "url": "/help.html",
-      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Forensic Technology",
       "short_name": "Technology",
       "description": "Explore Claim DNA, FFT Spectral Probe, and Forensic Neural Stack",
       "url": "/technology.html",
-      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Messaging Integrations",
       "short_name": "Integrations",
       "description": "Connect WhatsApp, Telegram, Discord, and Slack bots",
       "url": "/integrations.html",
-      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Portal & Authentication",
       "short_name": "Login",
       "description": "Access your enterprise keys, quotas, and authenticated sessions",
       "url": "/login.html",
-      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "share_target": {
+    "action": "/share-target",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "media",
+          "accept": [
+            "image/*",
+            "audio/*",
+            "video/*",
+            "application/pdf",
+            ".pdf",
+            ".opus",
+            ".ogg",
+            ".m4a",
+            ".mp3",
+            ".jpg",
+            ".jpeg",
+            ".png",
+            ".webp",
+            ".mp4"
+          ]
+        }
+      ]
+    }
+  }
 }
