@@ -20,6 +20,7 @@ const PRECACHE_ASSETS = [
   '/app.js',
   '/pwa.js',
   '/sachscan-api.js',
+  '/integrations.config.js',
   '/download__4_-removebg-preview.png',
   '/icons/icon-32.png',
   '/icons/icon-64.png',

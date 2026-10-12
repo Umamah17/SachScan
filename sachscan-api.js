@@ -520,7 +520,7 @@
       // Desktop: replace the "Get Started" pill with the avatar button + menu
       // (the black "Get Started" pill: links to login.html on most pages, integrations.html on index)
       const getStarted = Array.from(header.querySelectorAll('a.bg-black.rounded-full, a[href="login.html"], a[href="/login.html"]'))
-        .find((a) => !a.closest('#nav-mobile-drawer') && /get started/i.test(a.textContent));
+        .find((a) => !a.closest('#nav-mobile-drawer') && /get started|explore integrations/i.test(a.textContent));
       if (getStarted) {
         const wrap = document.createElement('div');
         wrap.className = 'relative';
@@ -575,45 +575,65 @@
     return null;
   }
 
-  let linksPromise = null;
-  function integrationLinks() {
-    if (!linksPromise) {
-      linksPromise = api('/api/integrations')
-        .then((res) => Object.fromEntries((res.integrations || []).map((i) => [i.id, i.link])))
-        .catch(() => ({}));
+  // Card links come from integrations.config.js (window.SACHSCAN_INTEGRATIONS)
+  function cardConfig(id) {
+    return (window.SACHSCAN_INTEGRATIONS || []).find((c) => c.id === id) || null;
+  }
+
+  function openExternal(url) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  async function startGmailConnect() {
+    if (!(await getSession())) { toLogin(); return; }
+    try {
+      const res = await api('/integrations/gmail/connect', { method: 'POST' });
+      if (res && res.url) location.href = res.url;   // Google consent screen (gmail.readonly)
+    } catch (err) {
+      alert(err.status === 404 || err.status === 503 ? 'Gmail connection is not available yet.' : err.message);
     }
-    return linksPromise;
   }
 
   function openApp(appId) {
-    if (appId === 'chrome') {
-      // No browser extension exists; installing the SachScan app (PWA) is the real equivalent.
-      if (window.triggerSachScanInstall) window.triggerSachScanInstall();
-      return;
-    }
-    // Open a blank tab synchronously (keeps the click's popup permission), then point it at the link.
-    const win = window.open('', '_blank');
-    integrationLinks().then((links) => {
-      const url = links[appId];
-      if (!url) { if (win) win.close(); return; }
-      if (win) { try { win.opener = null; } catch (e) { /* ignore */ } win.location.href = url; } else location.href = url;
+    const cfg = cardConfig(appId);
+    if (!cfg || !cfg.url) return;
+    if (appId === 'gmail') { startGmailConnect(); return; }
+    if (cfg.url.startsWith('/')) location.href = cfg.url;
+    else openExternal(cfg.url);
+  }
+
+  function setGmailConnected(connected, email) {
+    document.querySelectorAll('[data-handle="gmail"]').forEach((el) => {
+      el.textContent = connected ? 'Connected ✓' : 'Connect Gmail';
+      if (connected && email) el.title = email;
     });
   }
 
   function initIntegrationCards() {
-    integrationLinks(); // prefetch so the click feels instant
-    // integrations.html cards carry data-app; index.html cards are identified by their title
     window.addEventListener('click', (e) => {
-      const card = e.target && e.target.closest ? e.target.closest('.app-card[data-app], .card-integration-3d') : null;
-      if (!card) return;
-      const appId = card.getAttribute('data-app') || appFromText((card.querySelector('h3, h2') || card).textContent);
-      if (appId) openApp(appId); // the page's own handler still runs (card highlight)
+      const card = e.target && e.target.closest ? e.target.closest('[data-app]') : null;
+      if (!card || !card.matches('.app-card, .card-integration-3d')) return;
+      openApp(card.getAttribute('data-app')); // the page's own handler still runs (card highlight)
     });
-    onReady(() => {
-      document.querySelectorAll('.app-card[data-app], .card-integration-3d').forEach((c) => {
+    onReady(async () => {
+      document.querySelectorAll('.app-card[data-app], .card-integration-3d[data-app]').forEach((c) => {
+        const cfg = cardConfig(c.getAttribute('data-app'));
+        if (!cfg) return;
         c.style.cursor = 'pointer';
-        const id = c.getAttribute('data-app') || appFromText((c.querySelector('h3, h2') || c).textContent);
-        if (id) c.title = id === 'chrome' ? 'Install the SachScan app' : 'Open in ' + (c.querySelector('h3, h2') || c).textContent.trim();
+        const handle = c.querySelector('[data-handle]');
+        if (handle && cfg.label) handle.textContent = cfg.label;
+        // integrations.html: status pills become "Coming soon" when the account isn't set up yet
+        const pill = c.querySelector('span.rounded-full.uppercase');
+        if (cfg.status === 'coming_soon' && pill && !pill.hasAttribute('data-badge') && c.classList.contains('app-card')) {
+          pill.textContent = 'Coming soon';
+          pill.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200';
+        }
       });
       // integrations.html?app=whatsapp -> highlight that card (from footer links)
       const want = new URLSearchParams(location.search).get('app');
@@ -622,6 +642,13 @@
         document.querySelectorAll('.app-card').forEach((c) => c.classList.remove('active-app'));
         target.classList.add('active-app');
         setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+      }
+      // Gmail card shows "Connected ✓" for users who connected their inbox
+      if (await getSession()) {
+        try {
+          const st = await api('/integrations/gmail/status', { allow401: true });
+          setGmailConnected(!!(st && st.connected), st && st.email);
+        } catch (e) { /* not available yet */ }
       }
     });
   }

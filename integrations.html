@@ -92,6 +92,7 @@
   </style>
   <!-- Auth + API (Supabase JS pinned) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="integrations.config.js?v=1"></script>
   <script src="sachscan-api.js?v=2.0.0"></script>
 </head>
 <body class="bg-background font-body-md text-on-surface antialiased min-h-screen flex flex-col selection:bg-black selection:text-white">
@@ -183,7 +184,7 @@
         Supported Platforms &amp; Integrations
       </h1>
       <p class="font-body-md text-base sm:text-lg text-black/70 leading-relaxed">
-        Explore SachScan sovereign cryptographic detection gateways across WhatsApp, Discord, Telegram, Gmail, X, Reddit, Instagram, and Threads.
+        Check forwards where you already chat: bots for WhatsApp, Telegram and Discord, Gmail inbox scanning, and more platforms coming soon.
       </p>
     </div>
 
@@ -198,16 +199,16 @@
               <img src="logo-whatsapp.png" alt="WhatsApp Logo" class="w-full h-full object-contain" />
             </div>
             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200">
-              Online • 2s Scan
+              Live bot
             </span>
           </div>
-          <h2 class="font-headline-md text-lg font-bold text-black mb-1">WhatsApp Sentinel</h2>
+          <h2 class="font-headline-md text-lg font-bold text-black mb-1">WhatsApp Bot</h2>
           <p class="font-body-sm text-xs text-black/60 leading-relaxed mb-3">
-            Direct bot bridge for forwarded voice clips, payment screenshots, and viral media claims.
+            Forward any message, screenshot, voice note or PDF to our bot for an evidence-backed fact-check in seconds.
           </p>
         </div>
         <div class="pt-2 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-black">
-          <span class="text-emerald-700 font-mono">+1-800-SACH-SCAN</span>
+          <span data-handle="whatsapp" class="text-emerald-700 font-mono">Bot number coming soon</span>
           <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
         </div>
       </button>
@@ -220,16 +221,16 @@
               <img src="logo-discord.jpg" alt="Discord Logo" class="w-full h-full object-contain rounded-lg" />
             </div>
             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-100 text-indigo-800 border border-indigo-200">
-              Active Sentinel
+              Bot + AutoMod
             </span>
           </div>
           <h2 class="font-headline-md text-lg font-bold text-black mb-1">Discord Bot</h2>
           <p class="font-body-sm text-xs text-black/60 leading-relaxed mb-3">
-            Server AutoMod shield blocking synthetic avatars, token phishing flyers, and deepfakes.
+            Run /check or right-click any message to fact-check it, and let admins turn on flagging of false claims in chosen channels.
           </p>
         </div>
         <div class="pt-2 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-black">
-          <span class="text-indigo-700 font-mono">#sachscan-verify</span>
+          <span data-handle="discord" class="text-indigo-700 font-mono">Add to your server</span>
           <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
         </div>
       </button>
@@ -242,16 +243,16 @@
               <img src="logo-telegram.png" alt="Telegram Logo" class="w-full h-full object-contain" />
             </div>
             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-sky-100 text-sky-800 border border-sky-200">
-              Inline Query
+              Bot + inline
             </span>
           </div>
           <h2 class="font-headline-md text-lg font-bold text-black mb-1">Telegram Bot</h2>
           <p class="font-body-sm text-xs text-black/60 leading-relaxed mb-3">
-            Inline forensic lookup for biometric KYC photos, audio silencing, and diffusion artifacts.
+            Send or forward any message, photo, voice note or PDF to our bot, or type the bot's name in any chat for a quick verdict.
           </p>
         </div>
         <div class="pt-2 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-black">
-          <span class="text-sky-700 font-mono">@SachScanBot</span>
+          <span data-handle="telegram" class="text-sky-700 font-mono">Open the bot</span>
           <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
         </div>
       </button>
@@ -264,16 +265,16 @@
               <img src="logo-gmail.png" alt="Gmail Logo" class="w-full h-full object-contain" />
             </div>
             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-red-100 text-red-800 border border-red-200">
-              Workspace Add-on
+              Inbox scan
             </span>
           </div>
-          <h2 class="font-headline-md text-lg font-bold text-black mb-1">Gmail Sentinel</h2>
+          <h2 class="font-headline-md text-lg font-bold text-black mb-1">Gmail Scanner</h2>
           <p class="font-body-sm text-xs text-black/60 leading-relaxed mb-3">
-            Zero-retention inbox shield flagging synthetic CEO instructions, invoices, and spear-phishing.
+            Connect your inbox to have new emails checked for false claims, phishing and scam signals.
           </p>
         </div>
         <div class="pt-2 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-black">
-          <span class="text-red-700 font-mono">inbox-shield@scan</span>
+          <span data-handle="gmail" class="text-red-700 font-mono">Connect Gmail</span>
           <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
         </div>
       </button>
@@ -285,17 +286,15 @@
             <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center shadow-sm p-1.5 group-hover:scale-105 transition-transform overflow-hidden">
               <img src="logo-x.svg" alt="X Logo" class="w-full h-full object-contain" />
             </div>
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-neutral-100 text-neutral-800 border border-neutral-300">
-              Feed Shield
-            </span>
+            <span data-badge class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200">Coming soon</span>
           </div>
-          <h2 class="font-headline-md text-lg font-bold text-black mb-1">X Sentinel</h2>
+          <h2 class="font-headline-md text-lg font-bold text-black mb-1">X (Twitter)</h2>
           <p class="font-body-sm text-xs text-black/60 leading-relaxed mb-3">
-            Real-time feed scan for viral synthetic media, manipulated election clips, and impersonation accounts.
+            Follow SachScan on X for fact-checks of viral posts.
           </p>
         </div>
         <div class="pt-2 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-black">
-          <span class="text-neutral-900 font-mono">@SachScanShield</span>
+          <span data-handle="x" class="text-neutral-900 font-mono">Follow us</span>
           <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
         </div>
       </button>
@@ -307,17 +306,15 @@
             <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center shadow-sm p-1.5 group-hover:scale-105 transition-transform overflow-hidden">
               <img src="logo-reddit.svg" alt="Reddit Logo" class="w-full h-full object-contain" />
             </div>
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-orange-100 text-orange-800 border border-orange-200">
-              Community AutoMod
-            </span>
+            <span data-badge class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200">Coming soon</span>
           </div>
-          <h2 class="font-headline-md text-lg font-bold text-black mb-1">Reddit Sentinel</h2>
+          <h2 class="font-headline-md text-lg font-bold text-black mb-1">Reddit</h2>
           <p class="font-body-sm text-xs text-black/60 leading-relaxed mb-3">
-            Automated subreddit bot flagging generative propaganda, fake proof-of-work slips, and sockpuppets.
+            Join the SachScan community on Reddit to share suspicious posts and read fact-checks.
           </p>
         </div>
         <div class="pt-2 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-black">
-          <span class="text-orange-700 font-mono">r/SachScanVerify</span>
+          <span data-handle="reddit" class="text-orange-700 font-mono">Join us</span>
           <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
         </div>
       </button>
@@ -329,17 +326,15 @@
             <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center shadow-sm p-1.5 group-hover:scale-105 transition-transform overflow-hidden">
               <img src="logo-instagram.svg" alt="Instagram Logo" class="w-full h-full object-contain" />
             </div>
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-pink-100 text-pink-800 border border-pink-200">
-              Reels &amp; Ads
-            </span>
+            <span data-badge class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200">Coming soon</span>
           </div>
-          <h2 class="font-headline-md text-lg font-bold text-black mb-1">Instagram Sentinel</h2>
+          <h2 class="font-headline-md text-lg font-bold text-black mb-1">Instagram</h2>
           <p class="font-body-sm text-xs text-black/60 leading-relaxed mb-3">
-            Facial warp and generative diffusion analysis across viral Reels, Stories, and sponsored campaign assets.
+            Follow SachScan on Instagram for fact-checks of viral reels and posts.
           </p>
         </div>
         <div class="pt-2 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-black">
-          <span class="text-pink-700 font-mono">@sachscan.security</span>
+          <span data-handle="instagram" class="text-pink-700 font-mono">Follow us</span>
           <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
         </div>
       </button>
@@ -351,17 +346,15 @@
             <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center shadow-sm p-1.5 group-hover:scale-105 transition-transform overflow-hidden">
               <img src="logo-threads.svg" alt="Threads Logo" class="w-full h-full object-contain" />
             </div>
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-800 border border-zinc-300">
-              Microblog Shield
-            </span>
+            <span data-badge class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200">Coming soon</span>
           </div>
-          <h2 class="font-headline-md text-lg font-bold text-black mb-1">Threads Sentinel</h2>
+          <h2 class="font-headline-md text-lg font-bold text-black mb-1">Threads</h2>
           <p class="font-body-sm text-xs text-black/60 leading-relaxed mb-3">
-            Live cross-platform thread verification identifying automated LLM narrative bot swarms and synthetic photos.
+            Follow SachScan on Threads for fact-checks of trending claims.
           </p>
         </div>
         <div class="pt-2 border-t border-black/5 flex items-center justify-between text-xs font-semibold text-black">
-          <span class="text-zinc-900 font-mono">@sachscan</span>
+          <span data-handle="threads" class="text-zinc-900 font-mono">Follow us</span>
           <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
         </div>
       </button>

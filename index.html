@@ -16,6 +16,7 @@
   <script src="pwa.js?v=1.0.7" defer></script>
   <!-- Auth + API (Supabase JS pinned) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="integrations.config.js?v=1"></script>
   <script src="sachscan-api.js?v=2.0.0"></script>
 </head>
 <body class="bg-background font-body-md text-on-surface antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed">
@@ -131,146 +132,146 @@
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-md">
       <!-- Card 1: WhatsApp -->
-      <div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+      <div data-app="whatsapp" class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
         <div>
           <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center p-1.5 mb-space-md shadow-sm overflow-hidden">
             <img src="logo-whatsapp.png" alt="WhatsApp Logo" class="w-full h-full object-contain" />
           </div>
-          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">WhatsApp Business &amp; Personal Bot</h3>
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">WhatsApp Fact-Check Bot</h3>
           <p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
-            Forward any forwarded voice note, screenshot, or video to @SachScanBot for an instant 2-second cryptographic verification and deepfake alert.
+            Forward any message, screenshot, voice note or PDF to our bot for an evidence-backed fact-check in seconds.
           </p>
         </div>
         <div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
-          <span class="text-on-surface-variant font-code-mono text-code-mono">Forward to +1-800-SACH-SCAN</span>
+          <span data-handle="whatsapp" class="text-on-surface-variant font-code-mono text-code-mono">Bot number coming soon</span>
           <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
         </div>
       </div>
       <!-- Card 2: Gmail & Workspace -->
-      <div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+      <div data-app="gmail" class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
         <div>
           <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center p-1.5 mb-space-md shadow-sm overflow-hidden">
             <img src="logo-gmail.png" alt="Gmail Logo" class="w-full h-full object-contain" />
           </div>
-          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Gmail &amp; Google Workspace Add-on</h3>
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Gmail Inbox Scanner</h3>
           <p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
-            Automated background inbox scanner highlighting synthetic emails, spoofed supplier invoices, and generative AI executive impersonation in real time.
+            Connect your inbox to have new emails checked for false claims, phishing and scam signals.
           </p>
         </div>
         <div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
-          <span class="text-on-surface-variant font-code-mono text-code-mono">Google Workspace Marketplace</span>
+          <span data-handle="gmail" class="text-on-surface-variant font-code-mono text-code-mono">Connect Gmail</span>
           <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
         </div>
       </div>
       <!-- Card 3: Discord Sentinel -->
-      <div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+      <div data-app="discord" class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
         <div>
           <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center p-1.5 mb-space-md shadow-sm overflow-hidden">
             <img src="logo-discord.jpg" alt="Discord Logo" class="w-full h-full object-contain rounded-lg" />
           </div>
           <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Discord Bot &amp; AutoMod Sentinel</h3>
           <p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
-            Server shield that quarantines AI-generated deepfakes, crypto phishing visuals, and generative bot brigading before members interact.
+            Run /check or right-click any message to fact-check it, and let admins turn on flagging of false claims in chosen channels.
           </p>
         </div>
         <div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
-          <span class="text-on-surface-variant font-code-mono text-code-mono">1-Click Discord Install</span>
+          <span data-handle="discord" class="text-on-surface-variant font-code-mono text-code-mono">Add to your server</span>
           <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
         </div>
       </div>
       <!-- Card 4: Telegram Inline Inspector -->
-      <div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+      <div data-app="telegram" class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
         <div>
           <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center p-1.5 mb-space-md shadow-sm overflow-hidden">
             <img src="logo-telegram.png" alt="Telegram Logo" class="w-full h-full object-contain" />
           </div>
           <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Telegram Inline Inspector</h3>
           <p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
-            Instant channel moderation bot with inline verification queries, automated fake audio silencing, and immediate threat quarantine queues.
+            Send or forward any message, photo, voice note or PDF to our bot, or type the bot's name in any chat for a quick verdict.
           </p>
         </div>
         <div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
-          <span class="text-on-surface-variant font-code-mono text-code-mono">Add @SachScanBot</span>
+          <span data-handle="telegram" class="text-on-surface-variant font-code-mono text-code-mono">Open the bot</span>
           <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
         </div>
       </div>
       <!-- Card 5: X (Twitter) -->
-      <div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+      <div data-app="x" class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
         <div>
           <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center p-1.5 mb-space-md shadow-sm overflow-hidden">
             <img src="logo-x.svg" alt="X Logo" class="w-full h-full object-contain" />
           </div>
-          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">X Feed &amp; Direct Message Shield</h3>
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">X (Twitter) <span data-badge class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200">Coming soon</span></h3>
           <p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
-            Real-time feed scan for viral synthetic media, manipulated election clips, and automated generative impersonation accounts.
+            Follow SachScan on X for fact-checks of viral posts.
           </p>
         </div>
         <div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
-          <span class="text-on-surface-variant font-code-mono text-code-mono">@SachScanShield</span>
+          <span data-handle="x" class="text-on-surface-variant font-code-mono text-code-mono">Follow us</span>
           <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
         </div>
       </div>
       <!-- Card 6: Reddit -->
-      <div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+      <div data-app="reddit" class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
         <div>
           <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center p-1.5 mb-space-md shadow-sm overflow-hidden">
             <img src="logo-reddit.svg" alt="Reddit Logo" class="w-full h-full object-contain" />
           </div>
-          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Reddit AutoMod &amp; Subreddit Bot</h3>
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Reddit Community <span data-badge class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200">Coming soon</span></h3>
           <p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
-            Automated subreddit bot flagging generative propaganda, fake proof-of-work slips, and neural sockpuppet brigading.
+            Join the SachScan community on Reddit to share suspicious posts and read fact-checks.
           </p>
         </div>
         <div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
-          <span class="text-on-surface-variant font-code-mono text-code-mono">r/SachScanVerify</span>
+          <span data-handle="reddit" class="text-on-surface-variant font-code-mono text-code-mono">Join us</span>
           <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
         </div>
       </div>
       <!-- Card 7: Instagram -->
-      <div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+      <div data-app="instagram" class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
         <div>
           <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center p-1.5 mb-space-md shadow-sm overflow-hidden">
             <img src="logo-instagram.svg" alt="Instagram Logo" class="w-full h-full object-contain" />
           </div>
-          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Instagram Reels &amp; Story Sentinel</h3>
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Instagram <span data-badge class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200">Coming soon</span></h3>
           <p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
-            Facial warp and generative diffusion analysis across viral Reels, Stories, influencer endorsements, and sponsored assets.
+            Follow SachScan on Instagram for fact-checks of viral reels and posts.
           </p>
         </div>
         <div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
-          <span class="text-on-surface-variant font-code-mono text-code-mono">@sachscan.security</span>
+          <span data-handle="instagram" class="text-on-surface-variant font-code-mono text-code-mono">Follow us</span>
           <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
         </div>
       </div>
       <!-- Card 8: Threads -->
-      <div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+      <div data-app="threads" class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
         <div>
           <div class="w-12 h-12 rounded-xl bg-white border border-black/10 flex items-center justify-center p-1.5 mb-space-md shadow-sm overflow-hidden">
             <img src="logo-threads.svg" alt="Threads Logo" class="w-full h-full object-contain" />
           </div>
-          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Threads Microblog &amp; Post Sentinel</h3>
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Threads <span data-badge class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200">Coming soon</span></h3>
           <p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
-            Live cross-platform thread verification identifying automated LLM narrative bot swarms and synthetic photos.
+            Follow SachScan on Threads for fact-checks of trending claims.
           </p>
         </div>
         <div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
-          <span class="text-on-surface-variant font-code-mono text-code-mono">@sachscan</span>
+          <span data-handle="threads" class="text-on-surface-variant font-code-mono text-code-mono">Follow us</span>
           <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
         </div>
       </div>
       <!-- Card 9: Chrome Extension -->
-      <div class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+      <div data-app="chrome" class="card-effect-3d card-integration-3d p-space-lg rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
         <div>
           <div class="w-12 h-12 rounded-xl bg-surface-container flex items-center justify-center mb-space-md">
             <span class="material-symbols-outlined text-[28px] text-on-surface">extension</span>
           </div>
-          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Chrome &amp; Chromium Extension</h3>
+          <h3 class="font-headline-md text-headline-md text-on-surface mb-space-xs">Chrome Extension</h3>
           <p class="font-body-md text-body-md text-on-surface-variant mb-space-md">
-            Hover over any image on the web or social streams (X, LinkedIn, Reddit) to visualize immediate authenticity provenance badges and spectral heatmaps.
+            Right-click any text, image or link on a web page to check it with SachScan in a small popup.
           </p>
         </div>
         <div class="flex items-center justify-between pt-space-sm font-label-md text-label-md text-on-surface font-semibold">
-          <span class="text-on-surface-variant font-code-mono text-code-mono">Chrome Web Store • v2.4</span>
+          <span data-handle="chrome" class="text-on-surface-variant font-code-mono text-code-mono">Install guide</span>
           <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
         </div>
       </div>
