@@ -24,6 +24,7 @@ from backend.api.integrations import router as integrations_router
 from backend.api.link import router as link_router
 from backend.api.pages import router as pages_router
 from backend.api.share import router as share_router
+from backend.channels.whatsapp import router as whatsapp_router
 from backend.db import chatlog
 from backend.db import supabase as db
 from backend.pipeline import llm
@@ -51,7 +52,7 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(title="SachScan API", version="2.0.0", docs_url="/api/docs", openapi_url="/api/openapi.json", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=config.CORS_ORIGINS, allow_credentials=False, allow_methods=["*"], allow_headers=["*"])
-for r in (check_router, conversations_router, link_router, share_router, integrations_router, pages_router):
+for r in (check_router, conversations_router, link_router, share_router, integrations_router, pages_router, whatsapp_router):
     app.include_router(r)
 
 

@@ -72,6 +72,14 @@ PUBLIC_WEB_URL = (os.getenv("PUBLIC_WEB_URL", "").strip().rstrip("/") or PUBLIC_
 # --- Card links (moved to integrations.config.js in the cards step) ----------------
 CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "").strip()
 
+# --- WhatsApp Business Cloud API -------------------------------------------------
+WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN", "").strip()                    # SECRET: system-user / temporary access token
+WHATSAPP_PHONE_NUMBER_ID = os.getenv("WHATSAPP_PHONE_NUMBER_ID", "").strip()
+WHATSAPP_VERIFY_TOKEN = os.getenv("WHATSAPP_VERIFY_TOKEN", "").strip()      # any random string you also enter in Meta
+WHATSAPP_APP_SECRET = os.getenv("WHATSAPP_APP_SECRET", "").strip()          # SECRET: App settings -> Basic -> App secret
+WHATSAPP_BOT_NUMBER = "".join(c for c in os.getenv("WHATSAPP_BOT_NUMBER", "") if c.isdigit())
+WHATSAPP_GRAPH_VERSION = os.getenv("WHATSAPP_GRAPH_VERSION", "v23.0").strip()
+
 # --- Telegram -------------------------------------------------------------------
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
 TELEGRAM_WEBHOOK_SECRET = os.getenv("TELEGRAM_WEBHOOK_SECRET", "").strip()

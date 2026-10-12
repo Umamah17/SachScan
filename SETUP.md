@@ -52,7 +52,61 @@ Login only asks Google for `openid email profile`. Gmail access is a separate, o
 The browser keeps the Supabase session; every API call sends `Authorization: Bearer <access token>`, which the
 backend verifies (`backend/api/deps.py`). On a user's first request a `profiles` row is created.
 
+## 3. ngrok (public HTTPS URL for webhooks)
+
+Meta, Telegram and Google push messages to your server, so it needs a public HTTPS address.
+
+1. Sign up at [ngrok.com](https://ngrok.com) → **Your Authtoken** → copy it.
+2. Install ngrok (Windows: `winget install ngrok.ngrok`, or download the zip) and run once:
+   `ngrok config add-authtoken <your-token>`
+3. Claim your **free static domain** (ngrok dashboard → Domains). It stays the same across restarts, so you
+   only configure webhooks once.
+4. With the backend running on port 3001:
+   ```powershell
+   ngrok http --url=<your-static-domain>.ngrok-free.app 3001
+   ```
+5. Put `PUBLIC_BASE_URL=https://<your-static-domain>.ngrok-free.app` in `backend/.env` and restart the backend.
+   Also add `https://<your-static-domain>.ngrok-free.app/**` to Supabase → Authentication → URL Configuration →
+   Redirect URLs, and the same origin to the Google OAuth client's JavaScript origins, if you'll open the app
+   through ngrok (e.g. on a phone).
+
+## 4. WhatsApp bot (official WhatsApp Business Cloud API)
+
+Users forward messages **to** the bot number and it replies. Nobody's personal chats are read (WhatsApp is
+end-to-end encrypted), and no unofficial libraries are used: they break WhatsApp's terms and get numbers banned.
+
+1. [developers.facebook.com](https://developers.facebook.com) → **Get Started** (register as a developer).
+2. **My Apps → Create app** → use case **Other** → type **Business** (or "Connect with customers through WhatsApp")
+   → name `SachScan` → create.
+3. In the app dashboard add **WhatsApp** → **Set up** (let it create a business portfolio if asked).
+4. **WhatsApp → API Setup**:
+   - Meta gives you a free **test phone number**. During testing it can only message **pre-registered recipient
+     numbers**: under **To → Manage phone number list**, add your team's WhatsApp numbers (max 5) and confirm the
+     codes they receive.
+   - Copy into `backend/.env`:
+     - `WHATSAPP_PHONE_NUMBER_ID` = **Phone number ID** (a long number, not the phone number itself)
+     - `WHATSAPP_TOKEN` = **Temporary access token** (expires after 24 h; see step 7 for a permanent one)
+     - `WHATSAPP_BOT_NUMBER` = the test number, digits only (e.g. `15551234567`)
+5. **App settings → Basic → App secret → Show** → `WHATSAPP_APP_SECRET`. The backend rejects any webhook whose
+   `X-Hub-Signature-256` doesn't match this secret.
+6. Start the backend and ngrok, then **WhatsApp → Configuration → Webhook → Edit**:
+   - **Callback URL**: `https://<your-ngrok-domain>/webhooks/whatsapp`
+   - **Verify token**: the value of `WHATSAPP_VERIFY_TOKEN` in `backend/.env`
+   - **Verify and save**, then under **Webhook fields** subscribe to **messages**.
+7. Permanent token (so the demo doesn't break after 24 h): **business.facebook.com → Settings → Users → System
+   users → Add** (Admin) → **Add assets** → your app (full control) → **Generate new token** for the app with
+   `whatsapp_business_messaging` and `whatsapp_business_management` → put it in `WHATSAPP_TOKEN`.
+8. Put the bot number in `integrations.config.js` (`WHATSAPP_BOT_NUMBER`) so the website card opens
+   `https://wa.me/<number>?text=help`.
+9. From a registered phone, send **help** to the bot, then forward any message, screenshot, voice note or PDF.
+
+Notes
+- Webhooks are answered with 200 immediately and processed in the background; retries are de-duplicated by
+  message id. Each check gets exactly **one** reply message (service messages are billed per message).
+- Commands: `help`, `link <code>` (code from the website: History → Link a chat app).
+- Limits: images / voice notes / videos up to 16 MB, PDFs up to 10 MB, 20 checks per hour per number.
+
 ---
 
-Sections for WhatsApp, Discord, Telegram, Gmail/Pub-Sub, ngrok, the Chrome extension and the demo script are added
-as those integrations are built.
+Sections for Discord, Telegram, Gmail/Pub-Sub, the Chrome extension and the demo script are added as those
+integrations are built.
