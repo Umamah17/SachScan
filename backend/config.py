@@ -49,48 +49,54 @@ PERPLEXITY_MODEL = os.getenv("PERPLEXITY_MODEL", "sonar").strip()
 CLAUDE_REFUSAL_FALLBACK = _bool("CLAUDE_REFUSAL_FALLBACK", True)
 
 # --- Pipeline limits --------------------------------------------------------
-MAX_UPLOAD_MB = _int("MAX_UPLOAD_MB", 25)
+MAX_MEDIA_MB = _int("MAX_MEDIA_MB", 16)   # images, voice notes, videos
+MAX_PDF_MB = _int("MAX_PDF_MB", 10)
+MAX_UPLOAD_MB = max(MAX_MEDIA_MB, MAX_PDF_MB)  # hard cap for any download / upload
 MAX_TEXT_CHARS = _int("MAX_TEXT_CHARS", 12000)
 MAX_CLAIMS = _int("MAX_CLAIMS", 4)
 STEP_TIMEOUT_S = _int("STEP_TIMEOUT_S", 45)
-RESULT_CACHE_TTL_S = _int("RESULT_CACHE_TTL_S", 1800)  # in-memory only; 0 disables
+CHECKS_CACHE_TTL_HOURS = _int("CHECKS_CACHE_TTL_HOURS", 24)  # 0 disables the result cache
+RATE_LIMIT_PER_HOUR = _int("RATE_LIMIT_PER_HOUR", 20)          # checks per user / platform id
+UPLOAD_RETENTION_HOURS = _int("UPLOAD_RETENTION_HOURS", 24)
 
-# --- Accounts / quota -------------------------------------------------------
+# --- Supabase (database, auth, storage) -----------------------------------------
+SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip().rstrip("/")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY", "").strip()                    # public, used by the browser
+SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "").strip()    # SECRET, server only
+SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET", "").strip()  # only for projects on legacy HS256 JWT secrets
+
+# --- Public URLs ----------------------------------------------------------------
+PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "").strip().rstrip("/")  # https URL of this backend (ngrok / deploy)
+PUBLIC_WEB_URL = (os.getenv("PUBLIC_WEB_URL", "").strip().rstrip("/") or PUBLIC_BASE_URL)  # where the web app is served
+
+# --- Legacy local accounts (removed in the Supabase auth step) -------------------
 FREE_MONTHLY_SCANS = _int("FREE_MONTHLY_SCANS", 500)
 SESSION_DAYS = _int("SESSION_DAYS", 30)
 ANON_CHECKS_PER_HOUR = _int("ANON_CHECKS_PER_HOUR", 60)
-PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "").strip().rstrip("/")  # e.g. https://xyz.ngrok-free.app
-
-# Optional real OAuth (falls back to demo SSO accounts when unset)
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "").strip()
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "").strip()
 GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID", "").strip()
 GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET", "").strip()
 ALLOW_DEMO_SSO = _bool("ALLOW_DEMO_SSO", True)
-
-# Optional SMTP for password-reset emails (reset link is logged to the console when unset)
 SMTP_HOST = os.getenv("SMTP_HOST", "").strip()
 SMTP_PORT = _int("SMTP_PORT", 587)
 SMTP_USER = os.getenv("SMTP_USER", "").strip()
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "").strip()
 SMTP_FROM = os.getenv("SMTP_FROM", SMTP_USER).strip()
-
-# --- Messaging integrations -------------------------------------------------
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
-TELEGRAM_WEBHOOK_SECRET = os.getenv("TELEGRAM_WEBHOOK_SECRET", "").strip()
 DISCORD_PUBLIC_KEY = os.getenv("DISCORD_PUBLIC_KEY", "").strip()
 DISCORD_APPLICATION_ID = os.getenv("DISCORD_APPLICATION_ID", "").strip()
-
-# Your own public accounts, opened by the cards on integrations.html. Leave empty and the
-# card opens that app with a ready-to-send "check forwards with SachScan" share message instead.
-WHATSAPP_NUMBER = "".join(c for c in os.getenv("WHATSAPP_NUMBER", "") if c.isdigit())  # e.g. 919876543210
-TELEGRAM_BOT_USERNAME = os.getenv("TELEGRAM_BOT_USERNAME", "").strip().lstrip("@")
+WHATSAPP_NUMBER = "".join(c for c in os.getenv("WHATSAPP_NUMBER", "") if c.isdigit())
 DISCORD_INVITE_URL = os.getenv("DISCORD_INVITE_URL", "").strip()
 CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "").strip()
 X_HANDLE = os.getenv("X_HANDLE", "").strip().lstrip("@")
 REDDIT_COMMUNITY = os.getenv("REDDIT_COMMUNITY", "").strip().removeprefix("r/")
 INSTAGRAM_HANDLE = os.getenv("INSTAGRAM_HANDLE", "").strip().lstrip("@")
 THREADS_HANDLE = os.getenv("THREADS_HANDLE", "").strip().lstrip("@")
+
+# --- Telegram -------------------------------------------------------------------
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+TELEGRAM_WEBHOOK_SECRET = os.getenv("TELEGRAM_WEBHOOK_SECRET", "").strip()
+TELEGRAM_BOT_USERNAME = os.getenv("TELEGRAM_BOT_USERNAME", "").strip().lstrip("@")
 
 # --- HTTP -------------------------------------------------------------------
 CORS_ORIGINS = [o.strip() for o in os.getenv("CORS_ORIGINS", "*").split(",") if o.strip()]

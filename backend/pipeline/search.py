@@ -17,9 +17,9 @@ from urllib.parse import urlparse
 
 import httpx
 
-import config
-import llm
-from llm import LLMUnavailable
+from backend import config
+from backend.pipeline import llm
+from backend.pipeline.llm import LLMUnavailable
 
 log = logging.getLogger("sachscan.search")
 
@@ -277,7 +277,7 @@ def _best_sentences(page_text: str, claim: str, n: int = 2) -> str:
 
 async def _read_page(url: str, claim: str) -> tuple[str, Optional[str]]:
     """Fetch a result page (SSRF-safe) and return (most relevant sentences, publication date)."""
-    from extract import fetch_url  # local import avoids a cycle at module load
+    from backend.pipeline.extract import fetch_url  # local import avoids a cycle at module load
 
     try:
         data, ctype, final = await asyncio.wait_for(fetch_url(url), timeout=8)

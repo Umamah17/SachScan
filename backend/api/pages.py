@@ -8,7 +8,7 @@ import html
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import HTMLResponse
 
-import config
+from backend import config
 
 router = APIRouter(tags=["pages"])
 

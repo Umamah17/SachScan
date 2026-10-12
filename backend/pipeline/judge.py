@@ -6,9 +6,9 @@ from __future__ import annotations
 
 from datetime import date
 
-import llm
-from schemas import AIGeneration, ClaimResult, JudgeOutput, Source
-from search import Evidence
+from backend.pipeline import llm
+from backend.pipeline.schemas import AIGeneration, ClaimResult, JudgeOutput, Source
+from backend.pipeline.search import Evidence
 
 LANG_NAME = {"en": "simple English", "hi": "simple Hindi (Devanagari script)", "mr": "simple Marathi (Devanagari script)"}
 

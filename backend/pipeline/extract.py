@@ -18,9 +18,9 @@ from urllib.parse import urljoin, urlparse
 
 import httpx
 
-import config
-import llm
-from llm import LLMUnavailable, MediaPart
+from backend import config
+from backend.pipeline import llm
+from backend.pipeline.llm import LLMUnavailable, MediaPart
 
 log = logging.getLogger("sachscan.extract")
 

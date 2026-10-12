@@ -129,30 +129,3 @@ class JudgeOutput(BaseModel):
     claims: list[JudgeClaim] = Field(default_factory=list)
     scam_signals: list[str] = Field(default_factory=list)
     ai_generation: AIGeneration = Field(default_factory=AIGeneration)
-
-
-# ---- Auth ------------------------------------------------------------------
-
-class RegisterIn(BaseModel):
-    name: str = Field(min_length=1, max_length=120)
-    email: str = Field(min_length=3, max_length=254)
-    password: str = Field(min_length=6, max_length=256)
-
-
-class LoginIn(BaseModel):
-    email: str
-    password: str
-    remember: bool = True
-
-
-class ForgotIn(BaseModel):
-    email: str
-
-
-class ResetIn(BaseModel):
-    token: str
-    password: str = Field(min_length=6, max_length=256)
-
-
-class DemoSSOIn(BaseModel):
-    provider: Literal["google", "github"]

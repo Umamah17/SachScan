@@ -4,10 +4,10 @@ from __future__ import annotations
 import re
 from datetime import date
 
-import config
-import llm
-from schemas import SplitOutput
-from signals import detect_language
+from backend import config
+from backend.pipeline import llm
+from backend.pipeline.schemas import SplitOutput
+from backend.pipeline.signals import detect_language
 
 SPLIT_PROMPT = """You split WhatsApp forwards into individual factual claims for a fact-checker in India.
 Today's date is {today}.

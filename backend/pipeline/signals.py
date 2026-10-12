@@ -6,7 +6,7 @@ from __future__ import annotations
 import re
 from urllib.parse import urlparse
 
-from extract import find_urls
+from backend.pipeline.extract import find_urls
 
 DEVANAGARI = re.compile(r"[ऀ-ॿ]")
 MARATHI_MARKERS = ("आहे", "नाही", "आणि", "च्या", "झाले", "करा", "होते", "आहेत", "तुम्ही", "आपल्या", "मध्ये", "साठी", "ला ", "ळ")

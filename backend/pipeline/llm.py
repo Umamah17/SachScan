@@ -13,7 +13,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-import config
+from backend import config
 
 log = logging.getLogger("sachscan.llm")
 
