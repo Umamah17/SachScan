@@ -33,7 +33,15 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
 PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY", "").strip()
 
-# gemini | perplexity | claude | web  (others are used automatically as fallbacks;
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "").strip()
+OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "google/gemini-2.5-flash").strip()         # any model id from openrouter.ai/models
+# OpenRouter retries these automatically if the main model is busy / rate-limited
+OPENROUTER_FALLBACK_MODELS = [m.strip() for m in os.getenv("OPENROUTER_FALLBACK_MODELS", "").split(",") if m.strip()]
+OPENROUTER_SEARCH_MODEL = os.getenv("OPENROUTER_SEARCH_MODEL", "").strip() or OPENROUTER_MODEL  # used with the web plugin
+# Order for the JSON steps (claim splitting, verdicts); empty = sensible per-step defaults
+LLM_PROVIDER_ORDER = [p.strip() for p in os.getenv("LLM_PROVIDER_ORDER", "").split(",") if p.strip()]
+
+# gemini | openrouter | perplexity | claude | web  (others are used automatically as fallbacks;
 # "web" = free DuckDuckGo search + page reading, always the last resort)
 SEARCH_PROVIDER = os.getenv("SEARCH_PROVIDER", "gemini").strip().lower()
 

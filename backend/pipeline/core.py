@@ -232,7 +232,7 @@ async def check_content(inp: NormalizedInput, progress: Progress = None) -> Chec
             "timings": timings,
             "elapsed_s": round(time.time() - t0, 2),
             "degraded": out is None or any(e.error and not e.sources for e in evidence),
-            "ai_configured": llm.gemini_available() or llm.claude_available(),
+            "ai_configured": llm.gemini_available() or llm.claude_available() or llm.openrouter_available(),
         },
     )
     if out is not None:  # never cache an offline fallback

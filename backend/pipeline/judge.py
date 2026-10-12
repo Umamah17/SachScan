@@ -120,7 +120,7 @@ def _to_claims(out: JudgeOutput, evidence: list[Evidence], index: dict[str, dict
 async def judge(text: str, evidence: list[Evidence], lang: str) -> tuple[JudgeOutput | None, list[ClaimResult], str]:
     ev_text, index = format_evidence(evidence)
     prompt = JUDGE_PROMPT.format(today=date.today().isoformat(), text=text[:6000], evidence=ev_text, lang_name=LANG_NAME.get(lang, LANG_NAME["en"]))
-    attempt = await llm.json_with_fallback(prompt, JudgeOutput.model_validate, order=("claude", "gemini"), system=JUDGE_SYSTEM)
+    attempt = await llm.json_with_fallback(prompt, JudgeOutput.model_validate, order=("claude", "openrouter", "gemini"), system=JUDGE_SYSTEM)
     if attempt.value is None:
         return None, [], "none"
     out: JudgeOutput = attempt.value

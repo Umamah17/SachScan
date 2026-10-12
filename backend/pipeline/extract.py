@@ -117,6 +117,13 @@ async def _llm_transcribe(data: bytes, mime: str, kind: str) -> tuple[str, str]:
                 return resp.text, "gemini"
         except LLMUnavailable as e:
             errors.append(str(e))
+    if llm.openrouter_available() and kind in ("image", "pdf"):
+        try:
+            msg = await llm.openrouter_chat(prompt, [MediaPart(data, mime)])
+            if (msg.get("content") or "").strip():
+                return msg["content"], "openrouter"
+        except LLMUnavailable as e:
+            errors.append(str(e))
     if llm.claude_available() and kind in ("image", "pdf"):
         try:
             content = llm.claude_media_blocks([MediaPart(data, mime)]) + [{"type": "text", "text": prompt}]
@@ -126,7 +133,9 @@ async def _llm_transcribe(data: bytes, mime: str, kind: str) -> tuple[str, str]:
                 return text, "claude"
         except LLMUnavailable as e:
             errors.append(str(e))
-    if not llm.gemini_available() and not llm.claude_available():
+    if kind in ("audio", "video") and not llm.gemini_available():
+        raise ExtractionError("Voice notes and videos need a Gemini key on the server. Please type or paste the message instead.")
+    if not (llm.gemini_available() or llm.claude_available() or llm.openrouter_available()):
         raise ExtractionError("Reading images, voice notes and scanned PDFs needs an AI key on the server. Please paste the text instead.")
     raise ExtractionError("Could not read this file right now. Please try again or paste the text. " + "; ".join(errors)[:300])
 

@@ -319,6 +319,77 @@ async def claude_json(prompt: str, media=None, *, system=None, timeout=None) -> 
 
 
 # ---------------------------------------------------------------------------
+# OpenRouter (one key, many models; OpenAI-compatible chat completions API)
+# ---------------------------------------------------------------------------
+
+OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+
+
+def openrouter_available() -> bool:
+    return bool(config.OPENROUTER_API_KEY)
+
+
+def openrouter_media_parts(media: Optional[list[MediaPart]]) -> list[dict]:
+    """Images and PDFs only (most models can't read WhatsApp .ogg voice notes)."""
+    parts: list[dict] = []
+    for part in media or []:
+        b64 = base64.standard_b64encode(part.data).decode()
+        if part.mime_type.startswith("image/"):
+            parts.append({"type": "image_url", "image_url": {"url": f"data:{part.mime_type};base64,{b64}"}})
+        elif part.mime_type == "application/pdf":
+            parts.append({"type": "file", "file": {"filename": "document.pdf", "file_data": f"data:application/pdf;base64,{b64}"}})
+        else:
+            raise LLMUnavailable(f"OpenRouter model cannot read {part.mime_type}")
+    return parts
+
+
+async def openrouter_chat(prompt: str, media=None, *, system=None, json_mode=False, model: Optional[str] = None,
+                          plugins: Optional[list] = None, timeout=None) -> dict:
+    """Returns the raw message dict (content + annotations)."""
+    import httpx
+
+    if not openrouter_available():
+        raise LLMUnavailable("OPENROUTER_API_KEY not set")
+    content = openrouter_media_parts(media) + [{"type": "text", "text": prompt}]
+    messages = ([{"role": "system", "content": system}] if system else []) + [{"role": "user", "content": content}]
+    primary = model or config.OPENROUTER_MODEL
+    body: dict[str, Any] = {"model": primary, "messages": messages, "temperature": 0.2}
+    fallbacks = [m for m in config.OPENROUTER_FALLBACK_MODELS if m != primary]
+    if fallbacks and model is None:
+        body["models"] = [primary] + fallbacks  # OpenRouter routes to the next model if one is unavailable
+    if json_mode:
+        body["response_format"] = {"type": "json_object"}
+    if plugins:
+        body["plugins"] = plugins
+    headers = {"Authorization": f"Bearer {config.OPENROUTER_API_KEY}", "X-Title": "SachScan",
+               "HTTP-Referer": config.PUBLIC_WEB_URL or "http://localhost:3001"}
+    try:
+        async with httpx.AsyncClient(timeout=timeout or config.STEP_TIMEOUT_S) as client:
+            r = await client.post(OPENROUTER_URL, headers=headers, json=body)
+    except httpx.HTTPError as e:
+        raise LLMUnavailable(f"OpenRouter connection error: {type(e).__name__}") from e
+    if r.status_code == 400 and json_mode:
+        # some models don't support response_format; the prompt already demands JSON
+        return await openrouter_chat(prompt, media, system=system, json_mode=False, model=model, plugins=plugins, timeout=timeout)
+    if r.status_code >= 400:
+        try:
+            msg = r.json().get("error", {}).get("message", "")
+        except ValueError:
+            msg = r.text
+        raise LLMUnavailable(f"OpenRouter error {r.status_code}: {str(msg)[:200]}")
+    data = r.json()
+    try:
+        return data["choices"][0]["message"]
+    except (KeyError, IndexError) as e:
+        raise LLMUnavailable(f"OpenRouter returned no answer: {str(data.get('error', ''))[:200]}") from e
+
+
+async def openrouter_json(prompt: str, media=None, *, system=None, timeout=None) -> Any:
+    msg = await openrouter_chat(prompt, media, system=system, json_mode=True, timeout=timeout)
+    return parse_json_loose(msg.get("content") or "")
+
+
+# ---------------------------------------------------------------------------
 # Generic "ask for JSON with fallback + one retry" helper
 # ---------------------------------------------------------------------------
 
@@ -329,11 +400,24 @@ class JSONAttempt:
     errors: list[str] = field(default_factory=list)
 
 
-async def json_with_fallback(prompt: str, validate, *, order=("gemini", "claude"), media=None, system=None) -> JSONAttempt:
+def provider_order(preferred: tuple[str, ...]) -> tuple[str, ...]:
+    """LLM_PROVIDER_ORDER in .env (e.g. "openrouter,gemini,claude") overrides the per-step default."""
+    if config.LLM_PROVIDER_ORDER:
+        return tuple(config.LLM_PROVIDER_ORDER)
+    return preferred
+
+
+async def json_with_fallback(prompt: str, validate, *, order=("openrouter", "gemini", "claude"), media=None, system=None) -> JSONAttempt:
     """Try providers in order. Each provider gets one retry on invalid JSON / schema."""
     result = JSONAttempt()
-    funcs = {"gemini": (gemini_available, gemini_json), "claude": (claude_available, claude_json)}
-    for name in order:
+    funcs = {
+        "gemini": (gemini_available, gemini_json),
+        "claude": (claude_available, claude_json),
+        "openrouter": (openrouter_available, openrouter_json),
+    }
+    for name in provider_order(order):
+        if name not in funcs:
+            continue
         available, fn = funcs[name]
         if not available():
             continue

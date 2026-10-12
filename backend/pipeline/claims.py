@@ -45,7 +45,7 @@ def _fallback_split(text: str) -> list[str]:
 
 async def split_claims(text: str) -> tuple[SplitOutput, str]:
     prompt = SPLIT_PROMPT.format(today=date.today().isoformat(), text=text[: config.MAX_TEXT_CHARS], max_claims=config.MAX_CLAIMS)
-    attempt = await llm.json_with_fallback(prompt, SplitOutput.model_validate, order=("gemini", "claude"))
+    attempt = await llm.json_with_fallback(prompt, SplitOutput.model_validate, order=("openrouter", "gemini", "claude"))
     if attempt.value is not None:
         out: SplitOutput = attempt.value
         out.claims = [c.strip() for c in out.claims if c and c.strip()][: config.MAX_CLAIMS]

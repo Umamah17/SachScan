@@ -787,7 +787,7 @@
       api('/api/health')
         .then((h) => {
           const p = h.providers || {};
-          const ai = [p.gemini && 'Gemini', p.claude && 'Claude', p.perplexity && 'Perplexity'].filter(Boolean);
+          const ai = [p.gemini && 'Gemini', p.openrouter && 'OpenRouter', p.claude && 'Claude', p.perplexity && 'Perplexity'].filter(Boolean);
           const text = ai.length ? `API Status: Operational (${ai.join(' + ')})` : 'API Status: Online (offline checks only)';
           spans.forEach((s) => { s.textContent = text; });
         })

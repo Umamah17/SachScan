@@ -72,7 +72,7 @@ async def _validation_error(_: Request, exc: RequestValidationError):
 async def health():
     return {
         "status": "ok",
-        "providers": {"gemini": llm.gemini_available(), "claude": llm.claude_available(), "perplexity": bool(config.PERPLEXITY_API_KEY)},
+        "providers": {"gemini": llm.gemini_available(), "openrouter": llm.openrouter_available(), "claude": llm.claude_available(), "perplexity": bool(config.PERPLEXITY_API_KEY)},
         "search_provider": config.SEARCH_PROVIDER,
         "database": db.configured(),
     }
@@ -86,7 +86,7 @@ async def public_config():
         "supabaseAnonKey": config.SUPABASE_ANON_KEY,
         "maxMediaMB": config.MAX_MEDIA_MB,
         "maxPdfMB": config.MAX_PDF_MB,
-        "aiConfigured": llm.gemini_available() or llm.claude_available(),
+        "aiConfigured": llm.gemini_available() or llm.claude_available() or llm.openrouter_available(),
     }
 
 

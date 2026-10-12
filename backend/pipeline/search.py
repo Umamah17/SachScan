@@ -151,6 +151,24 @@ async def search_perplexity(claim: str, prompt: str) -> Evidence:
 # Claude web_search
 # ---------------------------------------------------------------------------
 
+async def search_openrouter(claim: str, prompt: str) -> Evidence:
+    """OpenRouter's web plugin: the model searches the web and returns url_citation annotations."""
+    msg = await llm.openrouter_chat(prompt, model=config.OPENROUTER_SEARCH_MODEL,
+                                    plugins=[{"id": "web", "max_results": 5}], timeout=config.STEP_TIMEOUT_S + 10)
+    ev = Evidence(claim=claim, summary=(msg.get("content") or "").strip(), provider="openrouter")
+    seen: dict[str, EvidenceSource] = {}
+    for ann in msg.get("annotations") or []:
+        cit = ann.get("url_citation") if ann.get("type") == "url_citation" else None
+        url = (cit or {}).get("url", "")
+        if url and url not in seen:
+            seen[url] = EvidenceSource(title=cit.get("title") or publisher_of(url), url=url, publisher=publisher_of(url),
+                                       snippet=(cit.get("content") or "")[:600])
+    ev.sources = list(seen.values())
+    if not ev.sources and not ev.summary:
+        raise LLMUnavailable("OpenRouter web search returned nothing")
+    return ev
+
+
 async def search_claude(claim: str, prompt: str) -> Evidence:
     tools = [{"type": "web_search_20260209", "name": "web_search", "max_uses": 4, "user_location": {"type": "approximate", "country": "IN"}}]
     _, blocks = await llm.claude_message(prompt, tools=tools, max_tokens=8000)
@@ -342,13 +360,14 @@ PROVIDERS = {
     "gemini": (llm.gemini_search_available, search_gemini),
     "perplexity": (lambda: bool(config.PERPLEXITY_API_KEY), search_perplexity),
     "claude": (llm.claude_available, search_claude),
+    "openrouter": (llm.openrouter_available, search_openrouter),
     "web": (lambda: True, search_web),  # free fallback, always last
 }
 
 
 def provider_order() -> list[str]:
     first = config.SEARCH_PROVIDER if config.SEARCH_PROVIDER in PROVIDERS else "gemini"
-    return [first] + [p for p in ("gemini", "claude", "perplexity", "web") if p != first]
+    return [first] + [p for p in ("gemini", "openrouter", "claude", "perplexity", "web") if p != first]
 
 
 async def search_claim(claim: str, topic: str, context: str = "", lang: str = "en") -> Evidence:
