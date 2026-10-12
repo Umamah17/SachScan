@@ -110,14 +110,16 @@ async def save_exchange(
         conv = await _conversation_for(client, platform=platform, user_id=user_id, external_user_id=external_user_id,
                                        conversation_id=conversation_id, title=_title(text, file_name, content_type))
         file_path = await _store_media(user_id, platform, file_bytes, mime_type, file_name) if file_bytes else None
+        # PostgREST bulk inserts require every row to have the same keys.
         user_msg = {
             "conversation_id": conv, "role": "user", "content_type": content_type,
-            "text": text or (file_name or None), "file_path": file_path, "platform_message_id": platform_message_id,
+            "text": text or (file_name or None), "file_path": file_path, "result_json": None,
+            "platform_message_id": platform_message_id,
         }
         assistant_msg = {
             "conversation_id": conv, "role": "assistant", "content_type": "text",
-            "text": result.overall_summary if result else (error or ""),
-            "result_json": result.model_dump(mode="json") if result else None,
+            "text": result.overall_summary if result else (error or ""), "file_path": None,
+            "result_json": result.model_dump(mode="json") if result else None, "platform_message_id": None,
         }
         await client.insert("messages", [user_msg, assistant_msg], returning=False)
         return conv

@@ -99,7 +99,7 @@
   }
 
   // Expose a tiny API for other scripts (e.g. future pages)
-  window.SachScan = { api, getSession, signOut };
+  window.SachScan = { api, getSession, signOut, loadConversation: (id) => loadConversation(id) };
 
   // ===========================================================================
   // HELP PAGE — live verification chat
@@ -138,9 +138,9 @@
     };
   }
   function scrollChat() { const m = $('chat-messages'); if (m) m.scrollTop = m.scrollHeight; }
-  function timeStr() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+  function timeStr(when) { return (when ? new Date(when) : new Date()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
 
-  function appendUser(text, fileName) {
+  function appendUser(text, fileName, when) {
     const el = chatEls();
     const div = document.createElement('div');
     div.className = 'flex items-start justify-end gap-3';
@@ -148,7 +148,7 @@
       <div class="chat-bubble-user p-4 rounded-2xl max-w-xl text-xs sm:text-sm leading-relaxed">
         ${fileName ? `<p class="flex items-center gap-1.5 font-semibold mb-1"><span class="material-symbols-outlined text-[16px]">attach_file</span>${esc(fileName)}</p>` : ''}
         ${text ? `<p class="whitespace-pre-wrap">${esc(text)}</p>` : ''}
-        <div class="text-[10px] text-neutral-400 mt-1.5 text-right font-code-mono">${timeStr()}</div>
+        <div class="text-[10px] text-neutral-400 mt-1.5 text-right font-code-mono">${timeStr(when)}</div>
       </div>
       <div class="w-8 h-8 rounded-lg bg-neutral-800 text-white flex items-center justify-center flex-shrink-0 mt-0.5">
         <span class="material-symbols-outlined text-[18px]">person</span>
@@ -202,7 +202,7 @@
     </div>`;
   }
 
-  function appendResult(r) {
+  function appendResult(r, when) {
     const lang = r.language || 'en';
     const v = VERDICT_STYLE[r.overall_verdict] || VERDICT_STYLE.cannot_be_confirmed;
     const ai = r.ai_generation || { score: 0, indicators: [] };
@@ -281,7 +281,7 @@
       </div>` : ''}
 
       <div class="text-[10px] text-neutral-400 text-right font-code-mono pt-1">
-        Verified at ${timeStr()}${meta.elapsed_s != null ? ' • ' + esc(meta.elapsed_s) + 's' : ''}${meta.cached ? ' • cached' : ''}${meta.scans_left != null ? ' • ' + esc(meta.scans_left) + ' scans left' : ''} • Not stored on our servers
+        Verified at ${timeStr(when)}${meta.elapsed_s != null && !when ? ' • ' + esc(meta.elapsed_s) + 's' : ''}${meta.cached ? ' • cached' : ''} • Saved to your history
       </div>`);
 
     const copyBtn = div.querySelector('.btn-copy-reply');
@@ -325,7 +325,7 @@
           gotResult = true;
           appendResult(ev.data);
         } else if (ev.type === 'error') { gotResult = true; appendError(ev.message); }
-        else if (ev.type === 'conversation') { currentConversation = ev.id; document.dispatchEvent(new CustomEvent('sachscan:saved', { detail: ev.id })); }
+        else if (ev.type === 'conversation') { setCurrentConversation(ev.id); document.dispatchEvent(new CustomEvent('sachscan:saved', { detail: ev.id })); }
       };
       for (;;) {
         const { value, done } = await reader.read();
@@ -342,6 +342,42 @@
       el.typing && el.typing.classList.add('hidden');
       el.send && (el.send.disabled = false);
       scrollChat();
+    }
+  }
+
+  function setCurrentConversation(id) {
+    currentConversation = id;
+    const url = new URL(location.href);
+    if (id) url.searchParams.set('c', id); else url.searchParams.delete('c');
+    history.replaceState(null, '', url.pathname + url.search);
+  }
+
+  const FILE_LABEL = { image: 'Screenshot', audio: 'Voice note', pdf: 'PDF', video: 'Video' };
+
+  // Re-draw a saved conversation into the existing chat view (used on reload and by History)
+  async function loadConversation(id) {
+    const el = chatEls();
+    if (!el.messages) return;
+    try {
+      const data = await api('/conversations/' + encodeURIComponent(id) + '/messages');
+      // keep only the welcome bubble, then replay the saved exchange(s)
+      Array.from(el.messages.children).slice(1).forEach((n) => n.remove());
+      for (const m of data.messages || []) {
+        if (m.role === 'user') {
+          // file messages store the caption or file name as text; show them with the attachment label
+          const fileLabel = FILE_LABEL[m.content_type];
+          if (fileLabel) appendUser('', m.text || fileLabel, m.created_at);
+          else appendUser(m.text || '', '', m.created_at);
+        } else if (m.result_json) {
+          appendResult(m.result_json, m.created_at);
+        } else if (m.text) {
+          appendError(m.text);
+        }
+      }
+      setCurrentConversation(id);
+    } catch (err) {
+      if (err.status === 404) setCurrentConversation(null);
+      else appendError(err.message);
     }
   }
 
@@ -381,7 +417,9 @@
       if (!el.input) return;
       if (!(await getSession())) { toLogin(); return; }   // the checker requires sign-in
       const clear = $('btn-clear-chat');
-      if (clear) clear.addEventListener('click', () => { currentConversation = null; });
+      if (clear) clear.addEventListener('click', () => setCurrentConversation(null));
+      const openId = new URLSearchParams(location.search).get('c');
+      if (openId) loadConversation(openId);
 
       // Enter sends, Shift+Enter adds a newline (as the hint under the box says)
       el.input.addEventListener('keydown', (e) => {
