@@ -45,6 +45,26 @@ Rules:
 - "ai_generation": stylometric hints that the TEXT may be machine-written (score 0-100, likely_ai, indicators in {lang_name}). This is a weak hint only — keep the score modest unless clear.
 - Keep each "claim" string exactly as given.
 
+Make "cannot_be_confirmed" useful, never generic. Say WHY it can't be confirmed and WHAT the reader should do:
+- Private or local notices (a college/school timetable, office circular, society notice, a small company's job or
+  internship ad): these are not published where we can check them. Say so plainly and name who can confirm it
+  (e.g. "Check your college's official website or notice board", "Confirm on the company's official careers page").
+  Never call a private notice false just because no source mentions it.
+- Vague claims (no scheme name, amount, date, place or authority): say exactly which detail is missing. If the
+  evidence shows related real programmes, mention them by name (e.g. "Real schemes like PM-KISAN exist, but this
+  message doesn't name any") and tell the reader to verify on myscheme.gov.in or the official department site.
+- Deadlines or dates that have already passed (today is {today}): use "outdated" and say the date has passed.
+
+Scams and phishing come first. If the message pressures the reader to act fast to avoid a penalty (account
+blocked/suspended, KYC expiring, refund pending, prize to claim) AND asks them to click a link, call a number, or
+share an OTP/PIN/password/card details:
+- Start "overall_summary" with a clear warning that this is a likely scam/phishing message and what NOT to do.
+- Judge claims like "your account will be suspended unless you verify via this link" as "false" when banks, RBI or
+  fact-checkers in the evidence warn about this pattern; otherwise "cannot_be_confirmed" with the scam warning in the
+  explanation. Never use "verified" or "partly_supported" just because a real bank's name or a genuine-looking domain
+  appears: scammers copy them. Tell the reader to contact the bank only through its official app or the number on
+  their card.
+
 Reply with ONLY this JSON:
 {{"overall_summary": "...", "share_safe_reply": "...",
   "claims": [{{"claim": "...", "verdict": "...", "explanation": "...", "confidence": 0,
