@@ -88,6 +88,10 @@ WHATSAPP_APP_SECRET = os.getenv("WHATSAPP_APP_SECRET", "").strip()          # SE
 WHATSAPP_BOT_NUMBER = "".join(c for c in os.getenv("WHATSAPP_BOT_NUMBER", "") if c.isdigit())
 WHATSAPP_GRAPH_VERSION = os.getenv("WHATSAPP_GRAPH_VERSION", "v26.0").strip()
 
+# --- Discord bot (separate process: python -m bots.discord_bot) -----------------------
+DISCORD_BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN", "").strip()   # SECRET
+DISCORD_APP_ID = os.getenv("DISCORD_APP_ID", "").strip()
+
 # --- Telegram -------------------------------------------------------------------
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
 TELEGRAM_WEBHOOK_SECRET = os.getenv("TELEGRAM_WEBHOOK_SECRET", "").strip()

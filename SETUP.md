@@ -106,7 +106,33 @@ Notes
 - Commands: `help`, `link <code>` (code from the website: History → Link a chat app).
 - Limits: images / voice notes / videos up to 16 MB, PDFs up to 10 MB, 20 checks per hour per number.
 
+## 5. Discord bot (discord.py, separate process)
+
+1. [discord.com/developers/applications](https://discord.com/developers/applications) → **New Application** → name `SachScan`.
+2. **General Information** → copy **Application ID** → `DISCORD_APP_ID` in `backend/.env` **and** `DISCORD_APP_ID` in
+   `integrations.config.js` (the website card builds the invite link from it).
+3. **Bot** → **Reset Token** → copy → `DISCORD_BOT_TOKEN` in `backend/.env` (secret; never commit or share).
+4. **Bot → Privileged Gateway Intents** → turn on **Message Content Intent** → Save. It's needed to read message text for
+   the right-click command and the opt-in AutoMod Sentinel. (Once a bot is in 100+ servers Discord must approve this
+   intent; not an issue for a hackathon.)
+5. Invite the bot with the website's Discord card, or this URL (scopes `bot applications.commands`; permissions: View
+   Channels, Send Messages, Send Messages in Threads, Create Public Threads, Embed Links, Read Message History):
+   `https://discord.com/oauth2/authorize?client_id=<DISCORD_APP_ID>&scope=bot%20applications.commands&permissions=309237730304`
+6. Run it (from the repo root) and keep the window open:
+   ```powershell
+   backend\.venv\Scripts\python.exe -m bots.discord_bot
+   ```
+   or double-click `backend\start-discord-bot.bat`. Commands appear instantly in every server the bot is in.
+
+Using it
+- `/check text:<…>` or `/check attachment:<file>`: the reply is visible only to you; add `public:True` to post it.
+- Right-click a message → **Apps** → **Check with SachScan**.
+- `/sachscan enable #channel` (members with **Manage Server** only): the bot checks new messages with links or
+  attachments there and replies **in a thread only** when something is false, outdated or a scam. It never deletes.
+  `/sachscan disable [#channel]`, `/sachscan status`. Settings are stored in `integration_settings`.
+- `/link <code>` connects a Discord account to the website history; DMs to the bot work like the WhatsApp bot.
+
 ---
 
-Sections for Discord, Telegram, Gmail/Pub-Sub, the Chrome extension and the demo script are added as those
+Sections for Telegram, Gmail/Pub-Sub, the Chrome extension and the demo script are added as those
 integrations are built.

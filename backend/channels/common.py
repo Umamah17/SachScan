@@ -111,3 +111,45 @@ async def handle_check(inp: NormalizedInput, *, bold: str = "*", limit: int = 40
     full_url = f"{config.PUBLIC_WEB_URL}/help.html?c={conv}" if (conv and inp.user_id and config.PUBLIC_WEB_URL) else (
         f"{config.PUBLIC_WEB_URL}/help.html" if config.PUBLIC_WEB_URL else None)
     return result, format_chat(result, full_url, bold=bold, limit=limit)
+
+
+# ---------------------------------------------------------------------------
+# Opt-in auto-scan settings per Discord guild / Telegram group (integration_settings)
+# ---------------------------------------------------------------------------
+
+FLAG_VERDICTS = {"false", "outdated"}
+
+
+def should_flag(result: Optional[CheckResponse]) -> bool:
+    """Auto-scan only speaks up for false/outdated claims or scam signals; otherwise it stays quiet."""
+    if result is None:
+        return False
+    return result.overall_verdict in FLAG_VERDICTS or any(c.verdict in FLAG_VERDICTS for c in result.claims) or bool(result.scam_signals)
+
+
+async def get_space_settings(platform: str, space_id: str) -> dict:
+    if not db.configured():
+        return {}
+    try:
+        rows = await db.service().select("integration_settings", {"platform": f"eq.{platform}", "external_space_id": f"eq.{space_id}", "select": "settings", "limit": 1})
+        return rows[0]["settings"] if rows else {}
+    except (db.SupabaseUnavailable, db.SupabaseError) as e:
+        log.warning("settings read failed: %s", e)
+        return {}
+
+
+async def save_space_settings(platform: str, space_id: str, settings: dict, enabled_by: str) -> None:
+    await db.service().insert("integration_settings", {
+        "platform": platform, "external_space_id": space_id, "settings": settings, "enabled_by": enabled_by,
+    }, upsert=True, on_conflict="platform,external_space_id", returning=False)
+
+
+async def list_space_settings(platform: str) -> dict[str, dict]:
+    if not db.configured():
+        return {}
+    try:
+        rows = await db.service().select("integration_settings", {"platform": f"eq.{platform}", "select": "external_space_id,settings"})
+        return {r["external_space_id"]: r["settings"] or {} for r in rows}
+    except (db.SupabaseUnavailable, db.SupabaseError) as e:
+        log.warning("settings list failed: %s", e)
+        return {}

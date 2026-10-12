@@ -10,3 +10,4 @@ pypdf>=4.2
 trafilatura>=1.12
 cryptography>=42
 PyJWT[crypto]>=2.8
+discord.py>=2.4
